@@ -1,8 +1,9 @@
-p {
-    color:aqua;
-    background-color: antiquewhite;
-}
 
 .header {
     background-color: aquamarine;
+}
+
+p {
+    color:aqua;
+    background-color: antiquewhite;
 }
