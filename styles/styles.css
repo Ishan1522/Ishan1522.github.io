@@ -1,8 +1,6 @@
 
-.header {
+div.header {
     text-align: center;
-    font-size: 1.6vw;
-    color: var(--mainTextColor);
     text-decoration: none;
     display: inline-block;
     width: 19.5%;
