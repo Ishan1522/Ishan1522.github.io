@@ -1,21 +1,168 @@
 <!DOCTYPE html>
-<html lang = "eng-US">
-    <head>
-        <link rel="stylesheet" type="text/css" href="styles/styles.css">
-        <meta charset = "utf-8"/>
-        <title>
-            Ishan1522.github.io
-        </title>
-    </head>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Titanium Tigers</title>
+  <link rel="stylesheet" type="text/css" href="styles/style.css">
+  <link rel="stylesheet" type="text/css" href="styles/header.css">
+  <link rel="stylesheet" type="text/css" href="styles/footer.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap"
+        rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@500&display=swap"
+        rel="stylesheet">
+  <link rel="icon" type="image/webp" href="images/Titanium%20Tigers%20Logo.webp">
+</head>
+<body>
 
-    <body>
-        <div class="header">
-            <p><a href="#">Home</a></p>
-            <p><a href="about.html">About</a></p>
-            <p><a href="contact.html">Contact</a></p>
-            <p><a href="projects.html">Projects</a></p>
-        </div>
-        <p>I'm hosted with GitHub Pages.</p>
-        
-    </body>
+<header>
+  <div id="header-interest-form">
+    <p>If you are interested in joining Titanium Tigers, complete our form:</p>
+    <a class="header-button"
+       href="https://docs.google.com/forms/d/e/1FAIpQLScZroxdy3WQmwxDN6p1T9dN80Uwpewk7a3u133SZAjkAeQEkQ/viewform?usp=sf_link"
+       target="_blank">Sign Up Form</a>
+  </div>
+  <button id="x-button" onclick="closeSignupPopup()">✖</button>
+  <input id="main-nav-toggle" type="checkbox"/>
+  <label class="main-nav-button-container" for="main-nav-toggle">
+    <div class="main-nav-button" id="top-nav-button"></div>
+    <div class="main-nav-button" id="mid-nav-button"></div>
+    <div class="main-nav-button" id="bot-nav-button"></div>
+  </label>
+  <div id="header-inner">
+    <a class="header-item one" href="#">
+      Home
+    </a>
+    <a class="header-item two" href="about.html">
+      About
+    </a>
+    <a class="header-item three" href="sponsors.html">
+      Sponsors
+    </a>
+    <a class="header-item four" href="robots.html">
+      Robots
+    </a>
+    <a class="header-item five" href="competitions.html">
+      Competitions
+    </a>
+    <hr id="home-underline" class="header-underline"/>
+  </div>
+</header>
+
+<section id="greeting-section">
+  <div id="greeting-container">
+    <img src="images/Titanium%20Tigers%20Logo.webp" alt="logo">
+    <h1 id="team-name">Titanium <span id="easter-egg">Tigers</span></h1>
+    <p>
+      We, the Titanium Tigers, are a FIRST Robotics Competition (FRC) team hosted at Chapel Hill
+      High School in Chapel Hill, NC, and run by its students. We are made up of around 30 active
+      student team members. Our team provides real life experiences in being part of a team where
+      everyone has real responsibilities and a clear, common goal. We supply crucial opportunities
+      for students to develop their skills in engineering, communication, leadership, time
+      management, and in being a thoughtful and responsible team member. We feel that learning these
+      skills builds the foundation for a successful future in STEM.
+    </p>
+  </div>
+</section>
+
+<hr class="divider-line"/>
+
+<section id="robot-section">
+  <div id="robot-container">
+    <h2>Meet Loopy!</h2>
+    <div class="text-image-div">
+      <div class="text">
+        <p>
+          2022 was quite the year for our team and Loopy! We won the UNC Pembroke district event,
+          placed second at the FRC District Championship, and for the first time in our team's
+          history, attended the FRC World Championship.
+        </p>
+        <span>Loopy featured:</span>
+        <ul>
+          <li>Swerve Drive that can reach speeds of 4.5m/s using falcon motors</li>
+          <li>Dual-flywheel upper hub shooter with dual falcons</li>
+          <li>Limelight 2+ used for auto-targeting and range finding</li>
+          <li>Reliable Traversal Climb with static hooks and arms</li>
+          <li>5 Ball Autonomous totalling 22 points</li>
+        </ul>
+      </div>
+      <img src="images/Guilford-robot%20w%20award.webp" alt="robot-pic">
+    </div>
+  </div>
+</section>
+
+<hr class="divider-line"/>
+
+<section id="team-section">
+  <div id="team-container">
+    <h2>Meet the Team!</h2>
+    <div class="text-image-div">
+      <img src="images/team-image.webp" alt="robot-pic">
+      <div class="text">
+        <p>
+          We are a group of around 25 students from Chapel Hill High School dedicated to learning
+          more about STEM and robotics. We strive to not only gain new knowledge, but also to help
+          our peers as well as younger students interested in STEM. Focusing specifically on
+          mechanical engineering, software engineering, electrical engineering, marketing,
+          management, and leadership, students learn a variety of crucial skills for later
+          opportunities in life.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider-line"/>
+
+<section id="donate-section">
+  <div id="donate-container">
+    <h2>Support Us</h2>
+    <p>
+      Every year we spend upwards of $25,000. Any donation, no matter the amount, is greatly
+      appreciated.
+    </p>
+    <a class="button1" href="https://gofund.me/d791d91f" target="_blank">Donate Now</a>
+  </div>
+</section>
+
+<hr class="divider-line"/>
+
+<section id="video-section">
+  <div id="video-container">
+    <h2>FRC Challenge Videos</h2>
+    <p>
+      These are the official game videos for the 2023 season Charged Up and the 2022 season Rapid
+      React.
+    </p>
+    <div id="videos-div">
+      <iframe src="https://www.youtube.com/embed/0zpflsYc4PA"></iframe>
+      <iframe src="https://www.youtube.com/embed/LgniEjI9cCM"></iframe>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div id="footer-container">
+    <div id="footer-normal">
+      <p>Email: <a class="url" href="mailto:titaniumtigers4829@gmail.com" target="_blank">titaniumtigers4829@gmail.com</a>
+      </p>
+      <p>Instagram: <a class="url" href="https://www.instagram.com/titaniumtigers4829/?hl=en"
+                       target="_blank">@titaniumtigers4829</a></p>
+      <p>9217 Seawell School Rd, Chapel Hill, NC 27516</p>
+    </div>
+    <div id="footer-mobile">
+      <p>Email:</p><a class="url" href="mailto:titaniumtigers4829@gmail.com" target="_blank">titaniumtigers4829@gmail.com</a>
+      <p>Instagram:</p><a class="url" href="https://www.instagram.com/titaniumtigers4829/?hl=en" target="_blank">@titaniumtigers4829</a>
+      <p>9217 Seawell School Rd, Chapel Hill, NC 27516</p>
+    </div>
+    <p id="copyright-text">©2022 Titanium Tigers</p>
+  </div>
+</footer>
+
+<script src="scripts/iframes.js"></script>
+<script src="scripts/x_button.js"></script>
+<script src="scripts/easteregg.js"></script>
+
+</body>
 </html>
