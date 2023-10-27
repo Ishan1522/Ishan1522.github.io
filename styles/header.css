@@ -169,6 +169,44 @@ header {
     .five:hover ~ hr {
       margin-left: 79.5%!important;
     }
+
+
+/* Dropdown Button */
+.dropbtn {
+  background-color: var(--secondaryColor);
+  color: white;
+  padding: 16px;
+  font-size: 16px;
+  border: none;
+}
+
+
+/* Dropdown Content (Hidden by Default) */
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #f1f1f1;
+  min-width: 120px;
+  box-shadow: 0px 8px 16px 0px var(--secondaryColor);
+  z-index: 1;
+}
+
+/* Links inside the dropdown */
+.dropdown-content a {
+  color: black;
+  margin: 120px;
+  text-decoration: none;
+  display: block;
+}
+
+/* Change color of dropdown links on hover */
+.dropdown-content a:hover {background-color: #ddd;}
+
+/* Show the dropdown menu on hover */
+.five:hover .dropdown-content {display: block;}
+
+/* Change the background color of the dropdown button when the dropdown content is shown */
+.five:hover .dropbtn {color: var(--themeColor);}
   
   }
   
