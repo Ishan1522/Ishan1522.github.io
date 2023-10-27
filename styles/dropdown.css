@@ -45,4 +45,4 @@
   .dropdown:hover .dropdown-content {display: block;}
   
   /* Change the background color of the dropdown button when the dropdown content is shown */
-  .dropdown:hover .dropbtn {background-color: var(--secondaryColor);}
+  .dropdown:hover .dropbtn {background-color: var(--themeColor);}
