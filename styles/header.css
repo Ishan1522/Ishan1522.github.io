@@ -34,7 +34,7 @@ header {
     backdrop-filter: brightness(1.15);
   }
   
-  #x-button {
+  /* #x-button {
     color: var(--mainTextColor);
     background: transparent;
     border: none;
@@ -48,7 +48,7 @@ header {
   
   #x-button:hover {
     transform: rotate(180deg);
-  }
+  } */
   
   #header-inner {
     padding: 1.8% 20% 1.5%;
