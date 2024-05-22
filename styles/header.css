@@ -7,7 +7,7 @@ header {
 
 #header-inner {
   /* display: flex; */
-  justify-content:center; Adjusts spacing between items
+  justify-content:center; /*Adjusts spacing between items*/
   /* align-items:flex-start; Centers items vertically */
   padding: 1.8% 20% 1.5%; /* Adjust padding as needed */
 }
