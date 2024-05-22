@@ -10,7 +10,7 @@ header {
 }
 
 .header-item {
-  text-align: center;
+  text-align: left;
   font-size: 1.6vw;
   color: var(--mainTextColor);
   text-decoration: none;
