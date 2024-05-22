@@ -6,7 +6,7 @@ header {
 }
 
 #header-inner {
-  display:flexbox;
+  /* display:flexbox; */
    justify-content:space-around; 
   align-items:center; 
   padding: 1.8% 20% 1.5%;
