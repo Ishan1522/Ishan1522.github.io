@@ -1,12 +1,15 @@
 header {
   width: 100%;
-  position:relative;
+  position: fixed;
   top: 0;
   background: var(--secondaryColor);
 }
 
 #header-inner {
-  padding: 1.8% 20% 1.5%;
+  display: flex;
+  justify-content: space-around; /* Adjusts spacing between items */
+  align-items: center; /* Centers items vertically */
+  padding: 1.8% 20% 1.5%; /* Adjust padding as needed */
 }
 
 .header-item {
@@ -58,7 +61,8 @@ header {
 }
 
 #outreach-underline {
-  margin: .5% 90%;
+  /* margin: .5% 90%; */
+  margin-top: auto;
 }
 
 .one:hover ~ hr {
