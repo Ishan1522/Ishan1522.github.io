@@ -10,7 +10,7 @@ header {
 }
 
 .header-item {
-  text-align: left;
+  text-align: center;
   font-size: 1.6vw;
   color: var(--mainTextColor);
   text-decoration: none;
@@ -58,7 +58,7 @@ header {
 }
 
 #outreach-underline {
-  margin: .5% 100%;
+  margin: .5% 90%;
 }
 
 .one:hover ~ hr {
