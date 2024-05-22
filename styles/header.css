@@ -6,9 +6,9 @@ header {
 }
 
 #header-inner {
-  display: inline-block;
+  display: inline-flex;
   justify-content: space-around; /*Adjusts spacing between items*/
-  position: fixed;
+  /* position: fixed; */
   align-items:center; /*Centers items vertically*/
   padding: 1.8% 20% 1.5%; /* Adjust padding as needed */
 }
@@ -42,28 +42,39 @@ header {
 }
 
 #home-underline {
-  margin: .5% 0;
+  /* margin: .5% 0; */
+  margin-top: auto;
+
 }
 
 #about-underline {
-  margin: .5% 20%;
+  /* margin: .5% 20%; */
+  margin-top: auto;
+
 }
 
 #sponsors-underline {
-  margin: .5% 40%;
+  /* margin: .5% 40%; */
+  margin-top: auto;
+
 }
 
 #robots-underline {
-  margin: .5% 60%;
+  /* margin: .5% 60%; */
+  margin-top: auto;
+
 }
 
 #competitions-underline {
-  margin: .5% 80%;
+  /* margin: .5% 80%;
+   */
+   margin-top: auto;
+
 }
 
 #outreach-underline {
-  margin: .5% 90%;
-  /* margin-top: auto; */
+  /* margin: .5% 90%; */
+  margin-top: auto;
 }
 
 .one:hover ~ hr {
