@@ -7,9 +7,10 @@ header {
 
 #header-inner {
   display:flexbox;
-  /* justify-content:space-between; Adjusts spacing between items */
-  /* align-items:center; Centers items vertically */
+   justify-content:space-around; 
+  align-items:center; 
   /* padding: 1.8% 20% 1.5%; Adjust padding as needed */
+  margin:auto;
 }
 
 .header-item {
