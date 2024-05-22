@@ -6,9 +6,9 @@ header {
 }
 
 #header-inner {
-  display: flex;
+  display: inline-block;
   justify-content: space-around; /*Adjusts spacing between items*/
-  position: absolute;
+  position: fixed;
   align-items:center; /*Centers items vertically*/
   padding: 1.8% 20% 1.5%; /* Adjust padding as needed */
 }
