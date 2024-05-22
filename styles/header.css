@@ -6,7 +6,7 @@ header {
 }
 
 #header-inner {
-  display: inline-flex;
+  display: flex;
   justify-content: space-around; /*Adjusts spacing between items*/
   /* position: fixed; */
   align-items:center; /*Centers items vertically*/
