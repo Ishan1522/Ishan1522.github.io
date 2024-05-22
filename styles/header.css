@@ -101,6 +101,10 @@ header {
   #competitions-underline {
     margin: .5% 80%;
   }
+
+  #outreach-underline {
+    margin: .5% 100%;
+  }
   
   .one:hover ~ hr {
     margin-left: 0!important;
@@ -120,6 +124,10 @@ header {
   
   .five:hover ~ hr {
     margin-left: 80%!important;
+  }
+
+  .six:hover ~ hr {
+    margin-left: 100%!important;
   }
   
   #main-nav-toggle {
@@ -170,6 +178,10 @@ header {
       margin-left: 79.5%!important;
     }
 
+    .six:hover ~ hr {
+      margin-left: 99.5%!important;
+    } 
+
 
 /* Dropdown Button */
 .dropbtn {
@@ -198,7 +210,7 @@ header {
   text-decoration: none;
   display: block;
 }
-
+                               
 /* Change color of dropdown links on hover */
 .dropdown-content a:hover {background-color: #ddd;}
 
