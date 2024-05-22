@@ -42,39 +42,37 @@ header {
 }
 
 #home-underline {
-  /* margin: .5% 0; */
-  margin-top: auto;
+  margin: .5% 0;
+  /* margin-top: auto; */
 
 }
 
 #about-underline {
-  /* margin: .5% 20%; */
-  margin-top: auto;
+  margin: .5% 20%;
+  /* margin-top: auto; */
 
 }
 
 #sponsors-underline {
-  /* margin: .5% 40%; */
-  margin-top: auto;
+  margin: .5% 40%;
+  /* margin-top: auto; */
 
 }
 
 #robots-underline {
-  /* margin: .5% 60%; */
-  margin-top: auto;
+  margin: .5% 60%;
+  /* margin-top: auto; */
 
 }
 
 #competitions-underline {
-  /* margin: .5% 80%;
-   */
-   margin-top: auto;
+  margin: .5% 80%;
 
 }
 
 #outreach-underline {
-  /* margin: .5% 90%; */
-  margin-top: auto;
+  margin: .5% 90%;
+  /* margin-top: auto; */
 }
 
 .one:hover ~ hr {
