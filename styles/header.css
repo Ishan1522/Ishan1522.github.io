@@ -9,8 +9,10 @@ header {
   display:flexbox;
    justify-content:space-around; 
   align-items:center; 
-  /* padding: 1.8% 20% 1.5%; Adjust padding as needed */
-  margin:auto;
+  padding: 1.8% 20% 1.5%;
+  /* padding:; */
+   /* Adjust padding as needed */
+  /* margin:auto; */
 }
 
 .header-item {
