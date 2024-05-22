@@ -1,6 +1,6 @@
 header {
   width: 100%;
-  position: fixed;
+  position:relative;
   top: 0;
   background: var(--secondaryColor);
 }
@@ -14,7 +14,7 @@ header {
   font-size: 1.6vw;
   color: var(--mainTextColor);
   text-decoration: none;
-  display: inline-flex;
+  display: inline-block;
   width: 19.5%;
   padding: 0;
   margin: 0;
