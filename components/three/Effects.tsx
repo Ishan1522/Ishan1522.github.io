@@ -17,7 +17,7 @@ interface Props {
 export function Effects({ mobile = false }: Props) {
   if (mobile) return null;
   return (
-    <EffectComposer multisampling={0} disableNormalPass>
+    <EffectComposer multisampling={0} enableNormalPass={false}>
       <Bloom
         intensity={0.35}
         luminanceThreshold={0.75}
