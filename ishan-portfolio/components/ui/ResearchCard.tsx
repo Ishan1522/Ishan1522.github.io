@@ -1,0 +1,56 @@
+import type { ResearchTrack } from '@/data/research';
+import { cn } from '@/lib/cn';
+
+interface Props {
+  track: ResearchTrack;
+}
+
+export function ResearchCard({ track }: Props) {
+  const accentText = track.accent === 'cyan' ? 'text-cyan' : 'text-mint';
+  const accentBar = track.accent === 'cyan' ? 'bg-cyan' : 'bg-mint';
+  const accentHover =
+    track.accent === 'cyan' ? 'hover:border-cyan/40' : 'hover:border-mint/40';
+
+  return (
+    <article
+      className={cn(
+        'group relative flex flex-col gap-4 rounded-sm border border-white/5 bg-ink-900/70 p-6 backdrop-blur-sm transition-all duration-500',
+        accentHover
+      )}
+    >
+      {/* Left accent bar */}
+      <span
+        className={cn(
+          'absolute inset-y-6 left-0 w-px transition-all duration-500 group-hover:inset-y-0',
+          accentBar
+        )}
+      />
+
+      <div className="flex items-baseline justify-between">
+        <h3 className={cn('font-display text-2xl font-semibold tracking-tight', accentText)}>
+          {track.title}
+        </h3>
+        <span className="font-mono text-[10px] uppercase tracking-wider text-slate-muted">
+          {track.stage}
+        </span>
+      </div>
+
+      <p className="-mt-3 font-mono text-xs uppercase tracking-wider text-slate-soft">
+        {track.subtitle}
+      </p>
+
+      <p className="text-sm leading-relaxed text-slate-text">{track.description}</p>
+
+      <ul className="mt-auto flex flex-wrap gap-1.5 pt-1">
+        {track.keywords.map((k) => (
+          <li
+            key={k}
+            className="rounded-sm border border-white/5 bg-white/[0.02] px-2 py-0.5 font-mono text-[10px] uppercase tracking-wider text-slate-soft"
+          >
+            {k}
+          </li>
+        ))}
+      </ul>
+    </article>
+  );
+}
