@@ -20,7 +20,7 @@ import { useEffect, useRef, type ReactNode } from 'react';
 import Lenis from 'lenis';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-
+import { scrollProgress } from '@/lib/neuron-store';
 import { useNeuronStore } from '@/lib/neuron-store';
 import { sections } from '@/data/sections';
 
@@ -52,8 +52,7 @@ export function SmoothScrollProvider({ children, disabled = false }: Props) {
     gsap.ticker.add((time) => lenis.raf(time * 1000));
     gsap.ticker.lagSmoothing(0);
 
-    const { setSection, setProgress } = useNeuronStore.getState();
-
+    const { setSection } = useNeuronStore.getState();
     // One ScrollTrigger per section — fires onEnter/onEnterBack to flip state.
     const triggers: ScrollTrigger[] = [];
     sections.forEach((section, index) => {
@@ -74,7 +73,7 @@ export function SmoothScrollProvider({ children, disabled = false }: Props) {
       trigger: document.body,
       start: 'top top',
       end: 'bottom bottom',
-      onUpdate: (self) => setProgress(self.progress),
+      onUpdate: (self) => { scrollProgress.current = self.progress; },
     });
     triggers.push(progressST);
 

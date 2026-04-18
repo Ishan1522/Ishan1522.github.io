@@ -13,35 +13,47 @@
  * Read values via:
  *   const state = useNeuronStore.getState();        // one-shot read in useFrame
  *   const active = useNeuronStore(s => s.section);  // reactive subscription (for UI)
+ *
+ * progress lives OUTSIDE Zustand intentionally — it's write-from-scroll,
+ * read-in-useFrame only. No React component should ever subscribe to it,
+ * so putting it in Zustand would just spam subscribers 60x/sec for nothing.
  */
 
 import { create } from 'zustand';
 import { sections, type SectionDef } from '@/data/sections';
 
+// ---------------------------------------------------------------------------
+// Transient scroll progress — mutable, zero overhead, not reactive.
+// Read in useFrame via: scrollProgress.current
+// Write in ScrollTrigger via: scrollProgress.current = self.progress
+// ---------------------------------------------------------------------------
+export const scrollProgress = { current: 0 };
+
+// ---------------------------------------------------------------------------
+// Zustand store — only holds values that actually need reactive subscriptions.
+// ---------------------------------------------------------------------------
 interface NeuronState {
   /** Index of the currently-active section. */
   section: number;
-  /** 0..1 progress through the document. */
-  progress: number;
 
   /** Target phase values — what the neuron should animate toward. */
   target: SectionDef['phase'];
 
   /** Setters. Called by ScrollTrigger, not by React. */
   setSection: (index: number) => void;
-  setProgress: (p: number) => void;
 }
 
 const firstPhase = sections[0].phase;
 
-export const useNeuronStore = create<NeuronState>((set) => ({
+export const useNeuronStore = create<NeuronState>(() => ({
   section: 0,
-  progress: 0,
   target: { ...firstPhase },
 
   setSection: (index) => {
     const clamped = Math.max(0, Math.min(sections.length - 1, index));
-    set({ section: clamped, target: { ...sections[clamped].phase } });
+    useNeuronStore.setState({
+      section: clamped,
+      target: { ...sections[clamped].phase },
+    });
   },
-  setProgress: (p) => set({ progress: p }),
 }));

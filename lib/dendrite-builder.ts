@@ -1,8 +1,7 @@
 /**
  * Dendritic tree generator.
- *
- * Separated from the Dendrites component so Synapses can reference the exact
- * tip positions without duplicating (and potentially desyncing) the logic.
+ * Now with one level of bifurcation — primary branches split into two
+ * secondaries at ~65% of their length, dramatically more neuron-like.
  */
 
 import * as THREE from 'three';
@@ -12,7 +11,15 @@ export interface DendriteBranch {
   tipPosition: THREE.Vector3;
 }
 
-/** Seeded PRNG so geometry is stable across renders. */
+export interface DendriteConfig {
+  steps?: number;
+  wobble?: number;
+  lengthMin?: number;
+  lengthMax?: number;
+  spreadAngle?: number; // radians, how wide secondaries fan out
+  seed?: number;
+}
+
 function mulberry32(seed: number) {
   let s = seed >>> 0;
   return () => {
@@ -24,9 +31,73 @@ function mulberry32(seed: number) {
   };
 }
 
-export function buildDendrites(count: number, seed = 1337): DendriteBranch[] {
-  const branches: DendriteBranch[] = [];
+function buildBranch(
+  origin: THREE.Vector3,
+  dir: THREE.Vector3,
+  length: number,
+  steps: number,
+  wobble: number,
+  spreadAngle: number,
+  depth: number,
+  rand: () => number,
+): DendriteBranch[] {
+  const worldUp = new THREE.Vector3(0, 1, 0);
+  const ref = Math.abs(dir.dot(worldUp)) > 0.99
+    ? new THREE.Vector3(1, 0, 0)
+    : worldUp;
+  const perp1 = new THREE.Vector3().crossVectors(dir, ref).normalize();
+  const perp2 = new THREE.Vector3().crossVectors(dir, perp1).normalize();
+
+  const points: THREE.Vector3[] = [];
+  for (let j = 0; j <= steps; j++) {
+    const t = j / steps;
+    const point = origin.clone().addScaledVector(dir, t * length);
+    if (j > 0 && j < steps) {
+      point.addScaledVector(perp1, (rand() - 0.5) * wobble);
+      point.addScaledVector(perp2, (rand() - 0.5) * wobble);
+    }
+    points.push(point);
+  }
+
+  const curve = new THREE.CatmullRomCurve3(points);
+  const results: DendriteBranch[] = [
+    { curve, tipPosition: points[points.length - 1].clone() },
+  ];
+
+  if (depth > 0) {
+    // Split point at ~65% along the branch.
+    const splitPoint = curve.getPoint(0.65);
+    const childLength = length * 0.6;
+    const childWobble = wobble * 0.8;
+
+    // Two children fanning out symmetrically around perp1.
+    const child1Dir = dir.clone().applyAxisAngle(perp1, spreadAngle).normalize();
+    const child2Dir = dir.clone().applyAxisAngle(perp1, -spreadAngle).normalize();
+
+    results.push(
+      ...buildBranch(splitPoint, child1Dir, childLength, steps, childWobble, spreadAngle, depth - 1, rand),
+      ...buildBranch(splitPoint, child2Dir, childLength, steps, childWobble, spreadAngle, depth - 1, rand),
+    );
+  }
+
+  return results;
+}
+
+export function buildDendrites(count: number, config: DendriteConfig = {}): DendriteBranch[] {
+  const {
+    steps = 6,
+    wobble = 0.25,
+    lengthMin = 2.0,
+    lengthMax = 3.2,
+    spreadAngle = 0.45,
+    seed = 1337,
+  } = config;
+
   const rand = mulberry32(seed);
+  const branches: DendriteBranch[] = [];
+
+  // Soma surface origin for each primary branch.
+  const somaRadius = 0.45;
 
   for (let i = 0; i < count; i++) {
     const phi = Math.acos(1 - 2 * ((i + rand() * 0.6) / count));
@@ -37,25 +108,13 @@ export function buildDendrites(count: number, seed = 1337): DendriteBranch[] {
       Math.cos(phi)
     ).normalize();
 
-    const length = 2.0 + rand() * 1.2;
+    const origin = dir.clone().multiplyScalar(somaRadius);
+    const length = lengthMin + rand() * (lengthMax - lengthMin);
 
-    const steps = 6;
-    const points: THREE.Vector3[] = [];
-    for (let j = 0; j <= steps; j++) {
-      const t = j / steps;
-      // Start at soma surface (radius 0.45), extend outward by `length`.
-      const point = dir.clone().multiplyScalar(t * length + 0.45);
-      if (j > 0 && j < steps) {
-        const wobble = 0.25;
-        point.x += (rand() - 0.5) * wobble;
-        point.y += (rand() - 0.5) * wobble;
-        point.z += (rand() - 0.5) * wobble;
-      }
-      points.push(point);
-    }
-
-    const curve = new THREE.CatmullRomCurve3(points);
-    branches.push({ curve, tipPosition: points[points.length - 1].clone() });
+    branches.push(
+      ...buildBranch(origin, dir, length, steps, wobble, spreadAngle, 1, rand),
+    );
   }
+
   return branches;
 }
