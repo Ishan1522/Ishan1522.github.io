@@ -31,7 +31,7 @@ jobs:
       - name: Deploy to root
         uses: peaceiris/actions-gh-pages@v4
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./out
-          publish_branch: main
-          force_orphan: true
+            github_token: ${{ secrets.GITHUB_TOKEN }}
+            publish_dir: ./out
+            publish_branch: gh-pages  # ← change this
+            force_orphan: true
