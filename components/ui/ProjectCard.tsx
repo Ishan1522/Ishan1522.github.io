@@ -52,7 +52,7 @@ export function ProjectCard({ project }: Props) {
       />
 
       {/* Cover image / placeholder */}
-      <div className="relative aspect-[16/10] w-full overflow-hidden border-b border-white/5 bg-ink-950">
+      <div className="relative aspect-square w-full overflow-hidden border-b border-white/5 bg-ink-950">
         {project.coverImage ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img
