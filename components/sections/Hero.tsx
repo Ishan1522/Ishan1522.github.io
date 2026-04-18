@@ -17,7 +17,7 @@ export function Hero() {
           42.7370°N · 84.4839°W · {personal.location}
         </p>
 
-        <h1 className="font-display text-display-xl font-semibold text-slate-bright">
+        <h1 className="font-display text-display-xl font-semibold text-slate-bright/75">
           {personal.name}
         </h1>
 
