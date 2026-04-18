@@ -43,7 +43,7 @@ export const projects: Project[] = [
     year: '2026',
     status: 'production',
     accent: 'cyan',
-    coverImage: null, // e.g. '/images/projects/wensura/cover.png'
+    coverImage: '/images/projects/wensura/Wensura_logo.gif', // e.g. '/images/projects/wensura/cover.png'
     links: [
       { label: 'Live', href: 'https://wensura.com' },
       // Private repo — omitted intentionally.
