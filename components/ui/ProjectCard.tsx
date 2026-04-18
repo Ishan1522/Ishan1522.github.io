@@ -59,7 +59,7 @@ export function ProjectCard({ project }: Props) {
             src={project.coverImage}
             alt={`${project.name} preview`}
             className={cn(
-              'h-full w-full object-cover transition-transform duration-700',
+              'h-full w-full object-center transition-transform duration-700',
               hovered ? 'scale-105' : ''
             )}
           />
