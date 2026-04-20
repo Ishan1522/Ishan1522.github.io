@@ -24,6 +24,7 @@ export const somaFragment = /* glsl */ `
   uniform float uFiringRate;   // 0..1+ — controls pulse frequency
   uniform vec3  uColorCore;    // inner color
   uniform vec3  uColorRim;     // rim color (usually brighter / cyan)
+  uniform float uHover;
 
   varying vec3 vNormal;
   varying vec3 vViewPosition;
@@ -41,7 +42,7 @@ export const somaFragment = /* glsl */ `
     vec3 color = mix(uColorCore, uColorRim, fresnel);
     // Total intensity kept below 1 so bloom (threshold 0.75) ignores the soma
     // body and only picks up the very brightest rim.
-    float intensity = 0.22 + 0.12 * pulse + 0.55 * fresnel;
+    float intensity = 0.22 + 0.12 * pulse + 0.55 * fresnel + uHover * 0.18;
 
     float alpha = clamp(intensity * 0.85, 0.0, 0.9);
     gl_FragColor = vec4(color * intensity, alpha);
