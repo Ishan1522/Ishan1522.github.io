@@ -14,7 +14,7 @@ export function ResearchCard({ track }: Props) {
   return (
     <article
       className={cn(
-        'group relative flex flex-col gap-4 rounded-sm border border-white/5 bg-ink-900/70 p-6 backdrop-blur-sm transition-all duration-500',
+        'pointer-events-auto group relative flex flex-col gap-4 rounded-sm border border-white/5 bg-ink-900/70 p-6 backdrop-blur-sm transition-all duration-500',
         accentHover
       )}
     >

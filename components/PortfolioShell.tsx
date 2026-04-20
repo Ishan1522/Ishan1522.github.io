@@ -43,9 +43,7 @@ export function PortfolioShell({ children }: { children: ReactNode }) {
       {/* Foreground — sections scroll over the fixed canvas */}
       <SmoothScrollProvider disabled={reduced}>
           <main className="relative z-10 pointer-events-none">
-    <div className="pointer-events-auto">
       {children}
-    </div>
   </main>
       </SmoothScrollProvider>
     </>

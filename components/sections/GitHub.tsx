@@ -57,7 +57,7 @@ export function GitHub() {
             href={personal.githubUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="group inline-flex items-center gap-2 rounded-sm border border-cyan/40 bg-cyan/5 px-5 py-2.5 font-mono text-xs uppercase tracking-wider text-cyan transition hover:border-cyan hover:bg-cyan/10"
+            className="pointer-events-auto group inline-flex items-center gap-2 rounded-sm border border-cyan/40 bg-cyan/5 px-5 py-2.5 font-mono text-xs uppercase tracking-wider text-cyan transition hover:border-cyan hover:bg-cyan/10"
           >
             View all repositories
             <span className="transition group-hover:translate-x-0.5">↗</span>

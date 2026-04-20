@@ -53,7 +53,7 @@ export function Contact() {
                 href={link.href}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="font-mono text-sm text-slate-text transition hover:text-cyan"
+                className="pointer-events-auto font-mono text-sm text-slate-text transition hover:text-cyan"
               >
                 {link.value}
               </a>

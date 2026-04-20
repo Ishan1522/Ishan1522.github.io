@@ -35,7 +35,7 @@ export function ProjectCard({ project }: Props) {
   return (
     <article
       className={cn(
-        'group relative flex flex-col overflow-hidden rounded-sm border border-white/5 bg-ink-900/80 backdrop-blur-sm transition-all duration-500',
+        'pointer-events-auto group relative flex flex-col overflow-hidden rounded-sm border border-white/5 bg-ink-900/80 backdrop-blur-sm transition-all duration-500',
         accentBorder,
         hovered ? 'scale-[1.015]' : ''
       )}
@@ -111,7 +111,7 @@ export function ProjectCard({ project }: Props) {
                 target="_blank"
                 rel="noopener noreferrer"
                 className={cn(
-                  'group/link flex items-center gap-1 font-mono text-[10px] uppercase tracking-wider transition',
+                  'pointer-events-auto group/link flex items-center gap-1 font-mono text-[10px] uppercase tracking-wider transition',
                   accentText,
                   'hover:underline underline-offset-4'
                 )}
