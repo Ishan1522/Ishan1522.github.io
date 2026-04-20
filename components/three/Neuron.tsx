@@ -8,7 +8,7 @@ import { Soma } from './Soma';
 import { Dendrites } from './Dendrites';
 import { Axon } from './Axon';
 import { Synapses } from './Synapses';
-import { buildDendrites } from '@/lib/dendrite-builder';
+import { buildDendrites, DendriteConfig } from '@/lib/dendrite-builder';
 import { useNeuronStore } from '@/lib/neuron-store';
 import { damp } from '@/lib/constants';
 
@@ -32,8 +32,21 @@ export function Neuron({ mobile = false }: Props) {
   const rotationRef = useRef(0);
 
   // Fewer dendrites on mobile — halves the tube-geometry cost.
-  const dendriteCount = mobile ? 10 : 18;
-  const branches = useMemo(() => buildDendrites(dendriteCount), [dendriteCount]);
+  const dendriteCount = useMemo(() => {
+    if (mobile) return 6 + Math.floor(Math.random() * 4);  // 6–9
+    return 14 + Math.floor(Math.random() * 8);              // 14–21
+  }, [mobile]);
+
+  const config = useMemo<DendriteConfig>(() => ({
+    seed: Math.floor(Math.random() * 0xFFFFFF),
+    spreadAngle: 0.35 + Math.random() * 0.2,  // 0.35–0.55 rad
+    lengthMin: 1.8 + Math.random() * 0.4,      // slight length variation
+  }), []);
+
+  const branches = useMemo(
+    () => buildDendrites(dendriteCount, config),
+    [dendriteCount, config]
+  );
 
   useFrame((state, dt) => {
     if (!groupRef.current) return;
