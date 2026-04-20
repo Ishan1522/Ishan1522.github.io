@@ -54,15 +54,7 @@ export function ProjectCard({ project }: Props) {
       {/* Cover image / placeholder */}
       <div className="relative aspect-square w-full overflow-hidden border-b border-white/5 bg-ink-950">
         {project.coverImage ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={project.coverImage}
-            alt={`${project.name} preview`}
-            className={cn(
-              'h-full w-full object-center transition-transform duration-700',
-              hovered ? 'scale-105' : ''
-            )}
-          />
+          <CoverImage src={project.coverImage} name={project.name} accent={project.accent} hovered={hovered} />
         ) : (
           <ProjectPlaceholder accent={project.accent} />
         )}
@@ -132,6 +124,28 @@ export function ProjectCard({ project }: Props) {
         </div>
       </div>
     </article>
+  );
+}
+
+/** Cover well: image centered at contain size, faint accent grid on top. */
+function CoverImage({ src, name, accent, hovered }: { src: string; name: string; accent: 'cyan' | 'mint'; hovered: boolean }) {
+  const color = accent === 'cyan' ? '#22d3ee' : '#34d399';
+  return (
+    <div className="absolute inset-0 flex items-center justify-center bg-ink-950">
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src={src}
+        alt={`${name} preview`}
+        className={cn('max-h-[70%] max-w-[70%] object-contain transition-transform duration-700', hovered ? 'scale-105' : '')}
+      />
+      <div
+        className="pointer-events-none absolute inset-0 opacity-25"
+        style={{
+          backgroundImage: `linear-gradient(to right, ${color}20 1px, transparent 1px), linear-gradient(to bottom, ${color}20 1px, transparent 1px)`,
+          backgroundSize: '32px 32px',
+        }}
+      />
+    </div>
   );
 }
 

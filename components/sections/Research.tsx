@@ -19,7 +19,7 @@ export function Research() {
           <div className="sticky top-32">
             <SectionLabel index="03" label="Research" className="mb-6" />
             <h2 className="font-display text-display-lg font-semibold tracking-tight text-slate-bright">
-              Three tracks I&apos;m <span className="text-mint">actively</span> pursuing.
+              <span className="text-mint">Three tracks</span> I&apos;m <span className="text-cyan">actively</span> pursuing.
             </h2>
             <p className="mt-6 text-sm leading-relaxed text-slate-soft">
               Everything code-first. I trust a concept once I&apos;ve built it and watched it run.
@@ -31,7 +31,7 @@ export function Research() {
         <div className="md:hidden">
           <SectionLabel index="03" label="Research" className="mb-6" />
           <h2 className="mb-4 font-display text-display-lg font-semibold tracking-tight text-slate-bright">
-            Three tracks I&apos;m <span className="text-mint">actively</span> pursuing.
+            <span className="text-mint">Three tracks</span> I&apos;m <span className="text-cyan">actively</span> pursuing.
           </h2>
         </div>
 
