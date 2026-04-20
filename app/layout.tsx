@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from 'next';
-import { IBM_Plex_Sans, IBM_Plex_Sans_Condensed, JetBrains_Mono } from 'next/font/google';
+import { IBM_Plex_Sans, IBM_Plex_Sans_Condensed, Space_Grotesk, JetBrains_Mono } from 'next/font/google';
 import './globals.css';
 
 import { personal } from '@/data/personal';
@@ -18,6 +18,13 @@ const plexCondensed = IBM_Plex_Sans_Condensed({
   subsets: ['latin'],
   weight: ['500', '600', '700'],
   variable: '--font-plex-condensed',
+  display: 'swap',
+});
+
+const spaceGrotesk = Space_Grotesk({
+  subsets: ['latin'],
+  weight: ['300', '400', '500', '600', '700'],
+  variable: '--font-display',
   display: 'swap',
 });
 
@@ -70,7 +77,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html
       lang="en"
-      className={`${plexSans.variable} ${plexCondensed.variable} ${jetbrains.variable}`}
+      className={`${plexSans.variable} ${plexCondensed.variable} ${spaceGrotesk.variable} ${jetbrains.variable}`}
     >
       <body>{children}</body>
     </html>

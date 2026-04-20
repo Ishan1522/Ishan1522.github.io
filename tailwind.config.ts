@@ -36,9 +36,15 @@ const config: Config = {
           bright: '#f1f5f9',
         },
       },
+      backdropBlur: {
+        xs: '2px', // useful for subtle glass effects
+      },
+      transitionTimingFunction: {
+        'spring': 'cubic-bezier(0.175, 0.885, 0.32, 1.275)',
+      },
       fontFamily: {
-        display: ['var(--font-plex-condensed)', 'sans-serif'],
-        sans: ['var(--font-plex-sans)', 'sans-serif'],
+        display: ['var(--font-display)', 'sans-serif'],
+        sans: ['var(--font-display)', 'sans-serif'],  // Space Grotesk works as body too, ditch plex-sans
         mono: ['var(--font-jetbrains)', 'monospace'],
       },
       fontSize: {
