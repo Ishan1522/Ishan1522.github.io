@@ -45,7 +45,10 @@ export function Soma() {
 
   return (
     <mesh
-      onPointerOver={() => useNeuronStore.getState().setHovered(true)}
+      onPointerOver={() => {
+  console.log('hovered!');
+  useNeuronStore.getState().setHovered(true);
+}}
       onPointerOut={()  => useNeuronStore.getState().setHovered(false)}
       onClick={()       => useNeuronStore.getState().triggerAP(elapsedRef.current)}
     >
