@@ -21,7 +21,7 @@ export function Contact() {
         <SectionLabel index="05" label="Contact" className="mx-auto mb-10 w-fit" />
 
         <h2 className="font-display text-display-lg font-semibold tracking-tight text-slate-bright">
-          Let&apos;s <span className="text-cyan">build</span> something.
+          Let&apos;s <span className="text-cyan">build</span> <span className="text-mint">something</span>.
         </h2>
 
         <p className="mx-auto mt-6 max-w-lg text-base leading-relaxed text-slate-soft">

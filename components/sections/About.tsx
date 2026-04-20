@@ -17,7 +17,7 @@ export function About() {
           <SectionLabel index="01" label="About" className="mb-8" />
 
           <h2 className="mb-8 font-display text-display-lg font-semibold tracking-tight text-slate-bright">
-            Engineering <span className="text-cyan">at the edge</span> of electricity and thought.
+            Engineering <span className="text-cyan">at the edge</span> of <span className="text-mint">electricity</span> and <span className="text-cyan">thought</span>.
           </h2>
 
           <div className="space-y-5 text-base leading-relaxed text-slate-text">
