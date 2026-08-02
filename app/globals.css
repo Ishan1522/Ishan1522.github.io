@@ -7,10 +7,31 @@
  * ========================================================================== */
 @layer base {
   :root {
-    --bg: #0a0e1a;
-    --bg-deep: #05080f;
-    --cyan: #22d3ee;
-    --mint: #34d399;
+    /* ----------------------------------------------------------------------
+     * Palette — single source of truth for the CSS/UI layer.
+     * Tailwind references these via `rgb(var(--color-*) / <alpha-value>)`
+     * in tailwind.config.ts. `lib/constants.ts` mirrors the same hex values
+     * for the Three.js/WebGL layer (kept in sync manually — WebGL needs
+     * synchronous hex at module scope, so it can't read CSS variables).
+     * ---------------------------------------------------------------------- */
+    --color-ink-950: 5 8 15;
+    --color-ink-900: 10 14 26;
+    --color-ink-800: 17 24 39;
+    --color-ink-700: 28 36 51;
+    --color-ink-600: 42 52 70;
+
+    --color-cyan: 34 211 238;
+    --color-cyan-glow: 103 233 249;
+    --color-cyan-deep: 8 145 178;
+
+    --color-mint: 52 211 153;
+    --color-mint-glow: 110 231 183;
+    --color-mint-deep: 5 150 105;
+
+    --color-slate-muted: 100 116 139;
+    --color-slate-soft: 148 163 184;
+    --color-slate-text: 203 213 225;
+    --color-slate-bright: 241 245 249;
   }
 
   * {
@@ -20,7 +41,7 @@
   html {
     color-scheme: dark;
     scroll-behavior: auto; /* Lenis handles smoothing */
-    background-color: var(--bg);
+    background-color: rgb(var(--color-ink-900));
   }
 
   body {
@@ -35,20 +56,20 @@
     height: 6px;
   }
   ::-webkit-scrollbar-track {
-    background: var(--bg-deep);
+    background: rgb(var(--color-ink-950));
   }
   ::-webkit-scrollbar-thumb {
-    background: #22d3ee44;
+    background: rgb(var(--color-cyan) / 0.267); /* #22d3ee @ 44/255 alpha */
     border-radius: 2px;
   }
   ::-webkit-scrollbar-thumb:hover {
-    background: #22d3ee88;
+    background: rgb(var(--color-cyan) / 0.533); /* #22d3ee @ 136/255 alpha */
   }
 
   /* Selection */
   ::selection {
-    background: #22d3ee44;
-    color: #f1f5f9;
+    background: rgb(var(--color-cyan) / 0.267); /* #22d3ee @ 44/255 alpha */
+    color: rgb(var(--color-slate-bright));
   }
 
   /* Focus-visible ring in brand color */

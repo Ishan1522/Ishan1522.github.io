@@ -1,8 +1,25 @@
 /**
  * Constants shared between React UI and Three.js scenes.
- * Keep the palette in sync with tailwind.config.ts.
+ *
+ * Color source of truth: the CSS custom properties in `app/globals.css`
+ * (`:root`), consumed by tailwind.config.ts as `rgb(var(--color-*) ...)`.
+ * This COLORS map is the WebGL-layer mirror of that palette. The Three.js
+ * shaders need synchronous hex values at module scope (getComputedStyle is
+ * not available during SSR / first client render), so we keep the hex here
+ * and keep it in sync with globals.css by hand. Each key maps to its
+ * `--color-*` variable:
+ *
+ *   bg        → --color-ink-900
+ *   bgDeep    → --color-ink-950
+ *   cyan      → --color-cyan
+ *   cyanGlow  → --color-cyan-glow
+ *   cyanDeep  → --color-cyan-deep
+ *   mint      → --color-mint
+ *   mintGlow  → --color-mint-glow
+ *   mintDeep  → --color-mint-deep
+ *   text      → --color-slate-bright
+ *   textSoft  → --color-slate-soft
  */
-
 export const COLORS = {
   bg: '#0a0e1a',
   bgDeep: '#05080f',

@@ -17,7 +17,7 @@ export function Hero() {
 
         <h1
           className="font-display text-display-xl font-semibold text-slate-bright/75"
-          style={{ textShadow: '0 0 80px rgba(34,211,238,0.15), 0 0 20px rgba(34,211,238,0.08)' }}
+          style={{ textShadow: '0 0 80px rgb(var(--color-cyan) / 0.15), 0 0 20px rgb(var(--color-cyan) / 0.08)' }}
         >
           {personal.name}
         </h1>
