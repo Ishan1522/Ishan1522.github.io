@@ -10,30 +10,33 @@ const config: Config = {
     extend: {
       colors: {
         // Cyberpunk — muted. Deep ink backgrounds, cyan primary, mint accent.
+        // Values defined once as CSS custom properties in app/globals.css
+        // (`:root`). Referenced here as `rgb(var(--color-*) / <alpha-value>)`
+        // so every opacity modifier keeps working.
         ink: {
-          950: '#05080f',
-          900: '#0a0e1a',
-          800: '#111827',
-          700: '#1c2433',
-          600: '#2a3446',
+          950: 'rgb(var(--color-ink-950) / <alpha-value>)',
+          900: 'rgb(var(--color-ink-900) / <alpha-value>)',
+          800: 'rgb(var(--color-ink-800) / <alpha-value>)',
+          700: 'rgb(var(--color-ink-700) / <alpha-value>)',
+          600: 'rgb(var(--color-ink-600) / <alpha-value>)',
         },
         cyan: {
           // Primary — signal color for the neuron spike + headings
-          DEFAULT: '#22d3ee',
-          glow: '#67e8f9',
-          deep: '#0891b2',
+          DEFAULT: 'rgb(var(--color-cyan) / <alpha-value>)',
+          glow: 'rgb(var(--color-cyan-glow) / <alpha-value>)',
+          deep: 'rgb(var(--color-cyan-deep) / <alpha-value>)',
         },
         mint: {
           // Secondary — STDP synapses, dendrite tips, hover states
-          DEFAULT: '#34d399',
-          glow: '#6ee7b7',
-          deep: '#059669',
+          DEFAULT: 'rgb(var(--color-mint) / <alpha-value>)',
+          glow: 'rgb(var(--color-mint-glow) / <alpha-value>)',
+          deep: 'rgb(var(--color-mint-deep) / <alpha-value>)',
         },
         slate: {
-          muted: '#64748b',
-          soft: '#94a3b8',
-          text: '#cbd5e1',
-          bright: '#f1f5f9',
+          muted: 'rgb(var(--color-slate-muted) / <alpha-value>)',
+          soft: 'rgb(var(--color-slate-soft) / <alpha-value>)',
+          text: 'rgb(var(--color-slate-text) / <alpha-value>)',
+          bright: 'rgb(var(--color-slate-bright) / <alpha-value>)',
         },
       },
       backdropBlur: {
@@ -69,9 +72,9 @@ const config: Config = {
       },
       backgroundImage: {
         'grid-faint':
-          'linear-gradient(to right, rgba(34, 211, 238, 0.04) 1px, transparent 1px), linear-gradient(to bottom, rgba(34, 211, 238, 0.04) 1px, transparent 1px)',
+          'linear-gradient(to right, rgb(var(--color-cyan) / 0.04) 1px, transparent 1px), linear-gradient(to bottom, rgb(var(--color-cyan) / 0.04) 1px, transparent 1px)',
         'radial-glow':
-          'radial-gradient(ellipse at center, rgba(34, 211, 238, 0.15) 0%, transparent 70%)',
+          'radial-gradient(ellipse at center, rgb(var(--color-cyan) / 0.15) 0%, transparent 70%)',
       },
     },
   },
