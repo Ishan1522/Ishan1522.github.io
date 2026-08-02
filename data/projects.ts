@@ -82,4 +82,20 @@ export const projects: Project[] = [
       { label: 'GitHub', href: 'https://github.com/Ishan1522' },
     ],
   },
+  {
+    slug: 'violin-practice-model',
+    name: 'Violin Practice Model',
+    tagline: 'Computational model of practice as dual prediction-error minimization',
+    description:
+      'A Python + NumPy model of violin practice as two coupled prediction-error loops — auditory-cortex expectations and cerebellar motor correction — with dopamine (RPE) gated consolidation, sleep/wake route separation (Walker 2002, Cohen 2005), expanding spacing (Cepeda 2006), OPERA condition checks (Patel 2011), and violin-specific biomechanical load monitoring with an EMG-biofeedback adapter. Ships a CLI and a FastAPI web studio with SVG learning-curve charts, practice-plan generation, and an OPERA / load dashboard.',
+    tech: ['Python', 'NumPy', 'FastAPI', 'Computational Neuroscience', 'Web'],
+    role: 'Solo',
+    year: '2026',
+    status: 'active',
+    accent: 'mint',
+    coverImage: '/images/projects/violin-practice-model/cover.svg',
+    links: [
+      { label: 'GitHub', href: 'https://github.com/Ishan1522/Violin-Practice-Model' },
+    ],
+  },
 ];
