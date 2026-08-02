@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import type { Project } from '@/data/projects';
 import { cn } from '@/lib/cn';
 
@@ -16,14 +16,19 @@ const STATUS_LABELS: Record<Project['status'], string> = {
 };
 
 const STATUS_DOT: Record<Project['status'], string> = {
-  production: 'bg-mint shadow-[0_0_10px_#34d399]',
-  active: 'bg-cyan shadow-[0_0_10px_#22d3ee]',
+  production: 'bg-mint shadow-[0_0_10px_rgb(var(--color-mint))]',
+  active: 'bg-cyan shadow-[0_0_10px_rgb(var(--color-cyan))]',
   shipped: 'bg-cyan/60',
   ongoing: 'bg-slate-soft',
 };
 
 export function ProjectCard({ project }: Props) {
   const [hovered, setHovered] = useState(false);
+  // Only track hover on devices that actually support it — touch devices
+  // would otherwise "stick" in an expanded state after a tap. Default to
+  // true so SSR / first paint shows the collapsed teaser, then correct
+  // down for coarse pointers after mount.
+  const [canHover, setCanHover] = useState(true);
   const accentBorder =
     project.accent === 'cyan' ? 'hover:border-cyan/60' : 'hover:border-mint/60';
   const accentText = project.accent === 'cyan' ? 'text-cyan' : 'text-mint';
@@ -32,6 +37,14 @@ export function ProjectCard({ project }: Props) {
       ? 'from-cyan/10 via-transparent to-transparent'
       : 'from-mint/10 via-transparent to-transparent';
 
+  useEffect(() => {
+    const mq = window.matchMedia('(hover: hover)');
+    const update = () => setCanHover(mq.matches);
+    update();
+    mq.addEventListener('change', update);
+    return () => mq.removeEventListener('change', update);
+  }, []);
+
   return (
     <article
       className={cn(
@@ -39,8 +52,8 @@ export function ProjectCard({ project }: Props) {
         accentBorder,
         hovered ? 'scale-[1.015]' : ''
       )}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
+      onMouseEnter={() => canHover && setHovered(true)}
+      onMouseLeave={() => canHover && setHovered(false)}
     >
       {/* Accent gradient wash on hover */}
       <div
@@ -79,8 +92,10 @@ export function ProjectCard({ project }: Props) {
 
         <p
           className={cn(
-            'text-sm leading-relaxed text-slate-text transition-all duration-500',
-            hovered ? 'line-clamp-none' : 'line-clamp-3'
+            'overflow-hidden text-sm leading-relaxed text-slate-text transition-[max-height] duration-500 ease-out',
+            // Touch devices have no hover: always show the full copy.
+            // Hover-capable devices: 3-line teaser that smoothly expands.
+            hovered || !canHover ? 'line-clamp-none max-h-96' : 'line-clamp-3 max-h-[4.5rem]'
           )}
         >
           {project.description}
@@ -129,7 +144,7 @@ export function ProjectCard({ project }: Props) {
 
 /** Cover well: image centered at contain size, faint accent grid on top. */
 function CoverImage({ src, name, accent, hovered }: { src: string; name: string; accent: 'cyan' | 'mint'; hovered: boolean }) {
-  const color = accent === 'cyan' ? '#22d3ee' : '#34d399';
+  const colorVar = accent === 'cyan' ? 'var(--color-cyan)' : 'var(--color-mint)';
   return (
     <div className="absolute inset-0 flex items-center justify-center bg-ink-950">
       {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -141,7 +156,7 @@ function CoverImage({ src, name, accent, hovered }: { src: string; name: string;
       <div
         className="pointer-events-none absolute inset-0 opacity-25"
         style={{
-          backgroundImage: `linear-gradient(to right, ${color}20 1px, transparent 1px), linear-gradient(to bottom, ${color}20 1px, transparent 1px)`,
+          backgroundImage: `linear-gradient(to right, rgb(${colorVar} / 0.1255) 1px, transparent 1px), linear-gradient(to bottom, rgb(${colorVar} / 0.1255) 1px, transparent 1px)`,
           backgroundSize: '32px 32px',
         }}
       />
@@ -151,14 +166,14 @@ function CoverImage({ src, name, accent, hovered }: { src: string; name: string;
 
 /** SVG placeholder used when no coverImage is provided for a project. */
 function ProjectPlaceholder({ accent }: { accent: 'cyan' | 'mint' }) {
-  const color = accent === 'cyan' ? '#22d3ee' : '#34d399';
+  const colorVar = accent === 'cyan' ? 'var(--color-cyan)' : 'var(--color-mint)';
   return (
     <div className="relative h-full w-full bg-gradient-to-br from-ink-800 to-ink-950">
       {/* Faint grid */}
       <div
         className="absolute inset-0 opacity-30"
         style={{
-          backgroundImage: `linear-gradient(to right, ${color}15 1px, transparent 1px), linear-gradient(to bottom, ${color}15 1px, transparent 1px)`,
+          backgroundImage: `linear-gradient(to right, rgb(${colorVar} / 0.0824) 1px, transparent 1px), linear-gradient(to bottom, rgb(${colorVar} / 0.0824) 1px, transparent 1px)`,
           backgroundSize: '32px 32px',
         }}
       />
@@ -168,8 +183,8 @@ function ProjectPlaceholder({ accent }: { accent: 'cyan' | 'mint' }) {
         className="absolute inset-0 h-full w-full opacity-40"
         preserveAspectRatio="xMidYMid meet"
       >
-        <circle cx="50" cy="30" r="6" fill={color} opacity="0.3" />
-        <circle cx="50" cy="30" r="2" fill={color} />
+        <circle cx="50" cy="30" r="6" fill={colorVar} opacity="0.3" />
+        <circle cx="50" cy="30" r="2" fill={colorVar} />
         {Array.from({ length: 8 }).map((_, i) => {
           const angle = (i / 8) * Math.PI * 2;
           const x = 50 + Math.cos(angle) * 22;
@@ -181,11 +196,11 @@ function ProjectPlaceholder({ accent }: { accent: 'cyan' | 'mint' }) {
                 y1="30"
                 x2={x}
                 y2={y}
-                stroke={color}
+                stroke={colorVar}
                 strokeWidth="0.3"
                 opacity="0.5"
               />
-              <circle cx={x} cy={y} r="0.8" fill={color} />
+              <circle cx={x} cy={y} r="0.8" fill={colorVar} />
             </g>
           );
         })}
