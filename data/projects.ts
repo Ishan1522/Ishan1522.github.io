@@ -60,7 +60,7 @@ export const projects: Project[] = [
     year: '2026',
     status: 'active',
     accent: 'mint',
-    coverImage: null,
+    coverImage: '/images/projects/wpifilter/cover.png',
     links: [
       // Replace with your public repo URL when ready.
       { label: 'GitHub', href: 'https://github.com/Ishan1522' },
@@ -77,7 +77,7 @@ export const projects: Project[] = [
     year: '2026',
     status: 'shipped',
     accent: 'cyan',
-    coverImage: null,
+    coverImage: '/images/projects/solar-racing-ci/cover.png',
     links: [
       { label: 'GitHub', href: 'https://github.com/Ishan1522' },
     ],

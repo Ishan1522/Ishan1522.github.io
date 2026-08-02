@@ -55,14 +55,29 @@ export const metadata: Metadata = {
     description: personal.short,
     type: 'website',
     locale: 'en_US',
+    url: 'https://ishan1522.github.io',
+    siteName: `${personal.name} — ${personal.role}`,
+    images: [
+      {
+        url: 'https://ishan1522.github.io/images/og.png',
+        width: 1200,
+        height: 630,
+        alt: `${personal.name} — ${personal.role} @ ${personal.institution}`,
+      },
+    ],
   },
   twitter: {
     card: 'summary_large_image',
     title: `${personal.name}`,
     description: personal.short,
+    images: ['https://ishan1522.github.io/images/og.png'],
   },
   icons: {
-    icon: '/favicon.svg',
+    icon: [
+      { url: '/favicon.svg', type: 'image/svg+xml' },
+      { url: '/favicon-32x32.png', sizes: '32x32', type: 'image/png' },
+    ],
+    apple: [{ url: '/apple-touch-icon.png', sizes: '180x180' }],
   },
 };
 
