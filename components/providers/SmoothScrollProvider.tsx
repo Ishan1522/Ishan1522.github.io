@@ -6,22 +6,22 @@
  * Responsibilities:
  *   1. Lenis handles the actual smooth scrolling (momentum, easing).
  *   2. GSAP's ticker drives Lenis each frame.
- *   3. Each section gets a ScrollTrigger that flips the neuron store's
+ *   3. Each section gets a ScrollTrigger that flips the section store's
  *      `section` when that section enters viewport center.
  *   4. A second ScrollTrigger tracks total document progress (0..1)
  *      for any components that want a continuous value instead of discrete.
  *
  * If `disabled` (e.g. prefers-reduced-motion), we skip all of this and
- * just let native scroll handle things. The neuron canvas won't be rendered
- * in that case either, so no ScrollTrigger is needed.
+ * just let native scroll handle things. The background canvas won't be
+ * rendered in that case either, so no ScrollTrigger is needed.
  */
 
 import { useEffect, useRef, type ReactNode } from 'react';
 import Lenis from 'lenis';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { scrollProgress } from '@/lib/neuron-store';
-import { useNeuronStore } from '@/lib/neuron-store';
+import { scrollProgress } from '@/lib/section-store';
+import { useSectionStore } from '@/lib/section-store';
 import { sections } from '@/data/sections';
 
 interface Props {
@@ -52,7 +52,7 @@ export function SmoothScrollProvider({ children, disabled = false }: Props) {
     gsap.ticker.add((time) => lenis.raf(time * 1000));
     gsap.ticker.lagSmoothing(0);
 
-    const { setSection } = useNeuronStore.getState();
+    const { setSection } = useSectionStore.getState();
     // One ScrollTrigger per section — fires onEnter/onEnterBack to flip state.
     const triggers: ScrollTrigger[] = [];
     sections.forEach((section, index) => {

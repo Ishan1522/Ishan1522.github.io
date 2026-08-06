@@ -4,24 +4,25 @@
  * The `id` here drives everything:
  *   - Each section component mounts with id={id}
  *   - Nav scrolls to #id
- *   - The neuron's scroll store tracks which phase we're in based on section index
+ *   - The scroll store tracks which phase we're in based on section index
  *
- * `phase` is a 0-1 value the neuron reads to decide what to look like.
- * Add/reorder sections here; the neuron rebalances automatically.
+ * `phase` is a 0-1 value the background reads to decide what to look like.
+ * Add/reorder sections here; the constellation's hub ring rebalances
+ * automatically (one hub per section, by index).
  */
 
 export interface SectionDef {
   id: string;
   label: string;   // Display label for nav
   index: string;   // Monospace index shown on section header (e.g. "01")
-  /** Neuron's target state when this section is active. */
+  /** Background's target state when this section is active. */
   phase: {
-    dendriteGrowth: number;  // 0..1 how grown the dendritic tree is
-    spikeActive: number;     // 0..1 whether a spike is propagating
-    stdpIntensity: number;   // 0..1 how much synapses are rewiring
-    firingRate: number;      // Hz-like multiplier for the repeating spike rhythm
+    dendriteGrowth: number;  // 0..1 how "assembled" the constellation is (reveal)
+    spikeActive: number;     // 0..1 charge boost on the active hub + edge pulses
+    stdpIntensity: number;   // 0..1 how much the field shimmers/rewires between sections
+    firingRate: number;      // 0..1 edge charge-pulse speed multiplier
     cameraZ: number;         // Subtle camera push/pull
-    rotation: number;        // Tilt of the whole neuron group
+    rotation: number;        // Tilt of the whole field
   };
 }
 

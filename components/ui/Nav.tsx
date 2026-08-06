@@ -2,19 +2,19 @@
 
 import { motion } from 'motion/react';
 
-import { useNeuronStore } from '@/lib/neuron-store';
+import { useSectionStore } from '@/lib/section-store';
 import { sections } from '@/data/sections';
 import { personal } from '@/data/personal';
 import { cn } from '@/lib/cn';
 
 /**
  * Top nav. Minimal — just a monogram, section links, and a resume button.
- * The active section is derived from the neuron store so it stays synced
+ * The active section is derived from the section store so it stays synced
  * with the scroll position. The active underline is a Motion `layoutId`
  * shared element, so it morphs smoothly from link to link as you scroll.
  */
 export function Nav() {
-  const activeIndex = useNeuronStore((s) => s.section);
+  const activeIndex = useSectionStore((s) => s.section);
 
   return (
     <header className="fixed inset-x-0 top-0 z-50 border-b border-white/5 bg-ink-900/60 backdrop-blur-md">

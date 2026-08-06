@@ -4,8 +4,10 @@
 
 ## Identity
 
-Ishan's scroll-driven Three.js portfolio. A single evolving neuron grows
-dendrites, fires spikes, and rewires synapses as you scroll.
+Ishan's scroll-driven Three.js portfolio. A constellation / knowledge-graph
+field — hub nodes (one per portfolio section) connected by thin edges; the
+active section's hub brightens and charge pulses travel its edges as you
+scroll.
 
 ## Stack
 
@@ -20,18 +22,18 @@ dendrites, fires spikes, and rewires synapses as you scroll.
 | Style | Tailwind CSS 3, cyberpunk palette (cyan/mint on deep navy) |
 | Fonts | IBM Plex Sans/Condensed + JetBrains Mono via next/font |
 
-## Critical architecture: scroll → neuron pipeline
+## Critical architecture: scroll → constellation pipeline
 
 ```
 Lenis (smooth scroll)
   → GSAP ScrollTrigger (per-section triggers + total-progress)
-    → useNeuronStore (Zustand) — section index + target phase values
+    → useSectionStore (Zustand) — section index + target phase values
       → R3F useFrame — damp local refs toward target at 60Hz
-        → Shader uniforms / mesh transforms
+        → hub instance colors/scales + edge vertex colors (charge pulses)
 ```
 
 **Key rule**: Inside `useFrame`, always read store with
-`useNeuronStore.getState()` — never the React hook. That's how this runs at
+`useSectionStore.getState()` — never the React hook. That's how this runs at
 60Hz without re-renders.
 
 ## Directory quick-map
@@ -39,14 +41,29 @@ Lenis (smooth scroll)
 | Path | What's inside | Edit frequency |
 |------|--------------|----------------|
 | `app/` | layout, page, globals.css | Rare |
-| `components/three/` | R3F: Neuron, Soma, Dendrites, Axon, Synapses, shaders/ | Medium |
+| `components/three/` | R3F: Scene, Constellation, StarField, Effects, StaticFallback | Medium |
 | `components/sections/` | Hero, About, Projects, Research, GitHub, Contact | Medium |
 | `components/ui/` | Nav, SectionLabel, Cards, ScrollHint, Reveal | Medium |
 | `components/providers/` | SmoothScrollProvider, MotionProvider | Rare |
 | `data/` | Content layer: projects.ts, research.ts, sections.ts, personal.ts | **High** |
-| `lib/` | constants.ts, neuron-store.ts, dendrite-builder.ts, cn.ts | Low |
+| `lib/` | constants.ts, section-store.ts, constellation.ts, cn.ts | Low |
 | `hooks/` | useReducedMotion.ts, useIsMobile.ts | Rare |
 | `public/` | Static assets, resume.pdf, project images | As needed |
+
+## The constellation background
+
+- `lib/constellation.ts` — deterministic layout generator. Hub `i` maps to
+  `sections[i]` by index; the ring rebalances automatically when sections
+  are added/reordered. Satellites attach to their 2 nearest hubs.
+- `components/three/Constellation.tsx` — hub `InstancedMesh` + edge
+  `LineSegments`. Reads `store.section` in useFrame: the active hub damps
+  toward full brightness, its edges get a traveling charge blip. Phase
+  targets drive reveal (`dendriteGrowth`), charge (`spikeActive`),
+  shimmer (`stdpIntensity`), pulse speed (`firingRate`), tilt (`rotation`).
+- `components/three/StarField.tsx` — ambient points (twinkle + slow drift).
+- `components/three/Effects.tsx` — restrained Bloom + Vignette (desktop only).
+- Legibility rule: brightness is kept low (base ~0.1-0.3); the graph is
+  biased to the viewport periphery so the center content stays readable.
 
 ## Motion conventions
 
@@ -59,7 +76,7 @@ Lenis (smooth scroll)
 - **Layout morphs** — active nav underline uses `layoutId="nav-underline"`.
 - **Count-ups / bars** — GitHub section: `animate()` on a motion value for stat
   numbers, `whileInView` width springs for language bars.
-- **Don't mix GSAP and Motion on the same element** — GSAP owns the scroll→neuron
+- **Don't mix GSAP and Motion on the same element** — GSAP owns the scroll→bg
   pipeline (Lenis + ScrollTrigger); Motion owns UI-layer animation (reveals,
   hovers, springs). The hero parallax uses Motion `useScroll`, which reads the
   same window scroll Lenis animates.
@@ -72,7 +89,7 @@ Lenis (smooth scroll)
   hardcoding JSX. The component grid picks it up automatically.
 - **Accessibility** — `prefers-reduced-motion: reduce` switches to
   `StaticFallback.tsx` (SVG, no WebGL). Always test this path.
-- **Mobile** — `<768px`: fewer dendrites, fewer particles, no post-processing.
+- **Mobile** — `<768px`: fewer stars, fewer satellites, no post-processing.
 - **Colors** — palette in `lib/constants.ts` (JS) + `tailwind.config.ts` (CSS).
   Keep them in sync.
 
@@ -92,5 +109,6 @@ npm run lint         # next lint (core-web-vitals)
   `public/images/projects/<slug>/`
 - **New section**: add to `data/sections.ts`, create section component with
   `<section id="...">`, import in `app/page.tsx`
-- **Tune neuron visuals**: `lib/constants.ts` (colors), `lib/dendrite-builder.ts`
-  (structure), `data/sections.ts` (scroll choreography — phase values per section)
+- **Tune constellation visuals**: `lib/constants.ts` (colors), `lib/constellation.ts`
+  (layout — hub ring radii, satellite density), `data/sections.ts` (scroll
+  choreography — phase values per section)

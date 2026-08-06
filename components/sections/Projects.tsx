@@ -6,7 +6,7 @@ import { Reveal } from '@/components/ui/Reveal';
 /**
  * Projects showcase. 3-column tile grid (2 on tablet, 1 on mobile).
  * Hover expands the description and lifts the tile slightly.
- * Neuron peeks through below the grid and between tiles.
+ * Constellation peeks through below the grid and between tiles.
  */
 export function Projects() {
   return (
