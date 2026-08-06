@@ -1,8 +1,9 @@
 # ishan-portfolio
 
-A scroll-driven Three.js portfolio. The centerpiece is a single evolving neuron
-that grows its dendrites, fires spikes down an axon, and rewires its synapses
-as you scroll through the site.
+A scroll-driven Three.js portfolio. The centerpiece is a background flow
+field — thousands of particles advected through a curl-noise vector field —
+whose speed, turbulence, and reveal respond to your scroll position as you
+move through the site.
 
 Built for Ishan — EE @ MSU.
 
@@ -10,7 +11,7 @@ Built for Ishan — EE @ MSU.
 
 - **Next.js 14** (App Router) + **React 18** + **TypeScript**
 - **React Three Fiber 8** + **Drei 9** + **@react-three/postprocessing**
-- **GSAP 3** + **ScrollTrigger** for the scroll-driven neuron state
+- **GSAP 3** + **ScrollTrigger** for the scroll-driven background state
 - **Motion 13** (`motion/react`) for UI-layer animation — scroll reveals,
   spring hovers, `layoutId` nav morph, GitHub stat count-ups and bars
 - **Lenis** for smooth inertial scrolling
@@ -39,7 +40,7 @@ self-hosted) will also work.
 
 ## Architecture
 
-### Scroll-driven neuron state flow
+### Scroll-driven background state flow
 
 ```
    user scrolls
@@ -51,16 +52,16 @@ self-hosted) will also work.
    GSAP ScrollTrigger (per-section triggers + total-progress trigger)
         │
         ▼
-   useNeuronStore (Zustand)          ← section index + target phase values
+   useSectionStore (Zustand)          ← section index + target phase values
         │
         ▼
    R3F useFrame hooks                ← damp local refs toward target each frame
         │
         ▼
-   Shader uniforms / mesh transforms ← the neuron animates
+   Shader uniforms / group rotation  ← the flow field animates
 ```
 
-Crucially, the store is read inside `useFrame` via `useNeuronStore.getState()`
+Crucially, the store is read inside `useFrame` via `useSectionStore.getState()`
 (not the subscription hook). That means zero React re-renders at 60Hz — only
 the Three.js scene graph updates.
 
@@ -76,22 +77,16 @@ components/
   providers/
     SmoothScrollProvider.tsx  ← Lenis + ScrollTrigger wiring
   three/
-    Scene.tsx           ← Canvas, camera rig, lights
-    Neuron.tsx          ← composes soma/dendrites/axon/synapses
-    Soma.tsx            ← cell body + Fresnel shader
-    Dendrites.tsx       ← tube geometry per branch + growth shader
-    Axon.tsx            ← axon tube + moving spike
-    Synapses.tsx        ← InstancedMesh at dendrite tips
-    AmbientParticles.tsx
-    Effects.tsx         ← Bloom, chromatic aberration, vignette
+    Scene.tsx           ← Canvas, camera rig, fog
+    FlowField.tsx       ← curl-noise particle flow field (GPU advection)
+    Effects.tsx         ← Bloom + vignette
     StaticFallback.tsx  ← SVG-only fallback for reduced motion
-    shaders/            ← GLSL as exported TS strings
   sections/       ← Hero, About, Projects, Research, GitHub, Contact
   ui/             ← Nav, SectionLabel, ScrollHint, ProjectCard, ResearchCard, Reveal
   providers/      ← SmoothScrollProvider, MotionProvider
 data/             ← personal, projects, research, sections (content layer)
 hooks/            ← useReducedMotion, useIsMobile
-lib/              ← cn, constants, neuron-store, dendrite-builder
+lib/              ← cn, constants, section-store, flow-field, flow-field-shaders
 public/
   favicon.svg
   resume.pdf     ← REPLACE with your actual resume
@@ -130,24 +125,25 @@ Same idea in `data/research.ts`.
 ### Adding a new section
 
 1. Add an entry to `data/sections.ts` — the `phase` object defines what the
-   neuron should look like when that section is active.
+   flow field should look like when that section is active.
 2. Create `components/sections/MySection.tsx`, making sure it renders a
    `<section id="my-section">`.
 3. Import it in `app/page.tsx` and place it in the order you want.
 
-The nav, active-section tracking, and neuron state all rebalance automatically
-around the new entry.
+The nav, active-section tracking, and background state all rebalance
+automatically around the new entry.
 
-### Tuning the neuron
+### Tuning the flow field
 
 Most aesthetic knobs live in three places:
 
 - **Color palette** → `lib/constants.ts` (`COLORS`) and `tailwind.config.ts`
-- **Neuron structure** → `lib/dendrite-builder.ts` (dendrite count, length,
-  wobble) and `components/three/Axon.tsx` (axon curve control points)
+- **Field structure** → `lib/flow-field.ts` (particle count, shell radii,
+  per-particle seeds) and `lib/flow-field-shaders.ts` (curl-noise octaves,
+  frequency, point size, fog)
 - **Scroll choreography** → `data/sections.ts` — each section declares its
-  target `phase` values (dendrite growth, spike activity, STDP intensity,
-  firing rate, camera Z, rotation)
+  target `phase` values (reveal, charge, turbulence, flow speed, camera Z,
+  rotation)
 
 ## Accessibility
 
@@ -160,8 +156,8 @@ Most aesthetic knobs live in three places:
 
 ## Performance
 
-- Mobile viewport (<768px): fewer dendrites, fewer particles, post-processing
-  disabled. The neuron still morphs — it's just cheaper.
+- Mobile viewport (<768px): fewer particles, post-processing disabled. The
+  flow field still animates — it's just cheaper.
 - Lazy-loaded Scene via `next/dynamic` with `ssr: false` so the WebGL bundle
   isn't in the initial payload.
 - Fonts self-hosted via `next/font`.

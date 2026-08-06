@@ -7,8 +7,9 @@
  *   - The scroll store tracks which phase we're in based on section index
  *
  * `phase` is a 0-1 value the background reads to decide what to look like.
- * Add/reorder sections here; the constellation's hub ring rebalances
- * automatically (one hub per section, by index).
+ * Add/reorder sections here; the flow field maps each section's phase to
+ * its flow parameters (speed, turbulence, reveal, tilt, color accent)
+ * automatically.
  */
 
 export interface SectionDef {

@@ -4,10 +4,9 @@
 
 ## Identity
 
-Ishan's scroll-driven Three.js portfolio. A constellation / knowledge-graph
-field — hub nodes (one per portfolio section) connected by thin edges; the
-active section's hub brightens and charge pulses travel its edges as you
-scroll.
+Ishan's scroll-driven Three.js portfolio. A background of flowing curl-noise
+particles — a "thought in flow" field — where section-scroll drives flow
+speed, turbulence, reveal, tilt, and a cyan→mint color drift.
 
 ## Stack
 
@@ -41,29 +40,32 @@ Lenis (smooth scroll)
 | Path | What's inside | Edit frequency |
 |------|--------------|----------------|
 | `app/` | layout, page, globals.css | Rare |
-| `components/three/` | R3F: Scene, Constellation, StarField, Effects, StaticFallback | Medium |
+| `components/three/` | R3F: Scene, FlowField, Effects, StaticFallback | Medium |
 | `components/sections/` | Hero, About, Projects, Research, GitHub, Contact | Medium |
 | `components/ui/` | Nav, SectionLabel, Cards, ScrollHint, Reveal | Medium |
 | `components/providers/` | SmoothScrollProvider, MotionProvider | Rare |
 | `data/` | Content layer: projects.ts, research.ts, sections.ts, personal.ts | **High** |
-| `lib/` | constants.ts, section-store.ts, constellation.ts, cn.ts | Low |
+| `lib/` | constants.ts, section-store.ts, flow-field.ts, flow-field-shaders.ts, cn.ts | Low |
 | `hooks/` | useReducedMotion.ts, useIsMobile.ts | Rare |
 | `public/` | Static assets, resume.pdf, project images | As needed |
 
-## The constellation background
+## The flow-field background
 
-- `lib/constellation.ts` — deterministic layout generator. Hub `i` maps to
-  `sections[i]` by index; the ring rebalances automatically when sections
-  are added/reordered. Satellites attach to their 2 nearest hubs.
-- `components/three/Constellation.tsx` — hub `InstancedMesh` + edge
-  `LineSegments`. Reads `store.section` in useFrame: the active hub damps
-  toward full brightness, its edges get a traveling charge blip. Phase
-  targets drive reveal (`dendriteGrowth`), charge (`spikeActive`),
-  shimmer (`stdpIntensity`), pulse speed (`firingRate`), tilt (`rotation`).
-- `components/three/StarField.tsx` — ambient points (twinkle + slow drift).
+- `lib/flow-field.ts` — deterministic particle seeding. Homes are biased to
+  the periphery (annulus shell) so the center stays clear; packed seed vec4
+  + dimmed palette color per particle.
+- `lib/flow-field-shaders.ts` — GLSL. The vertex shader advects each
+  particle along a divergence-free 2D curl-noise field (3 octaves,
+  incommensurate frequencies → non-repeating), recomputing position as a
+  pure function of (home, time) every frame — stateless, zero CPU per frame.
+- `components/three/FlowField.tsx` — `<points>` + `shaderMaterial`. Damps
+  store phase values into uniforms in `useFrame`: `firingRate` → advection
+  speed, `stdpIntensity` → turbulence/wander, `dendriteGrowth` → reveal
+  alpha, `spikeActive` → charge boost, section index → cyan→mint accent.
 - `components/three/Effects.tsx` — restrained Bloom + Vignette (desktop only).
-- Legibility rule: brightness is kept low (base ~0.1-0.3); the graph is
-  biased to the viewport periphery so the center content stays readable.
+- Legibility rule: homes are periphery-biased, near-axis particles are faded
+  (center-clearance), depth-fogged with the Scene's FogExp2, and overall
+  brightness is kept low so the center content stays readable.
 
 ## Motion conventions
 
@@ -89,7 +91,7 @@ Lenis (smooth scroll)
   hardcoding JSX. The component grid picks it up automatically.
 - **Accessibility** — `prefers-reduced-motion: reduce` switches to
   `StaticFallback.tsx` (SVG, no WebGL). Always test this path.
-- **Mobile** — `<768px`: fewer stars, fewer satellites, no post-processing.
+- **Mobile** — `<768px`: fewer particles, no post-processing.
 - **Colors** — palette in `lib/constants.ts` (JS) + `tailwind.config.ts` (CSS).
   Keep them in sync.
 
@@ -109,6 +111,7 @@ npm run lint         # next lint (core-web-vitals)
   `public/images/projects/<slug>/`
 - **New section**: add to `data/sections.ts`, create section component with
   `<section id="...">`, import in `app/page.tsx`
-- **Tune constellation visuals**: `lib/constants.ts` (colors), `lib/constellation.ts`
-  (layout — hub ring radii, satellite density), `data/sections.ts` (scroll
-  choreography — phase values per section)
+- **Tune flow-field visuals**: `lib/constants.ts` (colors), `lib/flow-field.ts`
+  (seeding — shell radii, counts), `lib/flow-field-shaders.ts` (curl
+  octaves/frequency), `data/sections.ts` (scroll choreography — phase
+  values per section)

@@ -4,8 +4,7 @@ import { Suspense, useRef } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 
-import { Constellation } from './Constellation';
-import { StarField } from './StarField';
+import { FlowField } from './FlowField';
 import { Effects } from './Effects';
 import { useIsMobile } from '@/hooks/useIsMobile';
 import { useSectionStore } from '@/lib/section-store';
@@ -17,6 +16,9 @@ import { COLORS, damp } from '@/lib/constants';
  * Camera dollies in/out based on the active section's `cameraZ` target.
  * Background is set as scene.background for a non-transparent fill that
  * still respects post-processing.
+ *
+ * Subject: FlowField (B2) — a curl-noise particle flow field. The shell
+ * (camera rig, fog, effects, fallback) is shared infrastructure.
  */
 export function Scene() {
   const mobile = useIsMobile();
@@ -33,8 +35,7 @@ export function Scene() {
     >
       <CameraRig />
       <Suspense fallback={null}>
-        <StarField count={mobile ? 150 : 520} />
-        <Constellation mobile={mobile} />
+        <FlowField mobile={mobile} />
       </Suspense>
       <Effects mobile={mobile} />
     </Canvas>
@@ -43,7 +44,7 @@ export function Scene() {
 
 /**
  * Camera rig — damps the camera's Z toward the active section's target.
- * Keeps X/Y at 0 (constellation stays centered). A touch of breathing on Y.
+ * Keeps X/Y at 0 (the flow field stays centered). A touch of breathing on Y.
  */
 function CameraRig() {
   const zRef = useRef(5.5);
