@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next';
 import { IBM_Plex_Sans, IBM_Plex_Sans_Condensed, Space_Grotesk, JetBrains_Mono } from 'next/font/google';
 import './globals.css';
 
+import { MotionProvider } from '@/components/providers/MotionProvider';
 import { personal } from '@/data/personal';
 
 // Distinctive fonts — IBM Plex for scientific/engineering heritage,
@@ -94,7 +95,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       lang="en"
       className={`${plexSans.variable} ${plexCondensed.variable} ${spaceGrotesk.variable} ${jetbrains.variable}`}
     >
-      <body>{children}</body>
+      <body>
+        <MotionProvider>{children}</MotionProvider>
+      </body>
     </html>
   );
 }

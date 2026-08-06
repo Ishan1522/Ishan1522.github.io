@@ -1,6 +1,7 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { AnimatePresence, animate, motion, useInView, useMotionValue, useReducedMotion, useTransform } from 'motion/react';
 
 import { personal } from '@/data/personal';
 import { SectionLabel } from '@/components/ui/SectionLabel';
@@ -160,11 +161,41 @@ export function GitHub() {
         </Reveal>
 
         {status === 'loading' ? (
-          <StatsSkeleton />
+          <AnimatePresence mode="wait" initial={false}>
+            <motion.div
+              key="loading"
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -12 }}
+              transition={{ duration: 0.3, ease: 'easeOut' }}
+            >
+              <StatsSkeleton />
+            </motion.div>
+          </AnimatePresence>
         ) : status === 'error' || !stats ? (
-          <StatsFallback />
+          <AnimatePresence mode="wait" initial={false}>
+            <motion.div
+              key="fallback"
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -12 }}
+              transition={{ duration: 0.3, ease: 'easeOut' }}
+            >
+              <StatsFallback />
+            </motion.div>
+          </AnimatePresence>
         ) : (
-          <StatsGrid stats={stats} />
+          <AnimatePresence mode="wait" initial={false}>
+            <motion.div
+              key="grid"
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -12 }}
+              transition={{ duration: 0.3, ease: 'easeOut' }}
+            >
+              <StatsGrid stats={stats} />
+            </motion.div>
+          </AnimatePresence>
         )}
 
         <Reveal delay={0.1}>
@@ -228,9 +259,8 @@ function StatsGrid({ stats }: { stats: GitHubStats }) {
                     </span>
                     <span className="font-mono text-[10px] text-slate-muted">{lang.count} repos</span>
                   </div>
-                  <div className="h-1 overflow-hidden rounded-full bg-white/5">
-                    <div className={`h-full rounded-full ${accent(i)}`} style={{ width: `${lang.pct}%` }} />
-                  </div>
+                  {/* Motion-animated bar — springs width from 0 to pct on reveal */}
+                  <AnimatedBar pct={lang.pct} accent={accent(i)} />
                 </li>
               ))}
             </ul>
@@ -245,8 +275,12 @@ function StatsGrid({ stats }: { stats: GitHubStats }) {
           {stats.events.length > 0 ? (
             <ul className="flex flex-col">
               {stats.events.map((event, i) => (
-                <li
+                <motion.li
                   key={`${event.repo}-${i}`}
+                  initial={{ opacity: 0, x: -8 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true, amount: 0.4 }}
+                  transition={{ duration: 0.35, ease: 'easeOut', delay: i * 0.06 }}
                   className="flex items-center gap-3 border-b border-white/5 py-2.5 last:border-b-0"
                 >
                   <span className={`h-1.5 w-1.5 shrink-0 rounded-full ${accent(i)}`} />
@@ -255,7 +289,7 @@ function StatsGrid({ stats }: { stats: GitHubStats }) {
                   </span>
                   <span className="truncate font-mono text-xs text-slate-text">{event.repo}</span>
                   <span className="ml-auto shrink-0 font-mono text-[10px] text-slate-muted">{event.when}</span>
-                </li>
+                </motion.li>
               ))}
             </ul>
           ) : (
@@ -267,11 +301,46 @@ function StatsGrid({ stats }: { stats: GitHubStats }) {
   );
 }
 
+/**
+ * Count-up number — springs from 0 to `value` when it enters the viewport.
+ * Reduced-motion users get the final value instantly.
+ */
 function Stat({ value, label }: { value: number; label: string }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const inView = useInView(ref, { once: true, amount: 0.5 });
+  const reduced = useReducedMotion();
+  const motionValue = useMotionValue(0);
+  const rounded = useTransform(motionValue, (v) => Math.round(v).toLocaleString());
+
+  useEffect(() => {
+    if (!inView) return;
+    if (reduced) {
+      motionValue.set(value);
+      return;
+    }
+    const controls = animate(motionValue, value, { duration: 1.2, ease: [0.22, 1, 0.36, 1] });
+    return () => controls.stop();
+  }, [inView, reduced, value, motionValue]);
+
   return (
-    <div>
-      <div className="font-mono text-2xl font-semibold text-slate-bright">{value}</div>
+    <div ref={ref}>
+      <motion.div className="font-mono text-2xl font-semibold text-slate-bright">{rounded}</motion.div>
       <div className="mt-1 font-mono text-[10px] uppercase tracking-wider text-slate-muted">{label}</div>
+    </div>
+  );
+}
+
+/** Language bar — springs width from 0 to pct% once it scrolls into view. */
+function AnimatedBar({ pct, accent }: { pct: number; accent: string }) {
+  return (
+    <div className="h-1 overflow-hidden rounded-full bg-white/5">
+      <motion.div
+        className={`h-full rounded-full ${accent}`}
+        initial={{ width: '0%' }}
+        whileInView={{ width: `${pct}%` }}
+        viewport={{ once: true, amount: 0.6 }}
+        transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+      />
     </div>
   );
 }
