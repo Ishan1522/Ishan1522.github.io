@@ -2,7 +2,7 @@
   "name": "ishan-portfolio",
   "version": "0.1.0",
   "private": true,
-  "description": "Scroll-driven Three.js portfolio — a single evolving neuron.",
+  "description": "Scroll-driven Three.js portfolio — a knowledge-graph constellation background.",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
