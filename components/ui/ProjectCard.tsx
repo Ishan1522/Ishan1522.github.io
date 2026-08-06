@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import type { Project } from '@/data/projects';
+import { motion } from 'motion/react';
 import { cn } from '@/lib/cn';
 
 interface Props {
@@ -46,16 +47,19 @@ export function ProjectCard({ project }: Props) {
   }, []);
 
   return (
-    <article
+    <motion.article
       className={cn(
-        'pointer-events-auto group relative flex flex-col overflow-hidden rounded-sm border border-white/5 bg-ink-900/80 backdrop-blur-sm transition-all duration-500',
-        accentBorder,
-        hovered ? 'scale-[1.015]' : ''
+        'pointer-events-auto group relative flex flex-col overflow-hidden rounded-sm border border-white/5 bg-ink-900/80 backdrop-blur-sm',
+        accentBorder
       )}
+      // Spring-physics hover lift — replaces the old CSS scale transition.
+      animate={hovered ? { scale: 1.015, y: -2 } : { scale: 1, y: 0 }}
+      transition={{ type: 'spring', stiffness: 320, damping: 24 }}
       onMouseEnter={() => canHover && setHovered(true)}
       onMouseLeave={() => canHover && setHovered(false)}
     >
-      {/* Accent gradient wash on hover */}
+      {/* Accent gradient wash on hover — opacity handled by the spring above's
+          sibling motion driven via hovered state */}
       <div
         className={cn(
           'pointer-events-none absolute inset-0 bg-gradient-to-br opacity-0 transition-opacity duration-500',
@@ -138,7 +142,7 @@ export function ProjectCard({ project }: Props) {
           </div>
         </div>
       </div>
-    </article>
+    </motion.article>
   );
 }
 

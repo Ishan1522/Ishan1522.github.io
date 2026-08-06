@@ -11,10 +11,14 @@ Built for Ishan — EE @ MSU.
 - **Next.js 14** (App Router) + **React 18** + **TypeScript**
 - **React Three Fiber 8** + **Drei 9** + **@react-three/postprocessing**
 - **GSAP 3** + **ScrollTrigger** for the scroll-driven neuron state
+- **Motion 13** (`motion/react`) for UI-layer animation — scroll reveals,
+  spring hovers, `layoutId` nav morph, GitHub stat count-ups and bars
 - **Lenis** for smooth inertial scrolling
 - **Zustand** for 60Hz-safe scroll state (no re-renders)
 - **Tailwind CSS 3** with a custom cyberpunk palette
 - **IBM Plex Sans / Condensed** + **JetBrains Mono** via `next/font`
+
+All animation libraries are free/MIT — no paid Motion+ components are used.
 
 ## Quick start
 
@@ -83,7 +87,8 @@ components/
     StaticFallback.tsx  ← SVG-only fallback for reduced motion
     shaders/            ← GLSL as exported TS strings
   sections/       ← Hero, About, Projects, Research, GitHub, Contact
-  ui/             ← Nav, SectionLabel, ScrollHint, ProjectCard, ResearchCard
+  ui/             ← Nav, SectionLabel, ScrollHint, ProjectCard, ResearchCard, Reveal
+  providers/      ← SmoothScrollProvider, MotionProvider
 data/             ← personal, projects, research, sections (content layer)
 hooks/            ← useReducedMotion, useIsMobile
 lib/              ← cn, constants, neuron-store, dendrite-builder
@@ -148,6 +153,7 @@ Most aesthetic knobs live in three places:
 
 - Fully respects `prefers-reduced-motion: reduce` — the 3D canvas and Lenis
   smooth scroll are both disabled, replaced by a calm static SVG fallback.
+  Motion UI animations are globally gated via `MotionConfig reducedMotion="user"`.
 - Focus-visible rings in the brand cyan.
 - Semantic HTML — `<header>`, `<nav>`, `<main>`, `<section>`, `<article>`.
 - All external links use `target="_blank"` with `rel="noopener noreferrer"`.

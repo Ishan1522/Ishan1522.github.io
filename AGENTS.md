@@ -15,6 +15,7 @@ dendrites, fires spikes, and rewires synapses as you scroll.
 | UI | React 18 + TypeScript (strict) |
 | 3D | React Three Fiber 8 + Drei 9 + @react-three/postprocessing |
 | Scroll | GSAP 3 ScrollTrigger + Lenis |
+| UI animation | Motion 13 (`motion/react`) — scroll reveals, springs, layoutId, count-ups |
 | State | Zustand (read via `getState()` in useFrame — no React re-renders) |
 | Style | Tailwind CSS 3, cyberpunk palette (cyan/mint on deep navy) |
 | Fonts | IBM Plex Sans/Condensed + JetBrains Mono via next/font |
@@ -40,11 +41,28 @@ Lenis (smooth scroll)
 | `app/` | layout, page, globals.css | Rare |
 | `components/three/` | R3F: Neuron, Soma, Dendrites, Axon, Synapses, shaders/ | Medium |
 | `components/sections/` | Hero, About, Projects, Research, GitHub, Contact | Medium |
-| `components/ui/` | Nav, SectionLabel, Cards, ScrollHint | Medium |
+| `components/ui/` | Nav, SectionLabel, Cards, ScrollHint, Reveal | Medium |
+| `components/providers/` | SmoothScrollProvider, MotionProvider | Rare |
 | `data/` | Content layer: projects.ts, research.ts, sections.ts, personal.ts | **High** |
 | `lib/` | constants.ts, neuron-store.ts, dendrite-builder.ts, cn.ts | Low |
 | `hooks/` | useReducedMotion.ts, useIsMobile.ts | Rare |
 | `public/` | Static assets, resume.pdf, project images | As needed |
+
+## Motion conventions
+
+- **Import from `motion/react`** — free MIT core only. No Motion+ paid components.
+- **Reveal-on-scroll** = `components/ui/Reveal.tsx` (Motion `useInView`). Wrap any
+  content you want to fade up; `delay` staggers lists. SSR/no-JS renders visible.
+- **Global reduced-motion** — `MotionProvider` (`MotionConfig reducedMotion="user"`)
+  disables transforms/layout animations automatically. Components that branch
+  hard (Hero) use `useReducedMotion()` directly.
+- **Layout morphs** — active nav underline uses `layoutId="nav-underline"`.
+- **Count-ups / bars** — GitHub section: `animate()` on a motion value for stat
+  numbers, `whileInView` width springs for language bars.
+- **Don't mix GSAP and Motion on the same element** — GSAP owns the scroll→neuron
+  pipeline (Lenis + ScrollTrigger); Motion owns UI-layer animation (reveals,
+  hovers, springs). The hero parallax uses Motion `useScroll`, which reads the
+  same window scroll Lenis animates.
 
 ## Conventions
 

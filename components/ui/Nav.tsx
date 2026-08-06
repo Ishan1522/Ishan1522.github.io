@@ -1,5 +1,7 @@
 'use client';
 
+import { motion } from 'motion/react';
+
 import { useNeuronStore } from '@/lib/neuron-store';
 import { sections } from '@/data/sections';
 import { personal } from '@/data/personal';
@@ -8,7 +10,8 @@ import { cn } from '@/lib/cn';
 /**
  * Top nav. Minimal — just a monogram, section links, and a resume button.
  * The active section is derived from the neuron store so it stays synced
- * with the scroll position.
+ * with the scroll position. The active underline is a Motion `layoutId`
+ * shared element, so it morphs smoothly from link to link as you scroll.
  */
 export function Nav() {
   const activeIndex = useNeuronStore((s) => s.section);
@@ -41,14 +44,20 @@ export function Nav() {
                 >
                   <span className="mr-2 text-[10px] text-slate-muted">{s.index}</span>
                   {s.label}
-                  <span
-                    className={cn(
-                      'absolute inset-x-3 bottom-1 h-px origin-left transition-transform duration-500',
-                      active
-                        ? 'scale-x-100 bg-cyan'
-                        : 'scale-x-0 bg-cyan/40 group-hover:scale-x-100'
-                    )}
-                  />
+                  {active ? (
+                    <motion.span
+                      layoutId="nav-underline"
+                      className="absolute inset-x-3 bottom-1 h-px bg-cyan"
+                      transition={{ type: 'spring', stiffness: 380, damping: 30 }}
+                    />
+                  ) : (
+                    <span
+                      className={cn(
+                        'absolute inset-x-3 bottom-1 h-px origin-left bg-cyan/40 transition-transform duration-500 group-hover:scale-x-100',
+                        'scale-x-0'
+                      )}
+                    />
+                  )}
                 </a>
               </li>
             );

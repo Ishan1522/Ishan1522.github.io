@@ -1,4 +1,7 @@
+'use client';
+
 import type { ResearchTrack } from '@/data/research';
+import { motion } from 'motion/react';
 import { cn } from '@/lib/cn';
 
 interface Props {
@@ -12,11 +15,14 @@ export function ResearchCard({ track }: Props) {
     track.accent === 'cyan' ? 'hover:border-cyan/40' : 'hover:border-mint/40';
 
   return (
-    <article
+    <motion.article
       className={cn(
-        'pointer-events-auto group relative flex flex-col gap-4 rounded-sm border border-white/5 bg-ink-900/70 p-6 backdrop-blur-sm transition-all duration-500',
+        'pointer-events-auto group relative flex flex-col gap-4 rounded-sm border border-white/5 bg-ink-900/70 p-6 backdrop-blur-sm',
         accentHover
       )}
+      // Spring lift on hover, matching ProjectCard's physics.
+      whileHover={{ y: -3 }}
+      transition={{ type: 'spring', stiffness: 320, damping: 24 }}
     >
       {/* Left accent bar */}
       <span
@@ -51,6 +57,6 @@ export function ResearchCard({ track }: Props) {
           </li>
         ))}
       </ul>
-    </article>
+    </motion.article>
   );
 }
