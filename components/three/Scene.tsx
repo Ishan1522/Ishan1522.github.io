@@ -7,7 +7,7 @@ import * as THREE from 'three';
 import { FlowField } from './FlowField';
 import { Effects } from './Effects';
 import { useIsMobile } from '@/hooks/useIsMobile';
-import { useSectionStore } from '@/lib/section-store';
+import { useSectionStore, previewUi } from '@/lib/section-store';
 import { COLORS, damp } from '@/lib/constants';
 
 /**
@@ -34,12 +34,29 @@ export function Scene() {
       }}
     >
       <CameraRig />
+      <UiRig />
       <Suspense fallback={null}>
         <FlowField mobile={mobile} />
       </Suspense>
       <Effects mobile={mobile} />
     </Canvas>
   );
+}
+
+/**
+ * Damps the preview harness's UI multipliers (`ui.intensity` / `ui.speed`)
+ * into the shared `previewUi` object every frame. Background subjects read
+ * `previewUi` (not the raw store values) so the multiplier works regardless
+ * of which background is on the branch. On the main page the store values
+ * are always 1, making this a no-op.
+ */
+function UiRig() {
+  useFrame((_, dt) => {
+    const { intensity, speed } = useSectionStore.getState().ui;
+    previewUi.intensity = damp(previewUi.intensity, intensity, 3, dt);
+    previewUi.speed = damp(previewUi.speed, speed, 3, dt);
+  });
+  return null;
 }
 
 /**

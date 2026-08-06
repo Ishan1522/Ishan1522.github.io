@@ -9,7 +9,7 @@ import {
   flowFieldFragmentShader,
   flowFieldVertexShader,
 } from '@/lib/flow-field-shaders';
-import { useSectionStore } from '@/lib/section-store';
+import { useSectionStore, previewUi } from '@/lib/section-store';
 import { COLORS, clamp, damp, hexToRGB } from '@/lib/constants';
 import { sections } from '@/data/sections';
 
@@ -91,9 +91,13 @@ export function FlowField({ mobile = false }: Props) {
     const u = uniforms;
     u.uTime.value = t;
 
+    // Preview-harness multipliers — damped effective values from Scene's
+    // UiRig. Both are 1 on the main page, so this is a no-op there.
+    const { intensity: intensityMult, speed: speedMult } = previewUi;
+
     // firingRate → advection strength (calm base, up to ~2.5x at the end).
-    const speed = 0.5 + firingRate * 1.1;
-    u.uSpeed.value = damp(u.uSpeed.value, speed, 1.8, dt);
+    const flowSpeed = (0.5 + firingRate * 1.1) * speedMult;
+    u.uSpeed.value = damp(u.uSpeed.value, flowSpeed, 1.8, dt);
     u.uStep.value = u.uSpeed.value * 0.2;
 
     // stdpIntensity → curl turbulence + how far particles roam.
@@ -101,12 +105,16 @@ export function FlowField({ mobile = false }: Props) {
     u.uTurbulence.value = damp(u.uTurbulence.value, turb, 2.0, dt);
     u.uWander.value = 0.85 + u.uTurbulence.value * 0.45;
 
-    // dendriteGrowth → global reveal envelope.
+    // dendriteGrowth → global reveal envelope (alpha gated by intensity so
+    // the harness's brightness multiplier is actually respected).
     u.uReveal.value = damp(u.uReveal.value, dendriteGrowth, 2.0, dt);
-    u.uRevealAlpha.value = 0.45 + 0.55 * u.uReveal.value;
+    u.uRevealAlpha.value = (0.45 + 0.55 * u.uReveal.value) * intensityMult;
 
     // spikeActive → charge boost (brightness/size → crosses bloom subtly).
-    u.uCharge.value = damp(u.uCharge.value, spikeActive, 2.5, dt);
+    u.uCharge.value = damp(u.uCharge.value, spikeActive * intensityMult, 2.5, dt);
+
+    // uSize is the base point size — scaled by intensity as well.
+    u.uSize.value = (mobile ? 0.042 : 0.05) * intensityMult;
 
     // Per-section cyan → mint accent drift.
     const accent = (section / Math.max(1, sections.length - 1)) * 0.5;
