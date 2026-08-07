@@ -62,14 +62,20 @@ function UiRig() {
 
 /**
  * Camera rig — damps the camera's Z toward the active section's target.
- * Keeps X/Y at 0 (the flow field stays centered). A touch of breathing on Y.
+ * Keeps X/Y at 0 (the firing-wave plane stays centered). A touch of breathing on Y.
+ *
+ * The dolly is deliberately softened: the section `cameraZ` target is
+ * scaled to 70% of its data range and damped slowly (λ1.2) so the physical
+ * push/pull stays subtle. A hard dolly + the field tilt compounded into an
+ * apparent sideways drift of the whole cloud while scrolling.
  */
 function CameraRig() {
   const zRef = useRef(5.5);
 
   useFrame(({ camera, clock }, dt) => {
     const target = useSectionStore.getState().target.cameraZ;
-    zRef.current = damp(zRef.current, target, 1.6, dt);
+    const dolly = 5.5 + (target - 5.5) * 0.7;
+    zRef.current = damp(zRef.current, dolly, 1.2, dt);
     camera.position.z = zRef.current;
     camera.position.y = Math.sin(clock.elapsedTime * 0.3) * 0.08;
     camera.lookAt(0, 0, 0);

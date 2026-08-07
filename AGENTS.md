@@ -75,6 +75,14 @@ Lenis (smooth scroll)
   glow flash, section index → active focus + cyan→mint accent, `rotation` →
   field sway. Reads `previewUi` (harness multipliers). Reduced motion freezes
   the sim (calm static pre-seeded rings); mobile caps live waves + dims.
+
+> History: the B3 firing-wave background replaced the earlier B2 curl-noise
+> flow-field (`FlowField.tsx`, `lib/flow-field.ts`, `lib/flow-field-shaders.ts`
+> — deleted). The flow-field was a stateless particle field advected along a
+> divergence-free curl-noise (3 octaves, incommensurate frequencies), with an
+> "un-boring" pass (velocity streaks, speed-color, section burst, pointer
+> repel) and a bounded Y-sway rig. Its CameraRig dolly softening and general
+> Scene shell survived into B3.
 - `components/three/Effects.tsx` — restrained Bloom + Vignette (desktop only).
 - Legibility rule: rings are dim (0.28–0.92 brightness), the content corridor
   gets a gentle 0.74 center attenuation (waves still cross it), edges/corners
