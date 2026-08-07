@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useRef } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 
@@ -28,6 +28,18 @@ const AURORA_INDIGO = '#17324e';
 const CAMERA_FOV = 45; // Scene Canvas camera fov
 const PLANE_Z = -0.4; // world Z of the background plane
 const PLANE_SIZE = 24; // always larger than the frustum at any camera Z
+
+// ---- Lamp constants (Feature 1) --------------------------------------------
+// A soft "lamp" that follows the pointer and gently lights the aurora, like
+// a warm light held over fog. Skip on touch/coarse-pointer devices. Under
+// reduced motion the lamp still follows (it is user-initiated, not auto
+// motion) but at half strength to stay very gentle.
+const LAMP_DAMP = 9; // λ — glides, no jitter (task: λ8-10)
+const LAMP_SIGMA = 0.42; // σ in NDC units — big soft pool (~0.35-0.5 half-extent)
+const LAMP_LIFT = 0.14; // max relative brightness lift at the cursor (~10-18%)
+const LAMP_WARM = 0.25; // subtle warm cast so it reads as *light*, not brightening
+const LAMP_REDUCED = 0.5; // strength multiplier under prefers-reduced-motion
+const LAMP_OFF = new THREE.Vector2(99, 99); // far off-screen NDC → glow ≈ 0
 
 /**
  * The B4 background subject: aurora gradient layers.
@@ -60,6 +72,11 @@ const PLANE_SIZE = 24; // always larger than the frustum at any camera Z
  * dampers settle — the shader still renders one coherent, calm static
  * aurora. Mobile: fewer noise octaves (3 vs 4) and a slightly dimmer
  * envelope; Bloom/Vignette are off anyway.
+ *
+ * Pointer lamp: a soft radial glow that follows the cursor and gently
+ * lights the aurora (warm, not a spotlight). The pointer listener is
+ * skipped on touch / coarse-pointer devices, and the glow is hard-clamped
+ * so it never overwhelms the field.
  */
 export function Aurora({ mobile = false }: Props) {
   const reduced = useReducedMotion();
@@ -67,7 +84,7 @@ export function Aurora({ mobile = false }: Props) {
   // Mobile gets 3 noise octaves instead of 4 — the fragment shader is the
   // only cost, and phones don't need the finest fold detail.
   const fragmentShader = useMemo(
-    () => buildAuroraFragmentShader(mobile ? 3 : 4),
+    () => buildAuroraFragmentShader(mobile ? 3 : 4, LAMP_LIFT, LAMP_WARM, LAMP_SIGMA),
     [mobile],
   );
 
@@ -87,6 +104,13 @@ export function Aurora({ mobile = false }: Props) {
       uCyan: { value: new THREE.Color(...hexToRGB(COLORS.cyan)) },
       uMint: { value: new THREE.Color(...hexToRGB(COLORS.mint)) },
       uIndigo: { value: new THREE.Color(...hexToRGB(AURORA_INDIGO)) },
+      // Lamp: cursor NDC (screen-fixed), defaults far off-screen so the
+      // glow contribution is ~0 until the pointer actually moves (field
+      // stays calm before first interaction).
+      uMouse: { value: new THREE.Vector2(LAMP_OFF.x, LAMP_OFF.y) },
+      // Lamp strength — 1 normal, 0.5 under prefers-reduced-motion (the
+      // lamp still follows the cursor, it is user-initiated, but gently).
+      uLampStrength: { value: 1 },
     }),
     [],
   );
@@ -99,6 +123,26 @@ export function Aurora({ mobile = false }: Props) {
   const shimmerRef = useRef(0);
   const spinRef = useRef(0);
   const pulseRef = useRef(0);
+
+  // Lamp: raw client coords from the listener (no React state), damped
+  // into the uMouse uniform (NDC) inside useFrame so it glides, not snaps.
+  const mouseClientRef = useRef({ x: 0, y: 0 });
+  const hasMouseRef = useRef(false);
+
+  // Pointer lamp listener — desktop only. Skipped on small screens (the
+  // `mobile` prop, set by useIsMobile) and on coarse-pointer devices
+  // (touch/pen-first), where there is no hover mouse.
+  useEffect(() => {
+    if (mobile) return;
+    if (window.matchMedia?.('(pointer: coarse)')?.matches) return;
+    const onPointerMove = (e: PointerEvent) => {
+      mouseClientRef.current.x = e.clientX;
+      mouseClientRef.current.y = e.clientY;
+      hasMouseRef.current = true;
+    };
+    window.addEventListener('pointermove', onPointerMove);
+    return () => window.removeEventListener('pointermove', onPointerMove);
+  }, [mobile]);
 
   useFrame((state, rawDt) => {
     const dt = Math.min(rawDt, 0.05); // clamp long frames (tab switch)
@@ -142,6 +186,16 @@ export function Aurora({ mobile = false }: Props) {
     const halfH = Math.tan((CAMERA_FOV * Math.PI) / 360) * (camZ - PLANE_Z);
     const halfW = halfH * (state.size.width / Math.max(1, state.size.height));
 
+    // Lamp: client → NDC (same screen-fixed space as p0 in the shader),
+    // damped so it glides, no jitter.
+    if (hasMouseRef.current) {
+      const ndcX = (mouseClientRef.current.x / Math.max(1, state.size.width)) * 2 - 1;
+      const ndcY = -((mouseClientRef.current.y / Math.max(1, state.size.height)) * 2 - 1);
+      const k = 1 - Math.exp(-LAMP_DAMP * dt);
+      uniforms.uMouse.value.x += (ndcX - uniforms.uMouse.value.x) * k;
+      uniforms.uMouse.value.y += (ndcY - uniforms.uMouse.value.y) * k;
+    }
+
     // Write uniforms.
     const u = uniforms;
     u.uTime.value = reduced ? 0 : timeRef.current;
@@ -154,6 +208,7 @@ export function Aurora({ mobile = false }: Props) {
     u.uGlobalAlpha.value = alphaRef.current;
     u.uHalfW.value = halfW;
     u.uHalfH.value = halfH;
+    u.uLampStrength.value = reduced ? LAMP_REDUCED : 1;
   });
 
   return (
