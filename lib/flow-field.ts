@@ -2,16 +2,19 @@
  * Flow-field particle data generator (background Option B2).
  *
  * Produces the per-particle attributes for the curl-noise flow field:
- * a home position on an edge-biased shell, a packed seed vec4 (twinkle
+ * a home position in an organic cloud, a packed seed vec4 (twinkle
  * phase, size variance, color pick, speed variance) and a base palette
  * color. The renderer (components/three/FlowField.tsx) advects each
  * particle around its home in the vertex shader using a curl-noise
  * vector field, so nothing here is touched per-frame.
  *
- * Homes are deliberately biased toward the periphery of the view volume
- * (an annulus in XY, thin in Z) so the center of the canvas — where the
- * portfolio content lives — stays comparatively clear. Deterministic
- * seeding (mulberry32) keeps the cloud identical across re-mounts.
+ * Homes form an irregular blob, not a geometric oval: a soft outward
+ * density ramp (small inner cutoff so the middle stays *relatively*
+ * clear for content but is never an empty void), per-particle y-squish
+ * variance, a wider z-spread, and radial jitter on the boundary. ~7% of
+ * particles are scattered into the inner region and dimmed so the
+ * center reads as hazy texture, not a dead hole. Deterministic seeding
+ * (mulberry32) keeps the cloud identical across re-mounts.
  */
 
 export interface ParticleData {
@@ -57,13 +60,22 @@ export function buildParticleData(count: number, seed = 20260806): ParticleData 
   const cyanDeep = [0x08 / 255, 0x91 / 255, 0xb2 / 255];
 
   for (let i = 0; i < count; i++) {
-    // Home: annulus biased outward (pow < 1 pulls r toward the outer
-    // edge), vertical squash + thin z so the cloud reads as a wide shell.
-    const r = 0.34 + Math.pow(rand(), 0.85) * 0.66;
+    // Home: an organic cloud instead of a hard annulus. The radial
+    // density ramps outward (pow 0.75 ≈ mild outward bias, nowhere near
+    // the old 0.34 inner cutoff) so the silhouette is a filled blob, and
+    // the per-particle y-squish variance + wider z-spread + radial edge
+    // jitter break the perfect ellipse. ~7% of particles are strays
+    // scattered into the inner region and dimmed below (color pass) so
+    // the middle never reads as a dead void.
+    const stray = rand() < 0.07;
+    const baseR = stray ? rand() * 0.3 : 0.08 + Math.pow(rand(), 0.75) * 0.85;
+    const rJitter = 0.92 + rand() * 0.16; // irregular boundary (0.92..1.08)
+    const r = baseR * rJitter;
     const a = rand() * Math.PI * 2;
+    const squish = 0.75 + rand() * 0.45; // per-particle y-squish (0.75..1.2)
     positions[i * 3] = Math.cos(a) * r;
-    positions[i * 3 + 1] = Math.sin(a) * r * 0.9;
-    positions[i * 3 + 2] = (rand() - 0.5) * 0.85;
+    positions[i * 3 + 1] = Math.sin(a) * r * squish;
+    positions[i * 3 + 2] = (rand() - 0.5) * 1.2;
 
     // Packed seed vec4.
     seeds[i * 4] = rand(); // twinkle phase
@@ -71,10 +83,11 @@ export function buildParticleData(count: number, seed = 20260806): ParticleData 
     seeds[i * 4 + 2] = rand(); // color pick
     seeds[i * 4 + 3] = 0.72 + rand() * 0.62; // speed variance (0.72..1.34)
 
-    // Base color: ~50% cyan, ~25% mint, ~25% deep cyan, dimmed.
+    // Base color: ~50% cyan, ~25% mint, ~25% deep cyan, dimmed. Inner
+    // strays get extra dimming so the content corridor still reads.
     const pick = rand();
     const base = pick < 0.5 ? cyan : pick < 0.75 ? mint : cyanDeep;
-    const dim = 0.5 + rand() * 0.42; // per-particle brightness (0.5..0.92)
+    const dim = (0.5 + rand() * 0.42) * (stray ? 0.55 : 1);
     colors[i * 3] = base[0] * dim;
     colors[i * 3 + 1] = base[1] * dim;
     colors[i * 3 + 2] = base[2] * dim;
