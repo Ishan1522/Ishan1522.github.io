@@ -18,6 +18,30 @@ interface Props {
 }
 
 /**
+ * Section-change burst envelope. On a section flip the envelope ramps from
+ * 0 → 1 over BURST_ATTACK seconds, then falls off exponentially with time
+ * constant BURST_DECAY_TAU (~5% remaining at ~1.5s). The peak folds are
+ * deliberately modest (0.55 into charge, 0.35 into size, 0.2 into reveal
+ * alpha) so a section change reads as a swell, not a flash.
+ */
+const BURST_ATTACK = 0.15; // seconds to swell to peak
+const BURST_DECAY_TAU = 0.45; // exp tail — ~6% remaining at ~1.3s
+
+/**
+ * Field-rig Y rotation: a bounded sway instead of an unbounded constant
+ * spin. An accumulating spin leaves the cloud permanently rotated in depth;
+ * with perspective + fog the near side of a rotated cloud reads brighter
+ * and larger, which shows as a persistent horizontal skew (the "leans left
+ * while scrolling" report). Two incommensurate sines keep it organic and
+ * non-repeating while staying bounded (±~0.29 rad), so the silhouette is
+ * never parked on one side. Slow: max angular velocity ≈ 0.03 rad/s.
+ */
+const SPIN_SWAY_A = 0.22; // primary sway amplitude (rad)
+const SPIN_SWAY_A_FREQ = 0.13; // rad/s — ~48s full sway
+const SPIN_SWAY_B = 0.07; // secondary incommensurate wobble
+const SPIN_SWAY_B_FREQ = 0.057; // rad/s — ~110s
+
+/**
  * The B2 background subject: a curl-noise flow field of particles.
  *
  * Particles are seeded once on an edge-biased shell (lib/flow-field.ts)
@@ -42,16 +66,18 @@ interface Props {
  *     round point → ribbon) and tints slow = cyan → fast = mint via
  *     uSlowColor/uFastColor. Streaks get a slightly larger sprite so the
  *     gaussian ribbon has room to read.
- *   - Section-change burst: when the active section flips, a decaying
- *     impulse is folded into uCharge/uSize/uRevealAlpha so the whole field
- *     visibly surges and then settles (decay ≈ 2.5/s, ~0.4s).
+ *   - Section-change burst: when the active section flips, a time-based
+ *     envelope (0.15s attack ramp → exponential tail, ~1.3-1.5s to die)
+ *     swells into uCharge/uSize/uRevealAlpha. It reads as a slow swell,
+ *     not a flash (the old instant spike + fast decay snapped too hard).
  *   - Scroll-linked turbulence: the damped rate of change of the document
- *     scroll progress adds to uTurbulence — active scrolling churns the
- *     field, resting returns to calm.
+ *     scroll progress adds to uTurbulence with a long time constant and a
+ *     capped boost — active scrolling is gentle churn, not a jolt.
  *   - Pointer repel (desktop only): a damped world-space mouse position is
  *     sent to uMouse; the vertex shader pushes particles away within
  *     uMouseRadius using uMouseForce (negative = repel). Skipped on touch
- *     devices (no hover mouse there).
+ *     devices (no hover mouse there). Kept snappy — it's direct
+ *     manipulation.
  *
  * Legibility: homes are periphery-biased, particles near the view axis are
  * dimmed (center-clearance fade) and depth-fogged (same FogExp2 as the
@@ -86,9 +112,10 @@ export function FlowField({ mobile = false }: Props) {
   const tiltRef = useRef(0);
 
   // Section-change burst: lastSectionRef detects a section flip inside
-  // useFrame; burstRef starts at 1 and decays exponentially (~2.5/s).
+  // useFrame; burstTimeRef runs the attack→decay envelope from 0. Starts
+  // large (10s in) so there is no burst on mount.
   const lastSectionRef = useRef(useSectionStore.getState().section);
-  const burstRef = useRef(0);
+  const burstTimeRef = useRef(10);
 
   // Scroll-linked turbulence: tracks the rate of change of scroll progress.
   const lastScrollRef = useRef(scrollProgress.current);
@@ -117,8 +144,11 @@ export function FlowField({ mobile = false }: Props) {
       uRevealAlpha: { value: 0.7 },
       uCharge: { value: 0 },
       uFogDensity: { value: 0.045 },
-      uCenterFadeStart: { value: 1.15 },
-      uCenterFadeEnd: { value: 3.1 },
+      // Center-clearance fade zone: softened (start 1.15 → 1.0, end 3.1 →
+      // 2.8) so the inner strays + density ramp read as hazy texture rather
+      // than a hard hollow ring, while the content corridor stays clear.
+      uCenterFadeStart: { value: 1.0 },
+      uCenterFadeEnd: { value: 2.8 },
       uAccentColor: { value: new THREE.Color(...hexToRGB(COLORS.mintGlow)) },
       uAccentMix: { value: 0 },
       uStreak: { value: 0.7 },
@@ -163,59 +193,67 @@ export function FlowField({ mobile = false }: Props) {
     // UiRig. Both are 1 on the main page, so this is a no-op there.
     const { intensity: intensityMult, speed: speedMult } = previewUi;
 
-    // Section-change burst: a decaying impulse folded into charge/size/
-    // revealAlpha so the whole field surges on each section change, then
-    // settles. Gated by intensity so the harness stays in control.
+    // Section-change burst: a time-based envelope — 0.15s attack ramp to
+    // peak, then a long exponential tail (~6% at 1.3s). Folds are modest
+    // (charge +0.55, size +35%, reveal +20%) so it swells, it doesn't
+    // flash. Gated by intensity so the harness stays in control.
     if (section !== lastSectionRef.current) {
       lastSectionRef.current = section;
-      burstRef.current = 1;
+      burstTimeRef.current = 0;
     }
-    burstRef.current *= Math.exp(-dt * 2.5);
-    const burst = burstRef.current * intensityMult;
+    burstTimeRef.current += dt;
+    const bt = burstTimeRef.current;
+    const burst =
+      (bt < BURST_ATTACK ? bt / BURST_ATTACK : Math.exp(-(bt - BURST_ATTACK) / BURST_DECAY_TAU)) *
+      intensityMult;
 
     // firingRate → advection strength (calm base, up to ~2.5x at the end).
     const flowSpeed = (0.5 + firingRate * 1.1) * speedMult;
-    u.uSpeed.value = damp(u.uSpeed.value, flowSpeed, 1.8, dt);
+    u.uSpeed.value = damp(u.uSpeed.value, flowSpeed, 1.4, dt);
     u.uStep.value = u.uSpeed.value * 0.2;
 
     // stdpIntensity → curl turbulence + how far particles roam. Scroll
-    // activity (damped rate of scroll-progress change) adds churn while
-    // scrolling; resting decays back to the section's calm level.
+    // activity (damped rate of scroll-progress change) adds gentle churn
+    // while scrolling: slow time constant (λ1.8) + capped boost (0.5) so
+    // active scrolling glides rather than jolts. Resting decays back to
+    // the section's calm level.
     const scrollDelta = Math.abs(scrollProgress.current - lastScrollRef.current);
     lastScrollRef.current = scrollProgress.current;
     scrollActivityRef.current = damp(
       scrollActivityRef.current,
       clamp(scrollDelta * 80, 0, 1),
-      4,
+      1.8,
       dt,
     );
-    const turb = 0.55 + stdpIntensity * 1.2 + scrollActivityRef.current * 0.9 * speedMult;
-    u.uTurbulence.value = damp(u.uTurbulence.value, turb, 2.0, dt);
+    const turb = 0.55 + stdpIntensity * 1.2 + scrollActivityRef.current * 0.5 * speedMult;
+    u.uTurbulence.value = damp(u.uTurbulence.value, turb, 1.2, dt);
     u.uWander.value = 0.85 + u.uTurbulence.value * 0.45;
 
     // dendriteGrowth → global reveal envelope (alpha gated by intensity so
     // the harness's brightness multiplier is actually respected). The burst
     // briefly swells the alpha gate for a full-field surge.
-    u.uReveal.value = damp(u.uReveal.value, dendriteGrowth, 2.0, dt);
+    u.uReveal.value = damp(u.uReveal.value, dendriteGrowth, 1.4, dt);
     u.uRevealAlpha.value =
-      (0.45 + 0.55 * u.uReveal.value) * intensityMult * (1 + burst * 0.35);
+      (0.45 + 0.55 * u.uReveal.value) * intensityMult * (1 + burst * 0.2);
 
     // spikeActive → charge boost (brightness/size → crosses bloom subtly).
-    // The burst adds a transient charge spike on top.
+    // The burst adds a transient charge swell on top (lower peak fold).
     u.uCharge.value = damp(
       u.uCharge.value,
-      spikeActive * intensityMult + burst * 0.9,
-      2.5,
+      spikeActive * intensityMult + burst * 0.55,
+      1.6,
       dt,
     );
 
-    // uSize is the base point size — scaled by intensity, plus a short
-    // burst swell so the surge is visible even at production dimness.
-    u.uSize.value = (mobile ? 0.042 : 0.05) * intensityMult * (1 + burst * 0.6);
+    // uSize is the base point size — damped (not snapped) so the burst
+    // swell glides, scaled by intensity, plus a modest surge fold.
+    const sizeTarget = (mobile ? 0.042 : 0.05) * intensityMult * (1 + burst * 0.35);
+    u.uSize.value = damp(u.uSize.value, sizeTarget, 1.6, dt);
 
-    // Per-section cyan → mint accent drift.
+    // Per-section cyan → mint accent drift — λ1 so the color glides
+    // (the old λ2 read as an abrupt hue snap on section flips).
     const accent = (section / Math.max(1, sections.length - 1)) * 0.5;
-    u.uAccentMix.value = damp(u.uAccentMix.value, accent, 2.0, dt);
+    u.uAccentMix.value = damp(u.uAccentMix.value, accent, 1.0, dt);
 
     // Map the home shell onto the live frustum half-extents so the field
     // roughly fills the view regardless of aspect / camera dolly.
@@ -238,10 +276,16 @@ export function FlowField({ mobile = false }: Props) {
       u.uMouse.value.lerp(mouseWorldRef.current, 1 - Math.exp(-8 * dt));
     }
 
-    // Field rig — slow Y spin + damped scroll-driven tilt.
+    // Field rig — bounded Y sway + damped scroll-driven tilt. The Y sway
+    // is bounded (see SPIN_SWAY_* above) so the perspective/fog-weighted
+    // silhouette never parks on one side; the tilt clamp is ±0.15 and the
+    // damp is slow (λ1.2) so a section tilt glides instead of snapping the
+    // whole cloud sideways. Both pivot around the group origin, which sits
+    // at the field centroid (homes are angularly symmetric in seed space).
     if (group) {
-      group.rotation.y += dt * (mobile ? 0.018 : 0.03);
-      tiltRef.current = damp(tiltRef.current, clamp(rotation, -0.3, 0.3), 1.8, dt);
+      group.rotation.y =
+        Math.sin(t * SPIN_SWAY_A_FREQ) * SPIN_SWAY_A + Math.sin(t * SPIN_SWAY_B_FREQ) * SPIN_SWAY_B;
+      tiltRef.current = damp(tiltRef.current, clamp(rotation, -0.15, 0.15), 1.2, dt);
       group.rotation.x = tiltRef.current;
     }
   });
