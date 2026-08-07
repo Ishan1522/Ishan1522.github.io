@@ -131,7 +131,9 @@ export function FiringWave({ mobile = false }: Props) {
     const store = useSectionStore.getState();
     const { firingRate, stdpIntensity, spikeActive, dendriteGrowth, rotation } =
       store.target;
-    const section = store.section;
+    // Guard: WAVE_CENTERS has one entry per section — clamp so a section
+    // added to data/sections.ts without a matching focus can't crash the rig.
+    const section = Math.min(store.section, WAVE_CENTERS.length - 1);
     const { intensity, speed } = previewUi;
 
     // Live frustum half-extents (Scene camera: fov 45, dollies on cameraZ).
