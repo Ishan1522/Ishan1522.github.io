@@ -54,8 +54,21 @@ export const auroraVertexShader = /* glsl */ `
   }
 `;
 
-/** Build the fragment shader with the desired fbm octave count baked in. */
-export function buildAuroraFragmentShader(octaves = 4): string {
+/**
+ * Build the fragment shader with the desired fbm octave count baked in.
+ *
+ * Lamp tuning (pointer-following glow) is baked here too, defaulting to the
+ * constants in Aurora.tsx so there is one source of truth:
+ *   lampLift  — max relative brightness lift at the cursor (~10-18%)
+ *   lampWarm  — how warm the lifted light reads (0 = white, 1 = strongly amber)
+ *   lampSigma — lamp pool radius in NDC units (~0.35-0.5 of the half-extent)
+ */
+export function buildAuroraFragmentShader(
+  octaves = 4,
+  lampLift = 0.14,
+  lampWarm = 0.25,
+  lampSigma = 0.42,
+): string {
   return /* glsl */ `
     precision highp float;
 
@@ -72,6 +85,8 @@ export function buildAuroraFragmentShader(octaves = 4): string {
     uniform vec3  uCyan;
     uniform vec3  uMint;
     uniform vec3  uIndigo;       // restrained deep indigo-teal for depth
+    uniform vec2  uMouse;        // pointer lamp — cursor NDC on the visible rect
+    uniform float uLampStrength; // 1 normal, 0.5 reduced-motion (gentler)
 
     varying vec2 vWorld;
 
@@ -179,6 +194,26 @@ export function buildAuroraFragmentShader(octaves = 4): string {
 
       // spikeActive — faint, slow brightness swell (breathing, NOT a burst).
       col *= 1.0 + uPulse * 0.25 * (0.5 + 0.5 * sin(t * 0.55 + wbase * 6.28318));
+
+      // Pointer lamp — a soft warm pool of light that follows the cursor,
+      // like moving a warm lamp over fog. Computed in the same screen-fixed
+      // NDC space as p0 (uMouse arrives as NDC), so the pool is a true
+      // circle on screen regardless of aspect / camera dolly. exp falloff
+      // with a big radius (σ ≈ 0.42 of the half-extent); the lift is
+      // RELATIVE (multiplies the local color) and hard-clamped, so at the
+      // cursor brightness rises by at most lampLift (~14%) and fades to
+      // nothing at the pool edge. A faint warm cast makes it read as
+      // *light*, not a spotlight. Scaled by uLampStrength (reduced-motion
+      // gentler) and by uGlobalAlpha/edge via the final output multiply.
+      {
+        vec2 lampD = p0 - uMouse;
+        float lampGlow = exp(-dot(lampD, lampD) / (${lampSigma.toFixed(4)} * ${lampSigma.toFixed(4)}));
+        lampGlow = min(lampGlow, 1.0);
+        float lift = lampGlow * ${lampLift} * uLampStrength;
+        lift = min(lift, ${lampLift}); // hard clamp — never a flash
+        vec3 warmTint = vec3(1.0, 1.0 - ${lampWarm} * 0.5, 1.0 - ${lampWarm});
+        col *= 1.0 + lift * warmTint;
+      }
 
       // Edge fade — curtains melt into the corners (vignette-consistent;
       // Effects.tsx adds its own vignette on desktop on top of this).

@@ -30,6 +30,16 @@ export interface UiMultipliers {
 /** Damped *effective* UI multipliers — written by Scene's `UiRig` in useFrame. */
 export const previewUi: UiMultipliers = { intensity: 1, speed: 1 };
 
+/**
+ * Cap on the *effective* speed multiplier. The harness allows requesting
+ * up to 4×, but the aurora's drift clock is `uTime · uFlow · uSpeed` and an
+ * unclamped product is exactly what makes fast scrolling spazz. Bounding
+ * here (and re-clamping in Aurora.tsx / CameraRig) means even a violent
+ * flick can never whip the field — the multiplier still works, just with a
+ * hard ceiling.
+ */
+export const SPEED_MAX = 2.5;
+
 interface SectionState {
   /** Index of the section currently in the viewport center. */
   section: number;
