@@ -4,11 +4,12 @@
 
 ## Identity
 
-Ishan's scroll-driven Three.js portfolio. A background of concentric firing
-waves / EEG-oscilloscope ripples radiating from per-section focal points — a
-"neural signal" field — where section-scroll drives emission rate, spike
-(action-potential) activity, trace shimmer, reveal, sway, and a cyan→mint
-color drift.
+Ishan's scroll-driven Three.js portfolio. A background of layered aurora
+"curtain" gradients — northern-lights-style ribbons of domain-warped noise
+painted on a single shader plane — where section-scroll drives a gentle
+cyan→mint color drift, drift speed, a reveal envelope, a faint brightness
+swell, and a very slow rotational drift. Calm, premium, atmospheric: the
+background recedes behind content rather than acting as a subject.
 
 ## Stack
 
@@ -30,7 +31,7 @@ Lenis (smooth scroll)
   → GSAP ScrollTrigger (per-section triggers + total-progress)
     → useSectionStore (Zustand) — section index + target phase values
       → R3F useFrame — damp local refs toward target at 60Hz
-        → wave sim (CPU) + shader uniforms / DataTexture (firing waves)
+        → shader uniforms (aurora gradient layers, pure GPU — no CPU sim)
 ```
 
 **Key rule**: Inside `useFrame`, always read store with
@@ -42,51 +43,55 @@ Lenis (smooth scroll)
 | Path | What's inside | Edit frequency |
 |------|--------------|----------------|
 | `app/` | layout, page, globals.css | Rare |
-| `components/three/` | R3F: Scene, FiringWave, Effects, StaticFallback | Medium |
+| `components/three/` | R3F: Scene, Aurora, Effects, StaticFallback | Medium |
 | `components/sections/` | Hero, About, Projects, Research, GitHub, Contact | Medium |
 | `components/ui/` | Nav, SectionLabel, Cards, ScrollHint, Reveal | Medium |
 | `components/providers/` | SmoothScrollProvider, MotionProvider | Rare |
 | `data/` | Content layer: projects.ts, research.ts, sections.ts, personal.ts | **High** |
-| `lib/` | constants.ts, section-store.ts, firing-wave.ts, firing-wave-shaders.ts, cn.ts | Low |
+| `lib/` | constants.ts, section-store.ts, aurora-shaders.ts, cn.ts | Low |
 | `hooks/` | useReducedMotion.ts, useIsMobile.ts | Rare |
 | `public/` | Static assets, resume.pdf, project images | As needed |
 
-## The firing-wave background
+## The aurora background
 
-- `lib/firing-wave.ts` — the simulation. One off-center focal point per
-  portfolio section (WAVE_CENTERS); all six emit gentle ambient rings at
-  staggered cadences (no dead zones anywhere — rings from the quadrant foci
-  cross the view axis at low density, so the center reads as intentional
-  negative space, not a hole). The ACTIVE focus fires faster + brighter with
-  the cyan→mint section accent; `spikeActive` fires "action potentials"
-  (bright, fast, short-lived AP rings on the rising edge + periodically).
-  Waves are a MAX_WAVES ring buffer, packed every frame into a 2-texel-per-
-  wave RGBA Float DataTexture.
-- `lib/firing-wave-shaders.ts` — GLSL. One camera-facing plane at z≈0 whose
-  fragment shader paints crisp SDF gaussian rings sampled from the wave
-  texture, two faint traveling EEG traces (`stdpIntensity` → amplitude), and
-  dim ember glows at the foci. Additive + toneMapped:false (AP rings cross
-  the Bloom threshold); envelope (uGlobalAlpha), edge fade, and a gentle
-  center attenuation replace depth fog (a flat plane has constant depth).
-- `components/three/FiringWave.tsx` — `<mesh>` (plane) + `shaderMaterial`
-  + `DataTexture`. Damps store phase values into uniforms in `useFrame`:
-  `firingRate` → emission rate/expansion speed, `stdpIntensity` → trace
-  amplitude, `dendriteGrowth` → reveal envelope, `spikeActive` → AP rings +
-  glow flash, section index → active focus + cyan→mint accent, `rotation` →
-  field sway. Reads `previewUi` (harness multipliers). Reduced motion freezes
-  the sim (calm static pre-seeded rings); mobile caps live waves + dims.
+- `lib/aurora-shaders.ts` — GLSL. One large camera-facing plane (24×24 units,
+  always larger than the frustum at any camera Z) whose fragment shader
+  paints 3 layered "curtain" bands of fbm/value noise with **domain
+  warping** (iq-style 2-stage warp: `q = fbm(p)`, `r = fbm(p + 3.5q)`), the
+  silky folded-ribbon look. The vertex shader passes world XY to the
+  fragment; dividing by the live frustum half-extents maps the visible rect
+  to NDC, so the field is full-bleed at any camera Z (no empty-center, and
+  the edge fade stays glued to the viewport). No particles, no textures, no
+  CPU sim — one additive quad with `toneMapped:false` (everything stays well
+  below the Bloom threshold; the field is atmosphere, not a subject).
+  A 1-bit hash dither kills residual 8-bit banding in the gradients.
+- `components/three/Aurora.tsx` — `<mesh>` (plane) + `shaderMaterial`.
+  Damps store phase values into uniforms in `useFrame`:
+  `section` → `uAccentMix` (cyan→mint drift), `firingRate` → `uFlow` (noise
+  drift speed), `dendriteGrowth` → `uGlobalAlpha` reveal envelope,
+  `rotation` → `uSpin` (very slow rotational drift), `spikeActive` → `uPulse`
+  (faint slow brightness swell — NOT a burst), `stdpIntensity` → `uShimmer`
+  (subtle brightness lift). Reads `previewUi` (harness multipliers:
+  intensity scales the envelope, speed scales the clock). Reduced motion
+  freezes the clock → one coherent static aurora; mobile drops to 3 noise
+  octaves and dims the field.
 
-> History: the B3 firing-wave background replaced the earlier B2 curl-noise
-> flow-field (`FlowField.tsx`, `lib/flow-field.ts`, `lib/flow-field-shaders.ts`
-> — deleted). The flow-field was a stateless particle field advected along a
-> divergence-free curl-noise (3 octaves, incommensurate frequencies), with an
-> "un-boring" pass (velocity streaks, speed-color, section burst, pointer
-> repel) and a bounded Y-sway rig. Its CameraRig dolly softening and general
-> Scene shell survived into B3.
+> History: the B4 aurora background replaced the earlier B3 firing-wave /
+> EEG-oscilloscope background (`FiringWave.tsx`, `lib/firing-wave.ts`,
+> `lib/firing-wave-shaders.ts` — deleted). B3 was a CPU-side ring-buffer
+> wave sim packed per-frame into a DataTexture and painted by a fixed 2×2
+> plane; B4 removes the CPU sim entirely and fixes full-bleed robustness
+> (the B3 quad only covered part of the frustum at dollied-out cameras).
+> Before B3, the background was the B2 curl-noise flow-field
+> (`FlowField.tsx`, `lib/flow-field.ts`, `lib/flow-field-shaders.ts` —
+> deleted), a stateless particle field advected along divergence-free curl
+> noise. The CameraRig dolly softening and general Scene shell survived
+> across all generations.
 - `components/three/Effects.tsx` — restrained Bloom + Vignette (desktop only).
-- Legibility rule: rings are dim (0.28–0.92 brightness), the content corridor
-  gets a gentle 0.74 center attenuation (waves still cross it), edges/corners
-  fade out, and overall brightness stays well below the content layer.
+- Legibility rule: curtains are dim (band multipliers 0.11–0.17 on top of a
+  deep-indigo base), the full-field haze keeps every region above zero (no
+  dead zones anywhere), and overall brightness stays well below the content
+  layer — peak ~0.3 luma, under the Bloom threshold, vignette-consistent.
 
 ## Motion conventions
 
@@ -132,7 +137,9 @@ npm run lint         # next lint (core-web-vitals)
   `public/images/projects/<slug>/`
 - **New section**: add to `data/sections.ts`, create section component with
   `<section id="...">`, import in `app/page.tsx`
-- **Tune firing-wave visuals**: `lib/constants.ts` (colors), `lib/firing-wave.ts`
-  (focal centers, emission cadences, wave thickness/brightness),
-  `lib/firing-wave-shaders.ts` (ring ridge sharpness, trace shape, edge fade),
-  `data/sections.ts` (scroll choreography — phase values per section)
+- **Tune aurora visuals**: `lib/constants.ts` (colors),
+  `lib/aurora-shaders.ts` (band counts/heights/thickness, drift multipliers,
+  warp strength, edge fade, dither — the aesthetic knobs are all in the
+  shader), `components/three/Aurora.tsx` (brightness envelope, mobile octave
+  count), `data/sections.ts` (scroll choreography — phase values per
+  section)

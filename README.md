@@ -1,10 +1,11 @@
 # ishan-portfolio
 
 A scroll-driven Three.js portfolio. The centerpiece is a background of
-firing waves — concentric oscilloscope-style ripples radiating from focal
-points like a neuron firing — whose emission rate, spike (action-potential)
-activity, and reveal respond to your scroll position as you move through
-the site.
+aurora gradient layers — northern-lights-style ribbons of domain-warped
+noise painted on a single shader plane — whose color drift (cyan → mint),
+noise drift speed, reveal envelope, faint brightness swell, and slow
+rotational drift respond to your scroll position as you move through the
+site. Calm, premium, atmospheric: it recedes behind content.
 
 Built for Ishan — EE @ MSU.
 
@@ -59,7 +60,7 @@ self-hosted) will also work.
    R3F useFrame hooks                ← damp local refs toward target each frame
         │
         ▼
-   Shader uniforms / wave DataTexture  ← the firing-wave field animates
+   Shader uniforms                    ← the aurora curtain field animates
 ```
 
 Crucially, the store is read inside `useFrame` via `useSectionStore.getState()`
@@ -79,7 +80,7 @@ components/
     SmoothScrollProvider.tsx  ← Lenis + ScrollTrigger wiring
   three/
     Scene.tsx           ← Canvas, camera rig, fog
-    FiringWave.tsx      ← firing-wave shader plane (rings + EEG traces)
+    Aurora.tsx          ← aurora shader plane (domain-warped noise curtains)
     Effects.tsx         ← Bloom + vignette
     StaticFallback.tsx  ← SVG-only fallback for reduced motion
   sections/       ← Hero, About, Projects, Research, GitHub, Contact
@@ -87,7 +88,7 @@ components/
   providers/      ← SmoothScrollProvider, MotionProvider
 data/             ← personal, projects, research, sections (content layer)
 hooks/            ← useReducedMotion, useIsMobile
-lib/              ← cn, constants, section-store, firing-wave, firing-wave-shaders
+lib/              ← cn, constants, section-store, aurora-shaders
 public/
   favicon.svg
   resume.pdf     ← REPLACE with your actual resume
@@ -134,17 +135,16 @@ Same idea in `data/research.ts`.
 The nav, active-section tracking, and background state all rebalance
 automatically around the new entry.
 
-### Tuning the firing waves
+### Tuning the aurora
 
 Most aesthetic knobs live in three places:
 
 - **Color palette** → `lib/constants.ts` (`COLORS`) and `tailwind.config.ts`
-- **Wave field** → `lib/firing-wave.ts` (focal centers, emission cadences,
-  ring thickness/brightness, wave caps) and `lib/firing-wave-shaders.ts`
-  (ring ridge sharpness, EEG trace shape, edge fade, reveal envelope)
+- **Curtains** → `lib/aurora-shaders.ts` (band count/height/thickness,
+  drift multipliers, warp strength, edge fade, dither) and
+  `components/three/Aurora.tsx` (brightness envelope, mobile octave count)
 - **Scroll choreography** → `data/sections.ts` — each section declares its
-  target `phase` values (firing rate, spike activity, trace shimmer, reveal,
-  camera Z, sway)
+  target `phase` values (reveal, drift speed, swell, camera Z, rotation)
 
 ## Accessibility
 
@@ -157,8 +157,11 @@ Most aesthetic knobs live in three places:
 
 ## Performance
 
-- Mobile viewport (<768px): fewer live waves, post-processing disabled. The
-  firing-wave field still animates — it's just cheaper.
+- Mobile viewport (<768px): fewer noise octaves (3 vs 4), post-processing
+  disabled. The aurora field still animates — it's just cheaper.
+- One additive plane, no CPU sim, no textures, no per-band geometry — the
+  fragment shader is the only cost, and it's far below the Bloom threshold
+  (the field stays atmosphere, never a bright subject).
 - Lazy-loaded Scene via `next/dynamic` with `ssr: false` so the WebGL bundle
   isn't in the initial payload.
 - Fonts self-hosted via `next/font`.
