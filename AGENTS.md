@@ -4,9 +4,11 @@
 
 ## Identity
 
-Ishan's scroll-driven Three.js portfolio. A background of flowing curl-noise
-particles — a "thought in flow" field — where section-scroll drives flow
-speed, turbulence, reveal, tilt, and a cyan→mint color drift.
+Ishan's scroll-driven Three.js portfolio. A background of concentric firing
+waves / EEG-oscilloscope ripples radiating from per-section focal points — a
+"neural signal" field — where section-scroll drives emission rate, spike
+(action-potential) activity, trace shimmer, reveal, sway, and a cyan→mint
+color drift.
 
 ## Stack
 
@@ -21,14 +23,14 @@ speed, turbulence, reveal, tilt, and a cyan→mint color drift.
 | Style | Tailwind CSS 3, cyberpunk palette (cyan/mint on deep navy) |
 | Fonts | IBM Plex Sans/Condensed + JetBrains Mono via next/font |
 
-## Critical architecture: scroll → constellation pipeline
+## Critical architecture: scroll → background pipeline
 
 ```
 Lenis (smooth scroll)
   → GSAP ScrollTrigger (per-section triggers + total-progress)
     → useSectionStore (Zustand) — section index + target phase values
       → R3F useFrame — damp local refs toward target at 60Hz
-        → hub instance colors/scales + edge vertex colors (charge pulses)
+        → wave sim (CPU) + shader uniforms / DataTexture (firing waves)
 ```
 
 **Key rule**: Inside `useFrame`, always read store with
@@ -40,44 +42,51 @@ Lenis (smooth scroll)
 | Path | What's inside | Edit frequency |
 |------|--------------|----------------|
 | `app/` | layout, page, globals.css | Rare |
-| `components/three/` | R3F: Scene, FlowField, Effects, StaticFallback | Medium |
+| `components/three/` | R3F: Scene, FiringWave, Effects, StaticFallback | Medium |
 | `components/sections/` | Hero, About, Projects, Research, GitHub, Contact | Medium |
 | `components/ui/` | Nav, SectionLabel, Cards, ScrollHint, Reveal | Medium |
 | `components/providers/` | SmoothScrollProvider, MotionProvider | Rare |
 | `data/` | Content layer: projects.ts, research.ts, sections.ts, personal.ts | **High** |
-| `lib/` | constants.ts, section-store.ts, flow-field.ts, flow-field-shaders.ts, cn.ts | Low |
+| `lib/` | constants.ts, section-store.ts, firing-wave.ts, firing-wave-shaders.ts, cn.ts | Low |
 | `hooks/` | useReducedMotion.ts, useIsMobile.ts | Rare |
 | `public/` | Static assets, resume.pdf, project images | As needed |
 
-## The flow-field background
+## The firing-wave background
 
-- `lib/flow-field.ts` — deterministic particle seeding. Homes form an
-  organic cloud: a soft outward density ramp (small inner cutoff so the
-  middle stays relatively clear but is never an empty void), per-particle
-  y-squish variance, wider z-spread, radial edge jitter, and ~7% dimmed
-  inner strays; packed seed vec4 + dimmed palette color per particle.
-- `lib/flow-field-shaders.ts` — GLSL. The vertex shader advects each
-  particle along a divergence-free 2D curl-noise field (3 octaves,
-  incommensurate frequencies → non-repeating), recomputing position as a
-  pure function of (home, time) every frame — stateless, zero CPU per frame.
-- `components/three/FlowField.tsx` — `<points>` + `shaderMaterial`. Damps
-  store phase values into uniforms in `useFrame`: `firingRate` → advection
-  speed, `stdpIntensity` → turbulence/wander, `dendriteGrowth` → reveal
-  alpha, `spikeActive` → charge boost, section index → cyan→mint accent.
-  Also hosts the "un-boring" pass: `uStreak` (round point → velocity
-  ribbon), `uSlowColor`/`uFastColor` (speed-color cyan→mint), a
-  section-change burst folded into charge/size/reveal via a 0.15s-attack →
-  long-exponential-tail envelope (reads as a swell, not a flash), scroll-
-  progress rate → capped, slow-damped turbulence churn, and a damped
-  `uMouse`/`uMouseRadius`/`uMouseForce` pointer repel (negative force =
-  repel, desktop only, kept snappy). The field rig uses a *bounded* Y sway
-  (not an unbounded spin — an accumulating spin parks the perspective/
-  fog-weighted silhouette on one side and reads as horizontal drift) plus a
-  damped scroll tilt clamped to ±0.15.
+- `lib/firing-wave.ts` — the simulation. One off-center focal point per
+  portfolio section (WAVE_CENTERS); all six emit gentle ambient rings at
+  staggered cadences (no dead zones anywhere — rings from the quadrant foci
+  cross the view axis at low density, so the center reads as intentional
+  negative space, not a hole). The ACTIVE focus fires faster + brighter with
+  the cyan→mint section accent; `spikeActive` fires "action potentials"
+  (bright, fast, short-lived AP rings on the rising edge + periodically).
+  Waves are a MAX_WAVES ring buffer, packed every frame into a 2-texel-per-
+  wave RGBA Float DataTexture.
+- `lib/firing-wave-shaders.ts` — GLSL. One camera-facing plane at z≈0 whose
+  fragment shader paints crisp SDF gaussian rings sampled from the wave
+  texture, two faint traveling EEG traces (`stdpIntensity` → amplitude), and
+  dim ember glows at the foci. Additive + toneMapped:false (AP rings cross
+  the Bloom threshold); envelope (uGlobalAlpha), edge fade, and a gentle
+  center attenuation replace depth fog (a flat plane has constant depth).
+- `components/three/FiringWave.tsx` — `<mesh>` (plane) + `shaderMaterial`
+  + `DataTexture`. Damps store phase values into uniforms in `useFrame`:
+  `firingRate` → emission rate/expansion speed, `stdpIntensity` → trace
+  amplitude, `dendriteGrowth` → reveal envelope, `spikeActive` → AP rings +
+  glow flash, section index → active focus + cyan→mint accent, `rotation` →
+  field sway. Reads `previewUi` (harness multipliers). Reduced motion freezes
+  the sim (calm static pre-seeded rings); mobile caps live waves + dims.
+
+> History: the B3 firing-wave background replaced the earlier B2 curl-noise
+> flow-field (`FlowField.tsx`, `lib/flow-field.ts`, `lib/flow-field-shaders.ts`
+> — deleted). The flow-field was a stateless particle field advected along a
+> divergence-free curl-noise (3 octaves, incommensurate frequencies), with an
+> "un-boring" pass (velocity streaks, speed-color, section burst, pointer
+> repel) and a bounded Y-sway rig. Its CameraRig dolly softening and general
+> Scene shell survived into B3.
 - `components/three/Effects.tsx` — restrained Bloom + Vignette (desktop only).
-- Legibility rule: homes are periphery-biased, near-axis particles are faded
-  (center-clearance), depth-fogged with the Scene's FogExp2, and overall
-  brightness is kept low so the center content stays readable.
+- Legibility rule: rings are dim (0.28–0.92 brightness), the content corridor
+  gets a gentle 0.74 center attenuation (waves still cross it), edges/corners
+  fade out, and overall brightness stays well below the content layer.
 
 ## Motion conventions
 
@@ -103,7 +112,7 @@ Lenis (smooth scroll)
   hardcoding JSX. The component grid picks it up automatically.
 - **Accessibility** — `prefers-reduced-motion: reduce` switches to
   `StaticFallback.tsx` (SVG, no WebGL). Always test this path.
-- **Mobile** — `<768px`: fewer particles, no post-processing.
+- **Mobile** — `<768px`: fewer live waves, no post-processing.
 - **Colors** — palette in `lib/constants.ts` (JS) + `tailwind.config.ts` (CSS).
   Keep them in sync.
 
@@ -123,7 +132,7 @@ npm run lint         # next lint (core-web-vitals)
   `public/images/projects/<slug>/`
 - **New section**: add to `data/sections.ts`, create section component with
   `<section id="...">`, import in `app/page.tsx`
-- **Tune flow-field visuals**: `lib/constants.ts` (colors), `lib/flow-field.ts`
-  (seeding — shell radii, counts), `lib/flow-field-shaders.ts` (curl
-  octaves/frequency), `data/sections.ts` (scroll choreography — phase
-  values per section)
+- **Tune firing-wave visuals**: `lib/constants.ts` (colors), `lib/firing-wave.ts`
+  (focal centers, emission cadences, wave thickness/brightness),
+  `lib/firing-wave-shaders.ts` (ring ridge sharpness, trace shape, edge fade),
+  `data/sections.ts` (scroll choreography — phase values per section)
