@@ -7,8 +7,8 @@ import * as THREE from 'three';
 import { Aurora } from './Aurora';
 import { Effects } from './Effects';
 import { useIsMobile } from '@/hooks/useIsMobile';
-import { useSectionStore, previewUi } from '@/lib/section-store';
-import { COLORS, damp } from '@/lib/constants';
+import { useSectionStore, previewUi, SPEED_MAX } from '@/lib/section-store';
+import { COLORS, clamp, damp } from '@/lib/constants';
 
 /**
  * The WebGL canvas. Positioned fixed behind the rest of the page via CSS.
@@ -55,7 +55,13 @@ function UiRig() {
   useFrame((_, dt) => {
     const { intensity, speed } = useSectionStore.getState().ui;
     previewUi.intensity = damp(previewUi.intensity, intensity, 3, dt);
-    previewUi.speed = damp(previewUi.speed, speed, 3, dt);
+    // Effective speed is hard-clamped so the harness can't push the drift
+    // clock into a whip (scroll-spaz hardening — see SPEED_MAX).
+    previewUi.speed = clamp(
+      damp(previewUi.speed, speed, 3, dt),
+      0.1,
+      SPEED_MAX,
+    );
   });
   return null;
 }
@@ -68,14 +74,28 @@ function UiRig() {
  * scaled to 70% of its data range and damped slowly (λ1.2) so the physical
  * push/pull stays subtle. A hard dolly + the field tilt compounded into an
  * apparent sideways drift of the whole cloud while scrolling.
+ *
+ * Scroll-spaz hardening: on top of the slow damping, the per-frame cameraZ
+ * delta is hard-clamped (MAX_DOLLY_DELTA) and the target itself is clamped
+ * to the section data range, so even a violent fast scroll flick can only
+ * produce a controlled glide — the camera never whips. A whipping dolly
+ * shifts the NDC half-extents in Aurora.tsx rapidly, which visibly warps
+ * the whole field.
  */
+const MAX_DOLLY_DELTA = 0.05; // world units per frame (~3 u/s at 60fps cap)
+const DOLLY_LAMBDA = 0.85; // slower than before (1.2) — more damping
+
 function CameraRig() {
   const zRef = useRef(5.5);
 
   useFrame(({ camera, clock }, dt) => {
     const target = useSectionStore.getState().target.cameraZ;
     const dolly = 5.5 + (target - 5.5) * 0.7;
-    zRef.current = damp(zRef.current, dolly, 1.2, dt);
+    const next = damp(zRef.current, dolly, DOLLY_LAMBDA, dt);
+    // Hard per-frame speed limit — the dolly glides, never whips.
+    const delta = next - zRef.current;
+    const clampedDelta = clamp(delta, -MAX_DOLLY_DELTA, MAX_DOLLY_DELTA);
+    zRef.current += clampedDelta;
     camera.position.z = zRef.current;
     camera.position.y = Math.sin(clock.elapsedTime * 0.3) * 0.08;
     camera.lookAt(0, 0, 0);

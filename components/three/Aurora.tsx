@@ -8,7 +8,7 @@ import {
   auroraVertexShader,
   buildAuroraFragmentShader,
 } from '@/lib/aurora-shaders';
-import { useSectionStore, previewUi } from '@/lib/section-store';
+import { useSectionStore, previewUi, SPEED_MAX } from '@/lib/section-store';
 import { COLORS, clamp, damp, hexToRGB } from '@/lib/constants';
 import { sections } from '@/data/sections';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
@@ -28,6 +28,25 @@ const AURORA_INDIGO = '#17324e';
 const CAMERA_FOV = 45; // Scene Canvas camera fov
 const PLANE_Z = -0.4; // world Z of the background plane
 const PLANE_SIZE = 24; // always larger than the frustum at any camera Z
+
+// ---- Scroll-clamp caps (Feature 2) -----------------------------------------
+// Fast scrolling flips the section store targets in quick succession; these
+// hard caps bound every scroll-derived input so no flick can push the noise
+// domain into a whip. Ranges were verified against the shader's usage of
+// each uniform in lib/aurora-shaders.ts:
+//   uFlow    = uTime * uFlow * uSpeed drift clock        (authored 0.5..1.06)
+//   uShimmer = stdpIntensity brightness lift             (authored 0..0.8)
+//   uSpin    = rotation drift, authored ±0.015 rad       (clamped ±0.02)
+//   uPulse   = spikeActive breathing swell               (authored 0/1)
+//   uSpeed   = harness multiplier, authored 0.1..4
+const FLOW_MIN = 0.5; // calm resting drift
+const FLOW_MAX = 1.1; // ~2.2x base — preserves the authored 1.06 max
+const SHIMMER_MAX = 0.85; // slightly above authored 0.8
+const SPIN_ABS = 0.02; // above authored ±0.015
+const PULSE_MAX = 1.0;
+// SPEED_MAX (harness speed multiplier cap) lives in lib/section-store.ts —
+// Scene's UiRig clamps the effective previewUi.speed, and we re-clamp here
+// as a final guard on the uniform write.
 
 // ---- Lamp constants (Feature 1) --------------------------------------------
 // A soft "lamp" that follows the pointer and gently lights the aurora, like
@@ -77,6 +96,12 @@ const LAMP_OFF = new THREE.Vector2(99, 99); // far off-screen NDC → glow ≈ 0
  * lights the aurora (warm, not a spotlight). The pointer listener is
  * skipped on touch / coarse-pointer devices, and the glow is hard-clamped
  * so it never overwhelms the field.
+ *
+ * Scroll spaz hardening: every scroll-derived target is hard-clamped
+ * (FLOW_MAX / SHIMMER_MAX / SPIN_ABS / PULSE_MAX / SPEED_MAX) and damped
+ * with deliberately low lambdas, so even a violent scroll flick produces a
+ * controlled glide instead of a whip — values approach slowly and never
+ * overshoot (see CameraRig in Scene.tsx for the dolly speed limit).
  */
 export function Aurora({ mobile = false }: Props) {
   const reduced = useReducedMotion();
@@ -156,9 +181,24 @@ export function Aurora({ mobile = false }: Props) {
     // Drift clock — frozen under reduced motion (calm static frame).
     if (!reduced) timeRef.current += dt;
 
-    // Damped reactive values.
-    flowRef.current = damp(flowRef.current, 0.5 + 0.8 * firingRate, 1.5, dt);
-    shimmerRef.current = damp(shimmerRef.current, stdpIntensity, 1.6, dt);
+    // Damped reactive values. Every scroll-derived target is hard-clamped
+    // before damping so no input (fast section flips, harness multipliers)
+    // can push the shader uniforms past their designed range. Lambdas are
+    // deliberately low so a violent flick becomes a controlled glide —
+    // damp() = exponential smoothing, so a lower λ approaches slower and
+    // never overshoots.
+    flowRef.current = damp(
+      flowRef.current,
+      clamp(0.5 + 0.8 * firingRate, FLOW_MIN, FLOW_MAX),
+      1.1,
+      dt,
+    );
+    shimmerRef.current = damp(
+      shimmerRef.current,
+      clamp(stdpIntensity, 0, SHIMMER_MAX),
+      1.2,
+      dt,
+    );
     accentRef.current = damp(
       accentRef.current,
       section / Math.max(1, sections.length - 1),
@@ -167,11 +207,16 @@ export function Aurora({ mobile = false }: Props) {
     );
     spinRef.current = damp(
       spinRef.current,
-      clamp(rotation, -0.3, 0.3) * 0.05,
-      1.6,
+      clamp(clamp(rotation, -0.3, 0.3) * 0.05, -SPIN_ABS, SPIN_ABS),
+      1.3,
       dt,
     );
-    pulseRef.current = damp(pulseRef.current, spikeActive, 1.1, dt);
+    pulseRef.current = damp(
+      pulseRef.current,
+      clamp(spikeActive, 0, PULSE_MAX),
+      0.9,
+      dt,
+    );
     alphaRef.current = damp(
       alphaRef.current,
       (0.35 + 0.65 * dendriteGrowth) * intensity * (mobile ? 0.8 : 1),
@@ -199,12 +244,12 @@ export function Aurora({ mobile = false }: Props) {
     // Write uniforms.
     const u = uniforms;
     u.uTime.value = reduced ? 0 : timeRef.current;
-    u.uSpeed.value = speed;
-    u.uFlow.value = flowRef.current;
-    u.uShimmer.value = shimmerRef.current;
-    u.uSpin.value = spinRef.current;
-    u.uPulse.value = pulseRef.current;
-    u.uAccentMix.value = accentRef.current;
+    u.uSpeed.value = clamp(speed, 0.1, SPEED_MAX);
+    u.uFlow.value = clamp(flowRef.current, FLOW_MIN, FLOW_MAX);
+    u.uShimmer.value = clamp(shimmerRef.current, 0, SHIMMER_MAX);
+    u.uSpin.value = clamp(spinRef.current, -SPIN_ABS, SPIN_ABS);
+    u.uPulse.value = clamp(pulseRef.current, 0, PULSE_MAX);
+    u.uAccentMix.value = clamp(accentRef.current, 0, 1);
     u.uGlobalAlpha.value = alphaRef.current;
     u.uHalfW.value = halfW;
     u.uHalfH.value = halfH;
