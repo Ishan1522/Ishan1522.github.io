@@ -47,15 +47,19 @@ export function FlowField({ mobile = false }: Props) {
 
   const geometry = useMemo(() => {
     const geo = new THREE.BufferGeometry();
-    // The vertex shader recomputes each particle position from `aHome`
-    // (lib/flow-field-shaders.ts) and never reads the built-in `position`
-    // attribute. Binding the homes as `aHome` (not `position`) is what
-    // actually feeds the shader — previously nothing was bound to aHome,
-    // so every particle got the WebGL default (0,0,0), collapsed to the
-    // origin and was faded out by the center-clearance term, leaving the
-    // canvas blank (0 console errors). With a custom ShaderMaterial on
-    // THREE.Points no `position` attribute is required for the draw.
-    geo.setAttribute('aHome', new THREE.BufferAttribute(data.positions, 3));
+    // THREE.Points + custom ShaderMaterial needs BOTH:
+    //  - `position`: three.js r168 renderBufferDirect derives the draw count
+    //    from `geometry.attributes.position` for non-indexed geometry; with
+    //    no position (or index), drawCount = Infinity → silent early return,
+    //    nothing drawn, no console error (verified in three.module.js).
+    //  - `aHome`: the vertex shader reads THIS for each particle's home;
+    //    without a bound buffer it defaults to (0,0,0) and the center-fade
+    //    kills everything.
+    // Both point at the same data — the shader uses aHome, the renderer uses
+    // position only for the vertex count. Caught by vault bg-capture pipeline.
+    const homes = new THREE.BufferAttribute(data.positions, 3);
+    geo.setAttribute('position', homes);
+    geo.setAttribute('aHome', homes);
     geo.setAttribute('aSeed', new THREE.BufferAttribute(data.seeds, 4));
     geo.setAttribute('aColor', new THREE.BufferAttribute(data.colors, 3));
     return geo;
