@@ -15,6 +15,18 @@
  * (spikeActive → brightness/size boost), uAccentMix (per-section color
  * drift cyan → mint). Depth fog is the same FogExp2 as the Scene, applied
  * as alpha attenuation so distant particles melt into the background.
+ *
+ * "Un-boring" pass (2026-08):
+ *  - Velocity streaks: the vertex shader captures the last per-substep
+ *    curl flow as `vFlow`, and the fragment shader renders each sprite as
+ *    an *oriented* streak — the sprite UV is rotated into the flow-aligned
+ *    frame, stretched along the flow axis (soft gaussian tail, round
+ *    falloff across). `uStreak` (0 = round point, 1 = full streak) blends
+ *    between the two. Cheap: no extra geometry, one exp() in the fragment.
+ *  - Speed-color: `vFlow` magnitude tints slow = cyan → fast = mint via
+ *    uSlowColor/uFastColor, on top of the existing uAccentMix drift.
+ *  - Pointer repel: uMouse/uMouseRadius/uMouseForce push particles away
+ *    from the cursor on the field plane (negative force = repel).
  */
 
 /** hash12 — hash of a 2D position in [0,1). */
@@ -83,6 +95,10 @@ export const flowFieldVertexShader = /* glsl */ `
   uniform float uFogDensity;   // FogExp2 density (matches Scene)
   uniform float uCenterFadeStart;
   uniform float uCenterFadeEnd;
+  uniform float uStreak;       // 0..1 streak elongation (also grows the sprite)
+  uniform vec3  uMouse;        // cursor position on the field plane (group-local)
+  uniform float uMouseRadius;  // pointer-repel radius (world units)
+  uniform float uMouseForce;   // signed: negative = repel, positive = attract
 
   attribute vec3 aHome;
   attribute vec4 aSeed;
@@ -91,6 +107,7 @@ export const flowFieldVertexShader = /* glsl */ `
   varying vec3  vColor;
   varying float vBright;
   varying float vFog;
+  varying vec2  vFlow;         // last per-substep flow displacement (dir + mag)
 
   ${NOISE_GLSL}
 
@@ -101,19 +118,31 @@ export const flowFieldVertexShader = /* glsl */ `
     // Stateless advection: a few Euler substeps along the curl field,
     // recomputed from home every frame (smooth function of time).
     vec3 p = home;
+    vec2 flow = vec2(0.0);
     for (int i = 0; i < 4; i++) {
-      vec2 flow = curlFlow(p.xy, uTurbulence, uSpeed);
+      flow = curlFlow(p.xy, uTurbulence, uSpeed);
       p.xy += flow * uStep * (0.8 + 0.4 * aSeed.w);
       p.z += (vnoise(p.xz * 1.3 + uTime * 0.28 * uSpeed) - 0.5) * uStep * 0.7;
     }
     p = home + softClamp(p - home, uWander);
 
+    // Pointer repel: gentle nudge away from the cursor on the field plane.
+    // Deterministic per frame (recomputed from home), so nothing accumulates.
+    vec2 toMouse = p.xy - uMouse.xy;
+    float mdist = length(toMouse);
+    float mFalloff = 1.0 - smoothstep(0.0, uMouseRadius, mdist);
+    p.xy += (toMouse / max(mdist, 1e-5)) * mFalloff * (-uMouseForce) * 0.6;
+
+    // Capture the last flow displacement for streak orientation + speed tint.
+    vFlow = flow * uStep * (0.8 + 0.4 * aSeed.w);
+
     vec4 mv = modelViewMatrix * vec4(p, 1.0);
     gl_Position = projectionMatrix * mv;
 
     // Point size, PointsMaterial-equivalent (world size * screen scale).
-    float size = uSize * aSeed.y * (0.85 + 0.5 * uCharge);
-    gl_PointSize = clamp(size * (uScale / -mv.z), 0.5, 26.0);
+    // Streaks get a larger sprite so the gaussian ribbon has room to read.
+    float size = uSize * aSeed.y * (0.85 + 0.5 * uCharge) * (1.0 + uStreak * 0.7);
+    gl_PointSize = clamp(size * (uScale / -mv.z), 0.5, 34.0);
 
     // Per-particle brightness: base * twinkle * reveal * charge.
     float twinkle = 0.7 + 0.3 * sin(uTime * (0.6 + aSeed.x * 1.6) + aSeed.z * 6.2831);
@@ -139,18 +168,53 @@ export const flowFieldFragmentShader = /* glsl */ `
   uniform vec3  uAccentColor;
   uniform float uAccentMix;    // 0..1 per-section drift toward mint
   uniform float uRevealAlpha;  // extra alpha gate for the reveal envelope
+  uniform float uStreak;       // 0 = round point, 1 = full velocity streak
+  uniform vec3  uSlowColor;    // speed-color: slow particles (cyan)
+  uniform vec3  uFastColor;    // speed-color: fast particles (mint)
 
   varying vec3  vColor;
   varying float vBright;
   varying float vFog;
+  varying vec2  vFlow;         // flow displacement (direction + magnitude)
 
   void main() {
     // Soft round sprite (bright core, smooth falloff) for additive glow.
-    float d = length(gl_PointCoord - 0.5);
-    float a = 1.0 - smoothstep(0.0, 0.5, d);
-    a = a * a;
+    vec2 uv = gl_PointCoord - 0.5;
+    float d = length(uv);
+    float aRound = 1.0 - smoothstep(0.0, 0.5, d);
+    aRound = aRound * aRound;
+
+    // Oriented streak: rotate the sprite UV into the flow-aligned frame and
+    // stretch it along the flow axis — soft gaussian tail along the stretch,
+    // round falloff across. Near-stationary particles stay round (no
+    // flickering arbitrary angle on curl nulls). atan args get a tiny bias
+    // so a zero flow can never yield undefined atan(0,0) → NaN poison.
+    float speed = length(vFlow);
+    float speedGate = smoothstep(0.01, 0.05, speed);
+    float ang = atan(vFlow.y, vFlow.x + 1e-6);
+    vec2 dir = vec2(cos(ang), sin(ang));
+    vec2 perp = vec2(-dir.y, dir.x);
+    float along = dot(uv, dir);
+    float across = dot(uv, perp);
+
+    // Gaussian falloff along the flow axis, stretched by uStreak; windowed
+    // so the tail dies before the square sprite edge (no hard clip).
+    float sigma = 0.3 + 0.25 * uStreak;
+    float gAlong = exp(-0.5 * pow(along / sigma, 2.0));
+    gAlong *= 1.0 - smoothstep(0.28, 0.5, abs(along));
+    float gAcross = 1.0 - smoothstep(0.0, 0.5, abs(across));
+    gAcross = gAcross * gAcross;
+    float aStreak = gAlong * gAcross;
+
+    float a = mix(aRound, aStreak, uStreak * speedGate);
+
+    // Speed-color: slow = cyan, fast = mint — tells the motion story and
+    // lifts the color contrast. The per-section accent drift still applies.
+    float speedT = smoothstep(0.02, 0.25, speed);
+    vec3 speedCol = mix(uSlowColor, uFastColor, speedT);
 
     vec3 col = mix(vColor, uAccentColor, uAccentMix * 0.3);
+    col = mix(col, speedCol, 0.5);
     col *= vBright;
 
     float alpha = a * vFog * uRevealAlpha;

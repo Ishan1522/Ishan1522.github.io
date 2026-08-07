@@ -62,6 +62,11 @@ Lenis (smooth scroll)
   store phase values into uniforms in `useFrame`: `firingRate` → advection
   speed, `stdpIntensity` → turbulence/wander, `dendriteGrowth` → reveal
   alpha, `spikeActive` → charge boost, section index → cyan→mint accent.
+  Also hosts the "un-boring" pass: `uStreak` (round point → velocity
+  ribbon), `uSlowColor`/`uFastColor` (speed-color cyan→mint), a decaying
+  section-change burst folded into charge/size/reveal, scroll-progress
+  rate → extra turbulence, and a damped `uMouse`/`uMouseRadius`/
+  `uMouseForce` pointer repel (negative force = repel, desktop only).
 - `components/three/Effects.tsx` — restrained Bloom + Vignette (desktop only).
 - Legibility rule: homes are periphery-biased, near-axis particles are faded
   (center-clearance), depth-fogged with the Scene's FogExp2, and overall
