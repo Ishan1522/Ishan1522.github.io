@@ -51,9 +51,11 @@ Lenis (smooth scroll)
 
 ## The flow-field background
 
-- `lib/flow-field.ts` — deterministic particle seeding. Homes are biased to
-  the periphery (annulus shell) so the center stays clear; packed seed vec4
-  + dimmed palette color per particle.
+- `lib/flow-field.ts` — deterministic particle seeding. Homes form an
+  organic cloud: a soft outward density ramp (small inner cutoff so the
+  middle stays relatively clear but is never an empty void), per-particle
+  y-squish variance, wider z-spread, radial edge jitter, and ~7% dimmed
+  inner strays; packed seed vec4 + dimmed palette color per particle.
 - `lib/flow-field-shaders.ts` — GLSL. The vertex shader advects each
   particle along a divergence-free 2D curl-noise field (3 octaves,
   incommensurate frequencies → non-repeating), recomputing position as a
@@ -63,10 +65,15 @@ Lenis (smooth scroll)
   speed, `stdpIntensity` → turbulence/wander, `dendriteGrowth` → reveal
   alpha, `spikeActive` → charge boost, section index → cyan→mint accent.
   Also hosts the "un-boring" pass: `uStreak` (round point → velocity
-  ribbon), `uSlowColor`/`uFastColor` (speed-color cyan→mint), a decaying
-  section-change burst folded into charge/size/reveal, scroll-progress
-  rate → extra turbulence, and a damped `uMouse`/`uMouseRadius`/
-  `uMouseForce` pointer repel (negative force = repel, desktop only).
+  ribbon), `uSlowColor`/`uFastColor` (speed-color cyan→mint), a
+  section-change burst folded into charge/size/reveal via a 0.15s-attack →
+  long-exponential-tail envelope (reads as a swell, not a flash), scroll-
+  progress rate → capped, slow-damped turbulence churn, and a damped
+  `uMouse`/`uMouseRadius`/`uMouseForce` pointer repel (negative force =
+  repel, desktop only, kept snappy). The field rig uses a *bounded* Y sway
+  (not an unbounded spin — an accumulating spin parks the perspective/
+  fog-weighted silhouette on one side and reads as horizontal drift) plus a
+  damped scroll tilt clamped to ±0.15.
 - `components/three/Effects.tsx` — restrained Bloom + Vignette (desktop only).
 - Legibility rule: homes are periphery-biased, near-axis particles are faded
   (center-clearance), depth-fogged with the Scene's FogExp2, and overall
