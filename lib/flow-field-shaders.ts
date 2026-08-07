@@ -20,7 +20,11 @@
 /** hash12 — hash of a 2D position in [0,1). */
 const NOISE_GLSL = /* glsl */ `
   float hash12(vec2 p) {
-    vec3 p3 = fract(vec3(p.xy) * 0.1031);
+    // NOTE: vec3(p.xy, 0.0) — GLSL ES 3.00 requires a full component set;
+    // vec3(p.xy) fails to compile on three.js r168 (WebGL2-only) and
+    // rendered the background blank. Caught by the vault bg-capture
+    // pipeline (2026-08-06).
+    vec3 p3 = fract(vec3(p.xy, 0.0) * 0.1031);
     p3 += dot(p3, p3.yzx + 33.33);
     return fract((p3.x + p3.y) * p3.z);
   }
