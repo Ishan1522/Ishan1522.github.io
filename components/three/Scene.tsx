@@ -4,7 +4,7 @@ import { Suspense, useRef } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 
-import { FiringWave } from './FiringWave';
+import { Aurora } from './Aurora';
 import { Effects } from './Effects';
 import { useIsMobile } from '@/hooks/useIsMobile';
 import { useSectionStore, previewUi } from '@/lib/section-store';
@@ -17,9 +17,9 @@ import { COLORS, damp } from '@/lib/constants';
  * Background is set as scene.background for a non-transparent fill that
  * still respects post-processing.
  *
- * Subject: FiringWave (B3) — concentric firing-wave / EEG-oscilloscope
- * rings radiating from per-section focal points on a shader plane. The shell
- * (camera rig, fog, effects, fallback) is shared infrastructure.
+ * Subject: Aurora (B4) — layered domain-warped noise "curtain" gradients
+ * on a shader plane. The shell (camera rig, fog, effects, fallback) is
+ * shared infrastructure.
  */
 export function Scene() {
   const mobile = useIsMobile();
@@ -37,7 +37,7 @@ export function Scene() {
       <CameraRig />
       <UiRig />
       <Suspense fallback={null}>
-        <FiringWave mobile={mobile} />
+        <Aurora mobile={mobile} />
       </Suspense>
       <Effects mobile={mobile} />
     </Canvas>
@@ -62,7 +62,7 @@ function UiRig() {
 
 /**
  * Camera rig — damps the camera's Z toward the active section's target.
- * Keeps X/Y at 0 (the firing-wave plane stays centered). A touch of breathing on Y.
+ * Keeps X/Y at 0 (the aurora plane stays centered). A touch of breathing on Y.
  *
  * The dolly is deliberately softened: the section `cameraZ` target is
  * scaled to 70% of its data range and damped slowly (λ1.2) so the physical
