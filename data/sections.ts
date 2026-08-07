@@ -7,9 +7,9 @@
  *   - The scroll store tracks which phase we're in based on section index
  *
  * `phase` is a 0-1 value the background reads to decide what to look like.
- * Add/reorder sections here; the flow field maps each section's phase to
- * its flow parameters (speed, turbulence, reveal, tilt, color accent)
- * automatically.
+ * Add/reorder sections here; the background maps each section's phase to
+ * its parameters (firing rate, spike activity, trace shimmer, reveal,
+ * tilt, color accent) automatically.
  */
 
 export interface SectionDef {
@@ -18,12 +18,12 @@ export interface SectionDef {
   index: string;   // Monospace index shown on section header (e.g. "01")
   /** Background's target state when this section is active. */
   phase: {
-    dendriteGrowth: number;  // 0..1 how "assembled" the constellation is (reveal)
-    spikeActive: number;     // 0..1 charge boost on the active hub + edge pulses
-    stdpIntensity: number;   // 0..1 how much the field shimmers/rewires between sections
-    firingRate: number;      // 0..1 edge charge-pulse speed multiplier
+    dendriteGrowth: number;  // 0..1 global reveal/fade-in of the wave field
+    spikeActive: number;     // 0..1 action potentials fire from the active focus (0/1 in practice)
+    stdpIntensity: number;   // 0..1 EEG-trace activity / shimmer between sections
+    firingRate: number;      // 0..1 wave emission rate + expansion speed
     cameraZ: number;         // Subtle camera push/pull
-    rotation: number;        // Tilt of the whole field
+    rotation: number;        // Sway/tilt of the whole field
   };
 }
 
