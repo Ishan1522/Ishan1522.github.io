@@ -1,6 +1,6 @@
 # ishan-portfolio
 
-Personal portfolio site. Built for Ishan, EE @ MSU.
+Personal portfolio site. Built for me, EE @ MSU.
 
 A Next.js single-page site with a Three.js scroll-driven background (aurora gradient layers on a shader plane) and a data-driven content layer for projects and research.
 
