@@ -95,6 +95,9 @@ Open `data/projects.ts` and append to the `projects` array:
 }
 ```
 
+`status` accepts `production`, `active`, `shipped`, `ongoing`, or `done`.
+`accent` accepts `cyan` or `mint`.
+
 Drop an image at `public/images/projects/my-project/cover.png`. The grid picks it up automatically. `coverImage` may be `null` to render the gradient placeholder.
 
 ### Adding a research track
