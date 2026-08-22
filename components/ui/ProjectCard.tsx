@@ -14,6 +14,7 @@ const STATUS_LABELS: Record<Project['status'], string> = {
   active: 'Active dev',
   shipped: 'Shipped',
   ongoing: 'Ongoing',
+  done: 'Done',
 };
 
 const STATUS_DOT: Record<Project['status'], string> = {
@@ -21,6 +22,7 @@ const STATUS_DOT: Record<Project['status'], string> = {
   active: 'bg-cyan shadow-[0_0_10px_rgb(var(--color-cyan))]',
   shipped: 'bg-cyan/60',
   ongoing: 'bg-slate-soft',
+  done: 'bg-slate-soft/50',
 };
 
 export function ProjectCard({ project }: Props) {

@@ -7,7 +7,7 @@
  *   3. The grid picks it up automatically.
  */
 
-export type ProjectStatus = 'production' | 'active' | 'shipped' | 'ongoing';
+export type ProjectStatus = 'production' | 'active' | 'shipped' | 'ongoing' | 'done';
 export type Accent = 'cyan' | 'mint';
 
 export interface ProjectLink {
@@ -51,19 +51,34 @@ export const projects: Project[] = [
   },
   {
     slug: 'wpifilter',
-    name: 'wpifilter',
-    tagline: 'Rust DSP toolkit for FRC / WPILib',
+    name: 'rosfilter',
+    tagline: 'ROS 2 filter workbench for robot signal data',
     description:
-      'A MATLAB DSP Toolbox analog written in Rust, for tuning robotics control systems. WPILOG binary parser, biquad and cascade filter designers (Butterworth, Chebyshev I, RBJ cookbook), FFT spectrum viewer, zero-phase filtfilt, a pull-evaluated node-graph pipeline, and a live NetworkTables-4 client for on-robot streaming.',
-    tech: ['Rust', 'egui', 'NetworkTables 4', 'WPILib', 'DSP'],
+      'A desktop filter design + analysis workbench for ROS 2 signal data — built for both simulation (Gazebo rosbags) and real robots (live topics). Load an MCAP rosbag recording, inspect time-domain / spectrum / filter-response views, design biquad filters (Butterworth, Chebyshev I, RBJ cookbook), wire a node-graph pipeline, and export the filter as a ready-to-run ROS 2 node (rclcpp C++ or rclrs Rust). Live mode subscribes to real topics via rclrs with dynamic message introspection. Evolved from the FRC-era wpifilter (WPILib / NetworkTables); full ROS 2 migration landed 2026.',
+    tech: ['Rust', 'egui', 'ROS 2', 'rclrs', 'MCAP', 'DSP'],
     role: 'Solo',
     year: '2026',
     status: 'active',
     accent: 'mint',
     coverImage: '/images/projects/wpifilter/cover.png',
     links: [
-      // Replace with your public repo URL when ready.
-      { label: 'GitHub', href: 'https://github.com/Ishan1522' },
+      { label: 'GitHub', href: 'https://github.com/Ishan1522/filters' },
+    ],
+  },
+  {
+    slug: 'sar-sim2real',
+    name: 'SAR — Spartan Autonomous Robotics',
+    tagline: 'Sim-to-real pipeline, Simulation Lead',
+    description:
+      'MSU robotics club — Simulation Lead. Built out the sar-sim2real pipeline: headless Gazebo + MuJoCo CI with a JSONL→MCAP trial-output converter, vendored spot_pico (Phase 1), a full gait port, and a 3-tier video strategy for CI artifacts. Landed 4/4 CI green with a mean sim-to-real reality gap of 0.0418 m — under the 0.08 m threshold.',
+    tech: ['Gazebo', 'MuJoCo', 'ROS 2', 'Rust', 'CI/CD'],
+    role: 'Simulation Lead',
+    year: '2026',
+    status: 'active',
+    accent: 'cyan',
+    coverImage: null,
+    links: [
+      { label: 'GitHub', href: 'https://github.com/msu-sar-robotics/sar-sim2real' },
     ],
   },
   {
@@ -75,7 +90,7 @@ export const projects: Project[] = [
     tech: ['LVGL', 'C/C++', 'SDL', 'GitHub Actions', 'Xvfb', 'Bash'],
     role: 'Electrical subteam',
     year: '2026',
-    status: 'shipped',
+    status: 'done',
     accent: 'cyan',
     coverImage: '/images/projects/solar-racing-ci/cover.png',
     links: [
