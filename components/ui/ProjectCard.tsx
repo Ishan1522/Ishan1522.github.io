@@ -17,12 +17,14 @@ const STATUS_LABELS: Record<Project['status'], string> = {
   done: 'Done',
 };
 
-const STATUS_DOT: Record<Project['status'], string> = {
-  production: 'bg-mint shadow-[0_0_10px_rgb(var(--color-mint))]',
-  active: 'bg-cyan shadow-[0_0_10px_rgb(var(--color-cyan))]',
-  shipped: 'bg-cyan/60',
-  ongoing: 'bg-slate-soft',
-  done: 'bg-slate-soft/50',
+// Status read as a quiet inline label — the signal survives as text color,
+// not as a glowing dashboard dot.
+const STATUS_COLOR: Record<Project['status'], string> = {
+  production: 'text-mint',
+  active: 'text-cyan',
+  shipped: 'text-cyan/70',
+  ongoing: 'text-slate-soft',
+  done: 'text-slate-muted',
 };
 
 export function ProjectCard({ project }: Props) {
@@ -35,10 +37,6 @@ export function ProjectCard({ project }: Props) {
   const accentBorder =
     project.accent === 'cyan' ? 'hover:border-cyan/60' : 'hover:border-mint/60';
   const accentText = project.accent === 'cyan' ? 'text-cyan' : 'text-mint';
-  const accentGlow =
-    project.accent === 'cyan'
-      ? 'from-cyan/10 via-transparent to-transparent'
-      : 'from-mint/10 via-transparent to-transparent';
 
   useEffect(() => {
     const mq = window.matchMedia('(hover: hover)');
@@ -51,7 +49,7 @@ export function ProjectCard({ project }: Props) {
   return (
     <motion.article
       className={cn(
-        'pointer-events-auto group relative flex flex-col overflow-hidden rounded-sm border border-white/5 bg-ink-900/80 backdrop-blur-sm',
+        'pointer-events-auto group relative flex flex-col overflow-hidden rounded-sm border border-white/5 bg-ink-900/80',
         accentBorder
       )}
       // Spring-physics hover lift — replaces the old CSS scale transition.
@@ -60,16 +58,6 @@ export function ProjectCard({ project }: Props) {
       onMouseEnter={() => canHover && setHovered(true)}
       onMouseLeave={() => canHover && setHovered(false)}
     >
-      {/* Accent gradient wash on hover — opacity handled by the spring above's
-          sibling motion driven via hovered state */}
-      <div
-        className={cn(
-          'pointer-events-none absolute inset-0 bg-gradient-to-br opacity-0 transition-opacity duration-500',
-          accentGlow,
-          hovered && 'opacity-100'
-        )}
-      />
-
       {/* Cover image / placeholder */}
       <div className="relative aspect-square w-full overflow-hidden border-b border-white/5 bg-ink-950">
         {project.coverImage ? (
@@ -77,11 +65,6 @@ export function ProjectCard({ project }: Props) {
         ) : (
           <ProjectPlaceholder accent={project.accent} />
         )}
-        {/* Status pill */}
-        <div className="absolute left-3 top-3 flex items-center gap-2 rounded-full bg-ink-950/80 px-2.5 py-1 font-mono text-[10px] uppercase tracking-wider text-slate-soft backdrop-blur">
-          <span className={cn('h-1.5 w-1.5 rounded-full', STATUS_DOT[project.status])} />
-          {STATUS_LABELS[project.status]}
-        </div>
       </div>
 
       {/* Content */}
@@ -93,7 +76,12 @@ export function ProjectCard({ project }: Props) {
             </h3>
             <p className="mt-0.5 text-sm text-slate-soft">{project.tagline}</p>
           </div>
-          <span className="shrink-0 font-mono text-xs text-slate-muted">{project.year}</span>
+          <span className="shrink-0 text-right font-mono text-[10px] uppercase leading-tight tracking-wider">
+            <span className={cn('block', STATUS_COLOR[project.status])}>
+              {STATUS_LABELS[project.status]}
+            </span>
+            <span className="mt-0.5 block text-slate-muted">{project.year}</span>
+          </span>
         </div>
 
         <p

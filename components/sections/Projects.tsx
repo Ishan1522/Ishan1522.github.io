@@ -21,7 +21,7 @@ export function Projects() {
             <div className="md:col-span-7">
               <SectionLabel index="02" label="Projects" className="mb-6" />
               <h2 className="font-display text-display-lg font-semibold tracking-tight text-slate-bright">
-                Things I&apos;ve <span className="text-cyan">built</span>, <span className="text-mint">shipped</span>, and <span className="text-cyan">still think about</span>.
+                Things I&apos;ve built, shipped, and <span className="text-mint">still think about</span>.
               </h2>
             </div>
             <div className="md:col-span-4 md:col-start-9 md:self-end">

@@ -76,7 +76,7 @@ export function Hero() {
               variants={item}
               className="font-mono text-[10px] uppercase tracking-[0.4em] text-slate-muted"
             >
-              42.7370°N · 84.4839°W · {personal.location}
+              Based in {personal.location}
             </motion.p>
 
             <motion.h1
@@ -113,7 +113,7 @@ function StaticHeroContent() {
   return (
     <div className="flex flex-col items-center gap-8">
       <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-slate-muted">
-        42.7370°N · 84.4839°W · {personal.location}
+        Based in {personal.location}
       </p>
 
       <h1

@@ -42,7 +42,6 @@ export function Nav() {
                     active ? 'text-cyan' : 'text-slate-soft hover:text-slate-bright'
                   )}
                 >
-                  <span className="mr-2 text-[10px] text-slate-muted">{s.index}</span>
                   {s.label}
                   {active ? (
                     <motion.span

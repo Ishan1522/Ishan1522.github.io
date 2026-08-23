@@ -10,28 +10,19 @@ interface Props {
 
 export function ResearchCard({ track }: Props) {
   const accentText = track.accent === 'cyan' ? 'text-cyan' : 'text-mint';
-  const accentBar = track.accent === 'cyan' ? 'bg-cyan' : 'bg-mint';
   const accentHover =
     track.accent === 'cyan' ? 'hover:border-cyan/40' : 'hover:border-mint/40';
 
   return (
     <motion.article
       className={cn(
-        'pointer-events-auto group relative flex flex-col gap-4 rounded-sm border border-white/5 bg-ink-900/70 p-6 backdrop-blur-sm',
+        'pointer-events-auto group relative flex flex-col gap-4 rounded-sm border border-white/5 bg-ink-900/70 p-6',
         accentHover
       )}
       // Spring lift on hover, matching ProjectCard's physics.
       whileHover={{ y: -3 }}
       transition={{ type: 'spring', stiffness: 320, damping: 24 }}
     >
-      {/* Left accent bar */}
-      <span
-        className={cn(
-          'absolute inset-y-6 left-0 w-px transition-all duration-500 group-hover:inset-y-0',
-          accentBar
-        )}
-      />
-
       <div className="flex items-baseline justify-between">
         <h3 className={cn('font-display text-2xl font-semibold tracking-tight', accentText)}>
           {track.title}

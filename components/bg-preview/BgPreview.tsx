@@ -138,7 +138,7 @@ export function BgPreview() {
       <div style={hudStyle}>
         <div style={{ color: '#67e8f9', fontWeight: 600 }}>BG PREVIEW — QA harness</div>
         <div>
-          section: {active.index} {active.label} ({section + 1}/{sections.length})
+          section: {String(section + 1).padStart(2, '0')} {active.label} ({section + 1}/{sections.length})
         </div>
         <div>
           intensity ×{ui.intensity.toFixed(2)} (eff ×{previewUi.intensity.toFixed(2)})
