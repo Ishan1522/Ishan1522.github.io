@@ -18,12 +18,13 @@ interface Props {
 }
 
 /**
- * B4-local atmospheric depth color — a restrained deep indigo-teal derived
- * from the palette's ink-900 / cyan-deep range. Kept here (not in the shared
- * COLORS map, which must stay in sync with globals.css) because it is
- * background-only atmosphere, not a UI palette color.
+ * B4-local volumetric depth color — a deep petrol base sheet (the blue+green
+ * blend that IS the material, derived from the palette's ink-700 → ink-600
+ * range). Kept here (not in the shared COLORS map, which must stay in sync
+ * with globals.css) because it is background-only atmosphere, not a UI
+ * palette color.
  */
-const AURORA_INDIGO = '#17324e';
+const AURORA_PETROL = '#16404f';
 
 const CAMERA_FOV = 45; // Scene Canvas camera fov
 const PLANE_Z = -0.4; // world Z of the background plane
@@ -61,14 +62,15 @@ const LAMP_REDUCED = 0.5; // strength multiplier under prefers-reduced-motion
 const LAMP_OFF = new THREE.Vector2(99, 99); // far off-screen NDC → glow ≈ 0
 
 /**
- * The B4 background subject: aurora gradient layers.
+ * The B4 background subject: aurora gradient layers — the site's signature.
  *
  * One large camera-facing plane whose fragment shader paints layered
  * domain-warped noise "curtains" (see lib/aurora-shaders.ts). Pure
  * procedural — no CPU sim, no textures, no per-band geometry — so the whole
  * background is a single additive quad whose fragment shader does all the
- * work. Deliberately dim and calm: it is atmosphere behind content, not a
- * subject.
+ * work. This is the dominant volumetric material the layout sits INSIDE:
+ * the deep petrol base sheet fills the frame and the blue/green curtains
+ * drift through it. The layout recedes around the field, not over it.
  *
  * Section reactivity reuses the scroll store's phase values, damped into
  * uniforms inside useFrame (store read via getState, no re-renders):
@@ -84,8 +86,9 @@ const LAMP_OFF = new THREE.Vector2(99, 99); // far off-screen NDC → glow ≈ 0
  * Full-bleed composition: the plane is PLANE_SIZE units across (always
  * larger than the frustum) and the shader maps the visible portion to NDC
  * via live half-extents, so the field fills the viewport at any camera Z —
- * no empty-center problem, and the whole thing sits dimmer than the content
- * corridor (peak ~0.3 luma, well below the Bloom threshold).
+ * no empty-center problem. The curtain weights and edge fade (see
+ * lib/aurora-shaders.ts) are tuned so the field reads as a material void
+ * with soft bloom on the curtain cores, not a texture behind cards.
  *
  * Reduced motion: the drift clock freezes (uTime = 0) and the reactive
  * dampers settle — the shader still renders one coherent, calm static
@@ -128,7 +131,7 @@ export function Aurora({ mobile = false }: Props) {
       uHalfH: { value: 2.28 },
       uCyan: { value: new THREE.Color(...hexToRGB(COLORS.cyan)) },
       uMint: { value: new THREE.Color(...hexToRGB(COLORS.mint)) },
-      uIndigo: { value: new THREE.Color(...hexToRGB(AURORA_INDIGO)) },
+      uPetrol: { value: new THREE.Color(...hexToRGB(AURORA_PETROL)) },
       // Lamp: cursor NDC (screen-fixed), defaults far off-screen so the
       // glow contribution is ~0 until the pointer actually moves (field
       // stays calm before first interaction).

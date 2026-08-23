@@ -13,25 +13,37 @@
      * in tailwind.config.ts. `lib/constants.ts` mirrors the same hex values
      * for the Three.js/WebGL layer (kept in sync manually — WebGL needs
      * synchronous hex at module scope, so it can't read CSS variables).
+     *
+     * Concept — "petrol-drenched signal field". The neutral near-blacks are
+     * replaced by deep petrol-blues (the blend of blue + green, the owner's
+     * two favourite colours) so every surface lives INSIDE the signal
+     * material instead of floating on neutral grey.
+     *
+     * SEMANTIC ROLES (asymmetry — one dominant hue, accents with narrow jobs):
+     *   cyan (blue)  = INTERACTION ONLY — links, buttons, focus rings, active
+     *                  nav underline, section chrome. Never decorative.
+     *   mint (green) = LIVE DATA ONLY — active status, firing traces, live
+     *                  data marks, the signal glow. Never decorative.
+     *   Never both on one element for decoration; green never decorates.
      * ---------------------------------------------------------------------- */
-    --color-ink-950: 5 8 15;
-    --color-ink-900: 10 14 26;
-    --color-ink-800: 17 24 39;
-    --color-ink-700: 28 36 51;
-    --color-ink-600: 42 52 70;
+    --color-ink-950: 7 17 24;    /* very deep petrol-black */
+    --color-ink-900: 9 30 38;    /* deep petrol */
+    --color-ink-800: 15 45 55;
+    --color-ink-700: 24 62 76;
+    --color-ink-600: 33 82 99;
 
-    --color-cyan: 34 211 238;
-    --color-cyan-glow: 103 233 249;
-    --color-cyan-deep: 8 145 178;
+    --color-cyan: 76 155 232;       /* interaction blue (#4C9BE8) */
+    --color-cyan-glow: 103 180 249; /* #67B4F9 */
+    --color-cyan-deep: 8 113 178;   /* #0871B2 */
 
-    --color-mint: 52 211 153;
-    --color-mint-glow: 110 231 183;
-    --color-mint-deep: 5 150 105;
+    --color-mint: 52 211 153;       /* live green (#34D399) */
+    --color-mint-glow: 110 231 183; /* #6EE7B7 */
+    --color-mint-deep: 5 150 105;   /* #059669 */
 
-    --color-slate-muted: 100 116 139;
-    --color-slate-soft: 148 163 184;
-    --color-slate-text: 203 213 225;
-    --color-slate-bright: 241 245 249;
+    --color-slate-muted: 98 122 133;    /* neutrals cooled toward petrol */
+    --color-slate-soft: 147 168 178;    /* so text sits in the material */
+    --color-slate-text: 202 215 220;
+    --color-slate-bright: 241 246 248;
   }
 
   * {
@@ -59,16 +71,16 @@
     background: rgb(var(--color-ink-950));
   }
   ::-webkit-scrollbar-thumb {
-    background: rgb(var(--color-cyan) / 0.267); /* #22d3ee @ 44/255 alpha */
+    background: rgb(var(--color-cyan) / 0.267); /* #4C9BE8 @ 44/255 alpha */
     border-radius: 2px;
   }
   ::-webkit-scrollbar-thumb:hover {
-    background: rgb(var(--color-cyan) / 0.533); /* #22d3ee @ 136/255 alpha */
+    background: rgb(var(--color-cyan) / 0.533); /* #4C9BE8 @ 136/255 alpha */
   }
 
   /* Selection */
   ::selection {
-    background: rgb(var(--color-cyan) / 0.267); /* #22d3ee @ 44/255 alpha */
+    background: rgb(var(--color-cyan) / 0.267); /* #4C9BE8 @ 44/255 alpha */
     color: rgb(var(--color-slate-bright));
   }
 

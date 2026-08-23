@@ -26,8 +26,8 @@ const hudStyle: CSSProperties = {
   zIndex: 60,
   padding: '10px 14px',
   borderRadius: 6,
-  background: 'rgba(5, 8, 15, 0.78)',
-  border: '1px solid rgba(34, 211, 238, 0.28)',
+  background: 'rgba(7, 17, 24, 0.78)',
+  border: '1px solid rgba(76, 155, 232, 0.28)',
   color: '#e2e8f0',
   fontFamily: 'var(--font-jetbrains), ui-monospace, SFMono-Regular, monospace',
   fontSize: 12,
@@ -131,12 +131,12 @@ export function BgPreview() {
   }, []);
 
   return (
-    <div style={{ position: 'fixed', inset: 0, background: '#0a0e1a' }}>
+    <div style={{ position: 'fixed', inset: 0, background: '#091e26' }}>
       <Scene />
 
       {/* HUD — plain inline-styled divs, bottom corner, screenshot-friendly */}
       <div style={hudStyle}>
-        <div style={{ color: '#67e8f9', fontWeight: 600 }}>BG PREVIEW — QA harness</div>
+        <div style={{ color: '#67b4f9', fontWeight: 600 }}>BG PREVIEW — QA harness</div>
         <div>
           section: {String(section + 1).padStart(2, '0')} {active.label} ({section + 1}/{sections.length})
         </div>
@@ -144,10 +144,10 @@ export function BgPreview() {
           intensity ×{ui.intensity.toFixed(2)} (eff ×{previewUi.intensity.toFixed(2)})
         </div>
         <div>speed ×{ui.speed.toFixed(2)} (eff ×{previewUi.speed.toFixed(2)})</div>
-        <div style={{ color: '#94a3b8', marginTop: 2 }}>
+        <div style={{ color: '#93a8b2', marginTop: 2 }}>
           keys: ←/→ [ ] 1–{sections.length} space = section · +/- = intensity · r = reset
         </div>
-        <div style={{ color: '#94a3b8' }}>url: ?section=N&amp;intensity=X&amp;speed=Y</div>
+        <div style={{ color: '#93a8b2' }}>url: ?section=N&amp;intensity=X&amp;speed=Y</div>
       </div>
     </div>
   );

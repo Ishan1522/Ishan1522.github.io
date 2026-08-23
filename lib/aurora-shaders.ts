@@ -6,8 +6,10 @@
  * warping — the silky folded-curtain look of northern-lights ribbons. Pure
  * procedural: no particles, no geometry per band, no textures, no CPU sim.
  * Additive blending + toneMapped:false (same pass style as the prior
- * backgrounds) keeps the whole field dim and below the Bloom threshold —
- * this is atmosphere that recedes behind content, not a subject.
+ * backgrounds). The field is the site's signature — the dominant volumetric
+ * petrol void the layout sits inside — so curtain weights and edge fade are
+ * tuned to fill the frame and read as material, with soft bloom on the
+ * curtain cores (Effects.tsx) rather than a dim backdrop behind cards.
  *
  * Full-bleed robustness: the plane is 24×24 units — always larger than the
  * frustum at any camera Z the rig can reach — and the vertex shader passes
@@ -84,7 +86,7 @@ export function buildAuroraFragmentShader(
     uniform float uHalfH;        // live frustum half-height at the plane
     uniform vec3  uCyan;
     uniform vec3  uMint;
-    uniform vec3  uIndigo;       // restrained deep indigo-teal for depth
+    uniform vec3  uPetrol;       // deep petrol — the dominant volumetric base
     uniform vec2  uMouse;        // pointer lamp — cursor NDC on the visible rect
     uniform float uLampStrength; // 1 normal, 0.5 reduced-motion (gentler)
 
@@ -176,18 +178,22 @@ export function buildAuroraFragmentShader(
       float c1 = curtain(p, r, 5.3, 0.87,  0.14, 0.22, t);
       float c2 = curtain(p, r, 9.7, 1.31,  0.42, 0.14, t);
 
-      // Curtain colors: deep indigo base sheet → cyan → mint, with a gentle
-      // cyan → mint drift per section (uAccentMix). Kept modest-saturated.
+      // Curtain colors: deep petrol base sheet → blue → green, with a gentle
+      // blue → green drift per section (uAccentMix). Blue stays dominant —
+      // the base sheet and the lower curtain carry the field's weight.
       vec3 cyan = mix(uCyan, uMint, 0.20 + 0.50 * uAccentMix);
       vec3 mint = mix(uCyan, uMint, 0.50 + 0.50 * uAccentMix);
 
-      vec3 col = uIndigo * (c0 * 0.11)
-               + cyan    * (c1 * 0.17)
-               + mint    * (c2 * 0.13);
+      // Curtain weights raised so the field reads as the dominant material:
+      // the petrol base sheet + blue curtain carry most of the presence,
+      // green curtain adds the live-signal top note.
+      vec3 col = uPetrol * (c0 * 0.16)
+               + cyan    * (c1 * 0.22)
+               + mint    * (c2 * 0.17);
 
-      // Faint full-field haze — the deep bg → cyan continuum reads
-      // everywhere, so curtains float in atmosphere rather than a void.
-      col += mix(uIndigo, uCyan, wbase * 0.55) * 0.05 * (0.8 + 0.5 * uAccentMix);
+      // Full-field haze — the petrol → blue continuum reads everywhere, so
+      // the curtains float in a material volume rather than a void.
+      col += mix(uPetrol, uCyan, wbase * 0.60) * 0.075 * (0.85 + 0.45 * uAccentMix);
 
       // stdpIntensity shimmer — a whisper of brightness, subtle life.
       col *= 0.88 + 0.12 * uShimmer;
@@ -216,9 +222,11 @@ export function buildAuroraFragmentShader(
       }
 
       // Edge fade — curtains melt into the corners (vignette-consistent;
-      // Effects.tsx adds its own vignette on desktop on top of this).
+      // Effects.tsx adds its own vignette on desktop on top of this). Fade
+      // starts late so the field bleeds well into the frame — the layout
+      // sits inside the void, it doesn't look onto a window.
       float radial = length(p0);
-      float edge = 1.0 - smoothstep(0.85, 1.45, radial);
+      float edge = 1.0 - smoothstep(0.95, 1.6, radial);
 
       // 1-bit hash dither — kills residual 8-bit banding in the gradients.
       col += (hash21(gl_FragCoord.xy) - 0.5) * 0.006;

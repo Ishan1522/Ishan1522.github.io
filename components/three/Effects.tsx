@@ -7,20 +7,19 @@ interface Props {
 }
 
 /**
- * Post-processing — kept intentionally restrained per the "muted cyberpunk"
- * brief. Only the spike and synapse highlights cross the bloom threshold;
- * the soma glow is kept below it so the overall image stays calm.
- *
- * Removed ChromaticAberration — it was causing visible RGB fringing and
- * contributing to a flashy, photosensitivity-unfriendly feel.
+ * Post-processing — kept restrained. The aurora field is the signature
+ * material: its curtain cores sit just under the bloom threshold so the
+ * petrol void glows softly (volumetric, not neon). Removed
+ * ChromaticAberration — it was causing visible RGB fringing and a flashy,
+ * photosensitivity-unfriendly feel.
  */
 export function Effects({ mobile = false }: Props) {
   if (mobile) return null;
   return (
     <EffectComposer multisampling={0} enableNormalPass={false}>
       <Bloom
-        intensity={0.35}
-        luminanceThreshold={0.75}
+        intensity={0.45}
+        luminanceThreshold={0.6}
         luminanceSmoothing={0.2}
         mipmapBlur
       />

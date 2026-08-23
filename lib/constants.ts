@@ -11,26 +11,26 @@
  *
  *   bg        → --color-ink-900
  *   bgDeep    → --color-ink-950
- *   cyan      → --color-cyan
+ *   cyan      → --color-cyan      (interaction blue)
  *   cyanGlow  → --color-cyan-glow
  *   cyanDeep  → --color-cyan-deep
- *   mint      → --color-mint
+ *   mint      → --color-mint      (live green)
  *   mintGlow  → --color-mint-glow
  *   mintDeep  → --color-mint-deep
  *   text      → --color-slate-bright
  *   textSoft  → --color-slate-soft
  */
 export const COLORS = {
-  bg: '#0a0e1a',
-  bgDeep: '#05080f',
-  cyan: '#22d3ee',
-  cyanGlow: '#67e8f9',
-  cyanDeep: '#0891b2',
-  mint: '#34d399',
+  bg: '#091e26',      // ink-900 — deep petrol
+  bgDeep: '#071118',  // ink-950 — very deep petrol-black
+  cyan: '#4c9be8',    // interaction blue
+  cyanGlow: '#67b4f9',
+  cyanDeep: '#0871b2',
+  mint: '#34d399',    // live green
   mintGlow: '#6ee7b7',
   mintDeep: '#059669',
-  text: '#f1f5f9',
-  textSoft: '#94a3b8',
+  text: '#f1f6f8',    // slate-bright
+  textSoft: '#93a8b2',// slate-soft
 } as const;
 
 /** Convert a #rrggbb hex to a 0-1 THREE.Color-compatible tuple. */

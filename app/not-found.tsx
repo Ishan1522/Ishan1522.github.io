@@ -10,14 +10,15 @@ export default function NotFound() {
         aria-hidden
       >
         <defs>
+          {/* Unlit neuron — monochrome blue (dead signal), no green tips. */}
           <radialGradient id="soma404" cx="0.5" cy="0.5" r="0.5">
-            <stop offset="0%" stopColor="#67e8f9" />
-            <stop offset="50%" stopColor="#22d3ee" stopOpacity="0.5" />
-            <stop offset="100%" stopColor="#22d3ee" stopOpacity="0" />
+            <stop offset="0%" stopColor="#67b4f9" />
+            <stop offset="50%" stopColor="#4c9be8" stopOpacity="0.5" />
+            <stop offset="100%" stopColor="#4c9be8" stopOpacity="0" />
           </radialGradient>
         </defs>
         <circle cx="400" cy="300" r="80" fill="url(#soma404)" />
-        <circle cx="400" cy="300" r="18" fill="#67e8f9" />
+        <circle cx="400" cy="300" r="18" fill="#67b4f9" />
         {Array.from({ length: 10 }).map((_, i) => {
           const a = (i / 10) * Math.PI * 2;
           const r2 = 260 + Math.sin(i * 1.3) * 40;
@@ -27,8 +28,8 @@ export default function NotFound() {
           const cy = 300 + Math.sin(a + 0.3) * r2 * 0.6;
           return (
             <g key={i}>
-              <path d={`M${x1} ${y1} Q${cx} ${cy} ${x2} ${y2}`} stroke="#22d3ee" strokeWidth="1" fill="none" opacity="0.6" />
-              <circle cx={x2} cy={y2} r="3" fill="#34d399" />
+              <path d={`M${x1} ${y1} Q${cx} ${cy} ${x2} ${y2}`} stroke="#4c9be8" strokeWidth="1" fill="none" opacity="0.6" />
+              <circle cx={x2} cy={y2} r="3" fill="#4c9be8" />
             </g>
           );
         })}
@@ -53,7 +54,8 @@ export default function NotFound() {
         {/* Heading */}
         <div>
           <h1 className="font-display text-display-md font-semibold tracking-tight text-slate-bright">
-            This <span className="text-mint">neuron</span> didn&apos;t <span className="text-cyan">fire</span>.
+            {/* Single accent — the missing signal verb, in live green. */}
+            This neuron didn&apos;t <span className="text-mint">fire</span>.
           </h1>
           <p className="mx-auto mt-4 max-w-md text-base leading-relaxed text-slate-soft">
             The page you asked for isn&apos;t in the graph. It may have been moved, renamed, or never existed.
