@@ -9,10 +9,12 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // Cyberpunk — muted. Deep ink backgrounds, cyan primary, mint accent.
-        // Values defined once as CSS custom properties in app/globals.css
-        // (`:root`). Referenced here as `rgb(var(--color-*) / <alpha-value>)`
-        // so every opacity modifier keeps working.
+        // Petrol-drenched signal field. Deep petrol backgrounds (blue+green
+        // blend — the owner's two favourite colours), blue = INTERACTION,
+        // green = LIVE DATA. Values defined once as CSS custom properties in
+        // app/globals.css (`:root`). Referenced here as
+        // `rgb(var(--color-*) / <alpha-value>)` so every opacity modifier
+        // keeps working.
         ink: {
           950: 'rgb(var(--color-ink-950) / <alpha-value>)',
           900: 'rgb(var(--color-ink-900) / <alpha-value>)',
@@ -21,13 +23,13 @@ const config: Config = {
           600: 'rgb(var(--color-ink-600) / <alpha-value>)',
         },
         cyan: {
-          // Primary — signal color for the neuron spike + headings
+          // Interaction blue — links, focus, active nav, section chrome
           DEFAULT: 'rgb(var(--color-cyan) / <alpha-value>)',
           glow: 'rgb(var(--color-cyan-glow) / <alpha-value>)',
           deep: 'rgb(var(--color-cyan-deep) / <alpha-value>)',
         },
         mint: {
-          // Secondary — STDP synapses, dendrite tips, hover states
+          // Live green — status, firing traces, live data marks only
           DEFAULT: 'rgb(var(--color-mint) / <alpha-value>)',
           glow: 'rgb(var(--color-mint-glow) / <alpha-value>)',
           deep: 'rgb(var(--color-mint-deep) / <alpha-value>)',

@@ -1,21 +1,21 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
   <defs>
     <radialGradient id="g" cx="0.5" cy="0.5" r="0.5">
-      <stop offset="0%" stop-color="#67e8f9"></stop>
-      <stop offset="60%" stop-color="#22d3ee"></stop>
-      <stop offset="100%" stop-color="#0891b2" stop-opacity="0"></stop>
+      <stop offset="0%" stop-color="#67b4f9"></stop>
+      <stop offset="60%" stop-color="#4c9be8"></stop>
+      <stop offset="100%" stop-color="#0871b2" stop-opacity="0"></stop>
     </radialGradient>
   </defs>
   <circle cx="32" cy="32" r="10" fill="url(#g)"></circle>
-  <circle cx="32" cy="32" r="4" fill="#67e8f9"></circle>
-  <g stroke="#22d3ee" stroke-width="1.2" stroke-linecap="round" opacity="0.75" fill="none">
+  <circle cx="32" cy="32" r="4" fill="#67b4f9"></circle>
+  <g stroke="#4c9be8" stroke-width="1.2" stroke-linecap="round" opacity="0.75" fill="none">
     <path d="M32 32 L54 14 Q58 12 59 8"></path>
     <path d="M32 32 L10 18 Q4 16 3 10"></path>
     <path d="M32 32 L12 52 Q6 56 5 60"></path>
     <path d="M32 32 L52 54 Q58 58 60 60"></path>
     <path d="M32 32 L30 56"></path>
   </g>
-  <g fill="#34d399">
+  <g fill="#4c9be8">
     <circle cx="59" cy="8" r="1.6"></circle>
     <circle cx="3" cy="10" r="1.6"></circle>
     <circle cx="5" cy="60" r="1.6"></circle>

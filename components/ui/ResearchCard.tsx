@@ -9,9 +9,12 @@ interface Props {
 }
 
 export function ResearchCard({ track }: Props) {
-  const accentText = track.accent === 'cyan' ? 'text-cyan' : 'text-mint';
-  const accentHover =
-    track.accent === 'cyan' ? 'hover:border-cyan/40' : 'hover:border-mint/40';
+  // Card chrome is uniformly interaction blue (the per-track cyan/mint
+  // alternation in the data is ignored — accents never trade evenly). The
+  // section's "live" signal lives in the green headline accent ("actively
+  // pursuing"), not on the cards.
+  const accentText = 'text-cyan';
+  const accentHover = 'hover:border-cyan/40';
 
   return (
     <motion.article

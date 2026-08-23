@@ -152,7 +152,8 @@ export function GitHub() {
           <div className="mb-12 text-center">
             <SectionLabel index="04" label="Activity" className="mx-auto mb-6 w-fit" />
             <h2 className="font-display text-display-lg font-semibold tracking-tight text-slate-bright">
-              Firing pattern, <span className="text-cyan">by the numbers</span>.
+              {/* Live data section → green accent (the numbers are the signal). */}
+              Firing pattern, <span className="text-mint">by the numbers</span>.
             </h2>
             <p className="mt-4 font-mono text-xs uppercase tracking-wider text-slate-soft">
               @{username}
@@ -232,8 +233,10 @@ function Panel({ title, children }: { title: string; children: React.ReactNode }
 }
 
 function StatsGrid({ stats }: { stats: GitHubStats }) {
-  const accent = (i: number) => (i % 2 === 0 ? 'bg-cyan' : 'bg-mint');
-  const accentText = (i: number) => (i % 2 === 0 ? 'text-cyan' : 'text-mint');
+  // All data marks are the same "live signal" green (mint) — no cyan/mint
+  // trading. Blue stays reserved for interaction chrome (panel titles,
+  // buttons) one level up.
+  const barAccent = 'bg-mint';
 
   return (
     <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
@@ -251,16 +254,16 @@ function StatsGrid({ stats }: { stats: GitHubStats }) {
         <Panel title="Top languages">
           {stats.languages.length > 0 ? (
             <ul className="flex flex-col gap-3">
-              {stats.languages.map((lang, i) => (
+              {stats.languages.map((lang) => (
                 <li key={lang.name}>
                   <div className="mb-1 flex items-baseline justify-between gap-2">
-                    <span className={`font-mono text-[10px] uppercase tracking-wider ${accentText(i)}`}>
+                    <span className="font-mono text-[10px] uppercase tracking-wider text-slate-soft">
                       {lang.name}
                     </span>
                     <span className="font-mono text-[10px] text-slate-muted">{lang.count} repos</span>
                   </div>
                   {/* Motion-animated bar — springs width from 0 to pct on reveal */}
-                  <AnimatedBar pct={lang.pct} accent={accent(i)} />
+                  <AnimatedBar pct={lang.pct} accent={barAccent} />
                 </li>
               ))}
             </ul>
@@ -283,7 +286,7 @@ function StatsGrid({ stats }: { stats: GitHubStats }) {
                   transition={{ duration: 0.35, ease: 'easeOut', delay: i * 0.06 }}
                   className="flex items-center gap-3 border-b border-white/5 py-2.5 last:border-b-0"
                 >
-                  <span className={`h-1.5 w-1.5 shrink-0 rounded-full ${accent(i)}`} />
+                  <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-mint" />
                   <span className="font-mono text-[10px] uppercase tracking-wider text-slate-muted">
                     {event.label}
                   </span>

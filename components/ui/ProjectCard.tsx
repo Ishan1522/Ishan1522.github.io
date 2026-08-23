@@ -17,13 +17,14 @@ const STATUS_LABELS: Record<Project['status'], string> = {
   done: 'Done',
 };
 
-// Status read as a quiet inline label — the signal survives as text color,
-// not as a glowing dashboard dot.
+// Status read as a quiet inline label — green when the thing is LIVE
+// (in production / active dev / ongoing), neutral slate when it's done.
+// Green is reserved for live signals; it never decorates.
 const STATUS_COLOR: Record<Project['status'], string> = {
   production: 'text-mint',
-  active: 'text-cyan',
-  shipped: 'text-cyan/70',
-  ongoing: 'text-slate-soft',
+  active: 'text-mint',
+  shipped: 'text-slate-soft',
+  ongoing: 'text-mint',
   done: 'text-slate-muted',
 };
 
@@ -34,9 +35,12 @@ export function ProjectCard({ project }: Props) {
   // true so SSR / first paint shows the collapsed teaser, then correct
   // down for coarse pointers after mount.
   const [canHover, setCanHover] = useState(true);
-  const accentBorder =
-    project.accent === 'cyan' ? 'hover:border-cyan/60' : 'hover:border-mint/60';
-  const accentText = project.accent === 'cyan' ? 'text-cyan' : 'text-mint';
+  // Card chrome is uniformly interaction blue (title, links, hover border,
+  // cover tint) — the per-project cyan/mint alternation in the data is
+  // ignored here so accents never trade evenly. Live state lives in the
+  // green status label only.
+  const accentBorder = 'hover:border-cyan/60';
+  const accentText = 'text-cyan';
 
   useEffect(() => {
     const mq = window.matchMedia('(hover: hover)');
@@ -61,9 +65,9 @@ export function ProjectCard({ project }: Props) {
       {/* Cover image / placeholder */}
       <div className="relative aspect-square w-full overflow-hidden border-b border-white/5 bg-ink-950">
         {project.coverImage ? (
-          <CoverImage src={project.coverImage} name={project.name} accent={project.accent} hovered={hovered} />
+          <CoverImage src={project.coverImage} name={project.name} hovered={hovered} />
         ) : (
-          <ProjectPlaceholder accent={project.accent} />
+          <ProjectPlaceholder />
         )}
       </div>
 
@@ -136,9 +140,9 @@ export function ProjectCard({ project }: Props) {
   );
 }
 
-/** Cover well: image centered at contain size, faint accent grid on top. */
-function CoverImage({ src, name, accent, hovered }: { src: string; name: string; accent: 'cyan' | 'mint'; hovered: boolean }) {
-  const colorVar = accent === 'cyan' ? 'var(--color-cyan)' : 'var(--color-mint)';
+/** Cover well: image centered at contain size, faint blue grid on top. */
+function CoverImage({ src, name, hovered }: { src: string; name: string; hovered: boolean }) {
+  const colorVar = 'var(--color-cyan)';
   return (
     <div className="absolute inset-0 flex items-center justify-center bg-ink-950">
       {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -159,8 +163,8 @@ function CoverImage({ src, name, accent, hovered }: { src: string; name: string;
 }
 
 /** SVG placeholder used when no coverImage is provided for a project. */
-function ProjectPlaceholder({ accent }: { accent: 'cyan' | 'mint' }) {
-  const colorVar = accent === 'cyan' ? 'var(--color-cyan)' : 'var(--color-mint)';
+function ProjectPlaceholder() {
+  const colorVar = 'var(--color-cyan)';
   return (
     <div className="relative h-full w-full bg-gradient-to-br from-ink-800 to-ink-950">
       {/* Faint grid */}
