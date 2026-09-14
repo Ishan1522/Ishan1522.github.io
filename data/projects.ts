@@ -50,7 +50,7 @@ export const projects: Project[] = [
     ],
   },
   {
-    slug: 'wpifilter',
+    slug: 'rosfilter',
     name: 'rosfilter',
     tagline: 'ROS 2 filter workbench for robot signal data',
     description:
@@ -66,7 +66,7 @@ export const projects: Project[] = [
     ],
   },
   {
-    slug: 'sar-sim2real',
+    slug: 'sar',
     name: 'SAR — Spartan Autonomous Robotics',
     tagline: 'Sim-to-real pipeline, Simulation Lead',
     description:
@@ -78,7 +78,7 @@ export const projects: Project[] = [
     accent: 'cyan',
     coverImage: null,
     links: [
-      { label: 'GitHub', href: 'https://github.com/msu-sar-robotics/sar-sim2real' },
+      { label: 'GitHub', href: 'https://github.com/msu-sar-robotics' },
     ],
   },
   {
