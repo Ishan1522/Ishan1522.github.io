@@ -69,7 +69,7 @@ hooks/            useReducedMotion, useIsMobile
 lib/              cn, constants, section-store, aurora-shaders
 public/
   favicon.svg
-  resume.pdf     replace with your actual resume
+  resume.pdf
   images/projects/<slug>/  project cover images
 ```
 

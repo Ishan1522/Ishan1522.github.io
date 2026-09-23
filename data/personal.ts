@@ -27,8 +27,7 @@ export const personal = {
   linkedin:
     'https://www.linkedin.com/in/ishan-acharya-gangopadhyay-3966a8213/',
 
-  // Resume — drop your file at /public/resume.pdf
-  resumeUrl: '/resume.pdf',
+  resumeUrl: '/resume_real.pdf',
 } as const;
 
 export type Personal = typeof personal;
