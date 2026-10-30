@@ -40,7 +40,7 @@ export const projects: Project[] = [
     name: 'Wensura',
     tagline: 'Research platform for battery-materials R&D',
     description:
-      'Live since April 2026 with five enterprise customers. I led backend, infrastructure, and security: AWS provisioned with Terraform, tenant isolation at the database level, and a multi-stage LLM peer-review pipeline over a RAG corpus. Security testing found and fixed a critical remote-code-execution bug and cross-tenant leaks in retrieval; test coverage went from 27% to 82%.',
+      'Launched April 2026 and now in beta with about five testers. I led backend, infrastructure, and security: AWS provisioned with Terraform, tenant isolation at the database level, and a multi-stage LLM peer-review pipeline over a RAG corpus. Security testing found and fixed a critical remote-code-execution bug and cross-tenant leaks in retrieval; test coverage went from 27% to 82%.',
     tech: ['Next.js', 'FastAPI', 'AWS', 'Terraform', 'Postgres/pgvector', 'Stripe'],
     role: 'Lead backend & infrastructure',
     year: '2026',
