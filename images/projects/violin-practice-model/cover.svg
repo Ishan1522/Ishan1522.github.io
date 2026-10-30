@@ -1,0 +1,112 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1200" width="1000" height="1200">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#05080f"/>
+      <stop offset="55%" stop-color="#0a0e1a"/>
+      <stop offset="100%" stop-color="#05080f"/>
+    </linearGradient>
+    <linearGradient id="body" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#22d3ee" stop-opacity="0.85"/>
+      <stop offset="100%" stop-color="#34d399" stop-opacity="0.75"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="50%" cy="42%" r="55%">
+      <stop offset="0%" stop-color="#22d3ee" stop-opacity="0.14"/>
+      <stop offset="100%" stop-color="#22d3ee" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="blur" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="3"/>
+    </filter>
+  </defs>
+
+  <!-- backdrop -->
+  <rect width="1000" height="1200" fill="url(#bg)"/>
+  <rect width="1000" height="1200" fill="url(#glow)"/>
+
+  <!-- faint grid -->
+  <g stroke="#22d3ee" stroke-opacity="0.05" stroke-width="1">
+    <path d="M0 150h1000M0 300h1000M0 450h1000M0 600h1000M0 750h1000M0 900h1000M0 1050h1000"/>
+    <path d="M150 0v1200M300 0v1200M450 0v1200M600 0v1200M750 0v1200M900 0v1200"/>
+  </g>
+
+  <!-- dual prediction-error loops (motif) -->
+  <g fill="none" stroke-width="2.5" opacity="0.9">
+    <path d="M210 270a95 95 0 1 1 -19 183" stroke="#22d3ee" stroke-opacity="0.85"/>
+    <path d="M790 930a95 95 0 1 1 19 -183" stroke="#34d399" stroke-opacity="0.85"/>
+    <circle cx="205" cy="438" r="6" fill="#22d3ee"/>
+    <circle cx="795" cy="762" r="6" fill="#34d399"/>
+  </g>
+
+  <!-- violin -->
+  <g transform="translate(500 615)">
+    <!-- neck + fingerboard -->
+    <rect x="-26" y="-430" width="52" height="430" rx="6" fill="#0a0e1a" stroke="#67e8f9" stroke-opacity="0.4" stroke-width="1.5"/>
+    <rect x="-15" y="-300" width="30" height="430" rx="4" fill="#0e1526" stroke="#67e8f9" stroke-opacity="0.25" stroke-width="1"/>
+
+    <!-- scroll -->
+    <circle cx="0" cy="-452" r="34" fill="none" stroke="url(#body)" stroke-width="7"/>
+    <circle cx="6" cy="-452" r="10" fill="none" stroke="#34d399" stroke-width="4"/>
+
+    <!-- pegs -->
+    <g stroke="#94a3b8" stroke-width="6" stroke-linecap="round">
+      <line x1="-34" y1="-418" x2="-14" y2="-410"/>
+      <line x1="34" y1="-418" x2="14" y2="-410"/>
+      <line x1="-34" y1="-388" x2="-14" y2="-380"/>
+      <line x1="34" y1="-388" x2="14" y2="-380"/>
+    </g>
+
+    <!-- body -->
+    <path d="M0 320
+             C 60 318 108 284 108 236
+             C 108 196 84 168 46 152
+             C 18 140 12 118 16 96
+             C 20 76 34 58 62 50
+             C 104 38 140 12 148 -36
+             C 156 -84 126 -128 78 -148
+             C 44 -162 0 -168 0 -168
+             C 0 -168 -44 -162 -78 -148
+             C -126 -128 -156 -84 -148 -36
+             C -140 12 -104 38 -62 50
+             C -34 58 -20 76 -16 96
+             C -12 118 -18 140 -46 152
+             C -84 168 -108 196 -108 236
+             C -108 284 -60 318 0 320 Z"
+          fill="url(#body)" fill-opacity="0.28"
+          stroke="url(#body)" stroke-width="6"/>
+
+    <!-- f-holes -->
+    <g fill="none" stroke="#05080f" stroke-width="6" stroke-linecap="round">
+      <path d="M-62 90 q22 22 8 58 M-50 82 q-22 22 -8 58"/>
+      <path d="M62 90 q-22 22 -8 58 M50 82 q22 22 8 58"/>
+    </g>
+
+    <!-- strings -->
+    <g stroke="#f1f5f9" stroke-opacity="0.55" stroke-width="1.6">
+      <line x1="-10" y1="-300" x2="-10" y2="280"/>
+      <line x1="-3" y1="-300" x2="-3" y2="280"/>
+      <line x1="3" y1="-300" x2="3" y2="280"/>
+      <line x1="10" y1="-300" x2="10" y2="280"/>
+    </g>
+
+    <!-- bridge + tailpiece -->
+    <rect x="-16" y="240" width="32" height="10" rx="3" fill="#94a3b8"/>
+    <rect x="-22" y="268" width="44" height="52" rx="6" fill="#0e1526" stroke="#67e8f9" stroke-opacity="0.35" stroke-width="1.2"/>
+
+    <!-- endpin -->
+    <line x1="0" y1="320" x2="0" y2="360" stroke="#94a3b8" stroke-width="4" stroke-linecap="round"/>
+  </g>
+
+  <!-- neural dots (site motif) -->
+  <g fill="#34d399">
+    <circle cx="300" cy="360" r="5" opacity="0.85"/>
+    <circle cx="330" cy="332" r="3" opacity="0.5"/>
+    <circle cx="700" cy="800" r="5" opacity="0.85"/>
+    <circle cx="730" cy="828" r="3" opacity="0.5"/>
+  </g>
+  <g stroke="#22d3ee" stroke-opacity="0.3" stroke-width="1.5" fill="none">
+    <path d="M330 332q40 -10 55 -60M730 828q-40 10 -55 60"/>
+  </g>
+
+  <!-- caption -->
+  <text x="500" y="1090" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="26" letter-spacing="8" fill="#94a3b8">VIOLIN · PRACTICE · MODEL</text>
+  <text x="500" y="1135" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="16" letter-spacing="4" fill="#22d3ee" fill-opacity="0.7">DUAL PREDICTION-ERROR MINIMIZATION</text>
+</svg>
