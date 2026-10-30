@@ -79,7 +79,7 @@ export const projects: Project[] = [
     year: '2026',
     status: 'active',
     accent: 'cyan',
-    coverImage: '/images/projects/sar/logo.jpg',
+    coverImage: '/images/projects/sar/cover.svg',
     links: [
       { label: 'GitHub', href: 'https://github.com/msu-sar-robotics' },
     ],

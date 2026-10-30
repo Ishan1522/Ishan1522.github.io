@@ -59,7 +59,7 @@ export function ProjectCard({ project }: Props) {
             <img
               src={project.coverImage}
               alt={`${project.name} preview`}
-              className="max-h-full max-w-full rounded-xl object-contain transition-transform duration-700 group-hover:scale-105"
+              className="max-h-full max-w-full object-contain transition-transform duration-700 group-hover:scale-105"
             />
           </div>
         </div>
