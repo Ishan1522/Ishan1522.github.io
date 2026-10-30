@@ -29,11 +29,14 @@ export interface Project {
   // and reference it here. Leave `null` to show the gradient placeholder.
   coverImage: string | null;
   links: ProjectLink[];
+  /** Rendered as a full-width card above the grid. */
+  featured?: boolean;
 }
 
 export const projects: Project[] = [
   {
     slug: 'wensura',
+    featured: true,
     name: 'Wensura',
     tagline: 'Research platform for battery-materials R&D',
     description:

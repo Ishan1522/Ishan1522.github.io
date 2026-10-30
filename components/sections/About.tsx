@@ -12,13 +12,13 @@ export function About() {
       id="about"
       className="relative flex min-h-[100svh] items-center px-6 py-24"
     >
-      <div className="mx-auto grid w-full max-w-7xl grid-cols-1 gap-12 md:grid-cols-12">
+      <div className="mx-auto grid w-full max-w-6xl grid-cols-1 gap-12 md:grid-cols-12">
         <div className="md:col-span-6 md:col-start-1">
           <Reveal>
-            <SectionLabel index="01" label="About" className="mb-8" />
+            <SectionLabel label="About" className="mb-8" />
 
-            <h2 className="mb-8 font-display text-display-lg font-semibold tracking-tight text-slate-bright">
-              Infrastructure, simulation, and <span className="text-cyan">signal processing</span>.
+            <h2 className="mb-8 font-display text-display-lg text-slate-bright">
+              What I&apos;m <em className="text-cyan">working on</em>.
             </h2>
           </Reveal>
 

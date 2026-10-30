@@ -1,37 +1,31 @@
 import type { Metadata, Viewport } from 'next';
-import { IBM_Plex_Sans, IBM_Plex_Sans_Condensed, Space_Grotesk, JetBrains_Mono } from 'next/font/google';
+import { Instrument_Sans, Instrument_Serif, JetBrains_Mono } from 'next/font/google';
 import './globals.css';
 
 import { MotionProvider } from '@/components/providers/MotionProvider';
 import { personal } from '@/data/personal';
 
-// Distinctive fonts — IBM Plex for scientific/engineering heritage,
-// JetBrains Mono for the technical accents. Loaded via next/font so
-// they're self-hosted and zero-FOUT.
-const plexSans = IBM_Plex_Sans({
+// Instrument Serif for display type, Instrument Sans for text, JetBrains Mono
+// only for small technical accents. Loaded via next/font so they're
+// self-hosted and zero-FOUT.
+const serif = Instrument_Serif({
   subsets: ['latin'],
-  weight: ['300', '400', '500', '600'],
-  variable: '--font-plex-sans',
+  weight: '400',
+  style: ['normal', 'italic'],
+  variable: '--font-serif',
   display: 'swap',
 });
 
-const plexCondensed = IBM_Plex_Sans_Condensed({
+const sans = Instrument_Sans({
   subsets: ['latin'],
-  weight: ['500', '600', '700'],
-  variable: '--font-plex-condensed',
-  display: 'swap',
-});
-
-const spaceGrotesk = Space_Grotesk({
-  subsets: ['latin'],
-  weight: ['300', '400', '500', '600', '700'],
-  variable: '--font-display',
+  weight: ['400', '500', '600'],
+  variable: '--font-sans',
   display: 'swap',
 });
 
 const jetbrains = JetBrains_Mono({
   subsets: ['latin'],
-  weight: ['400', '500', '600'],
+  weight: ['400', '500'],
   variable: '--font-jetbrains',
   display: 'swap',
 });
@@ -83,7 +77,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: '#091e26',
+  themeColor: '#090c16',
   colorScheme: 'dark',
   width: 'device-width',
   initialScale: 1,
@@ -93,7 +87,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html
       lang="en"
-      className={`${plexSans.variable} ${plexCondensed.variable} ${spaceGrotesk.variable} ${jetbrains.variable}`}
+      className={`${serif.variable} ${sans.variable} ${jetbrains.variable}`}
     >
       <body>
         <MotionProvider>{children}</MotionProvider>

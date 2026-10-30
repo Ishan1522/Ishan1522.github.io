@@ -5,11 +5,19 @@
 
 export const personal = {
   name: 'Ishan',
+  fullName: 'Ishan Acharya-Gangopadhyay',
   role: 'Electrical Engineering',
   institution: 'Michigan State University',
   location: 'East Lansing, MI',
 
-  // One-line summary — shown in the hero and used for meta descriptions.
+  // Hero headline; `em` is the italic accent phrase.
+  headline: {
+    before: 'I build ',
+    em: 'backend infrastructure',
+    after: ', robot simulation, and signal-processing tools.',
+  },
+
+  // One-line summary — used for meta descriptions.
   short: 'EE student at MSU. I build backend infrastructure, robot simulation, and signal-processing tools.',
 
   // About-section prose. Written as an array of paragraphs so the section

@@ -21,8 +21,8 @@ background recedes behind content rather than acting as a subject.
 | Scroll | GSAP 3 ScrollTrigger + Lenis |
 | UI animation | Motion 13 (`motion/react`) — scroll reveals, springs, layoutId, count-ups |
 | State | Zustand (read via `getState()` in useFrame — no React re-renders) |
-| Style | Tailwind CSS 3, cyberpunk palette (cyan/mint on deep navy) |
-| Fonts | IBM Plex Sans/Condensed + JetBrains Mono via next/font |
+| Style | Tailwind CSS 3, navy surfaces with a blue accent (`cyan` token) and indigo secondary (`mint` token) |
+| Fonts | Instrument Serif (display) + Instrument Sans (text) + JetBrains Mono (small accents) via next/font |
 
 ## Critical architecture: scroll → background pipeline
 
@@ -45,9 +45,9 @@ Lenis (smooth scroll)
 | `app/` | layout, page, globals.css | Rare |
 | `components/three/` | R3F: Scene, Aurora, Effects, StaticFallback | Medium |
 | `components/sections/` | Hero, About, Projects, GitHub, Contact | Medium |
-| `components/ui/` | Nav, SectionLabel, Cards, ScrollHint, Reveal | Medium |
+| `components/ui/` | Nav, SectionLabel, ProjectCard, ScrollHint, Reveal | Medium |
 | `components/providers/` | SmoothScrollProvider, MotionProvider | Rare |
-| `data/` | Content layer: projects.ts, research.ts, sections.ts, personal.ts | **High** |
+| `data/` | Content layer: projects.ts, sections.ts, personal.ts | **High** |
 | `lib/` | constants.ts, section-store.ts, aurora-shaders.ts, cn.ts | Low |
 | `hooks/` | useReducedMotion.ts, useIsMobile.ts | Rare |
 | `public/` | Static assets, resume.pdf, project images | As needed |

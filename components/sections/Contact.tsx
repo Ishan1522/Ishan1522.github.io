@@ -2,62 +2,52 @@ import { personal } from '@/data/personal';
 import { SectionLabel } from '@/components/ui/SectionLabel';
 import { Reveal } from '@/components/ui/Reveal';
 
-/**
- * Contact section. Kept minimal — a direct email and a few social links.
- */
+/** Contact section — a direct email and a few social links. */
 export function Contact() {
   const links = [
-    { label: 'Email', href: `mailto:${personal.email}`, value: personal.email },
     { label: 'GitHub', href: personal.githubUrl, value: `@${personal.github}` },
     { label: 'LinkedIn', href: personal.linkedin, value: 'ishan-acharya-gangopadhyay' },
+    { label: 'Résumé', href: personal.resumeUrl, value: 'PDF' },
   ];
 
   return (
     <section
       id="contact"
-      className="relative flex min-h-[100svh] items-center justify-center px-6 py-24"
+      className="relative flex min-h-[100svh] flex-col justify-center px-6 py-24"
     >
-      <div className="mx-auto w-full max-w-3xl text-center">
+      <div className="mx-auto w-full max-w-6xl">
         <Reveal>
-          <SectionLabel index="04" label="Contact" className="mx-auto mb-10 w-fit" />
+          <SectionLabel label="Contact" className="mb-4" />
 
-          <h2 className="font-display text-display-lg font-semibold tracking-tight text-slate-bright">
-            Looking for <span className="text-cyan">summer 2027</span> internships.
+          <h2 className="max-w-3xl font-display text-display-lg text-slate-bright">
+            Looking for <em className="text-cyan">summer 2027</em> internships.
           </h2>
 
-          <p className="mx-auto mt-6 max-w-lg text-base leading-relaxed text-slate-soft">
+          <p className="mt-6 max-w-lg text-lg text-slate-soft">
             Backend, infrastructure, robotics, or ML systems. Email is the fastest way to reach me.
           </p>
         </Reveal>
 
-        {/* Primary CTA */}
         <Reveal delay={0.08}>
-          <div className="mt-12 flex flex-col items-center gap-6">
-            <a
-              href={`mailto:${personal.email}`}
-              className="group relative inline-flex items-center gap-3 overflow-hidden rounded-sm border border-cyan bg-cyan/10 px-8 py-3.5 font-mono text-sm uppercase tracking-[0.2em] text-cyan transition hover:bg-cyan/20"
-            >
-              <span className="relative z-10">{personal.email}</span>
-              <span className="relative z-10 transition group-hover:translate-x-1">→</span>
-              {/* Scan-line effect on hover */}
-              <span className="pointer-events-none absolute inset-0 translate-y-full bg-gradient-to-b from-transparent via-cyan/20 to-transparent transition-transform duration-700 group-hover:translate-y-[-100%]" />
-            </a>
-          </div>
+          <a
+            href={`mailto:${personal.email}`}
+            className="group mt-10 inline-flex items-center gap-3 rounded-full bg-cyan px-8 py-3.5 font-medium text-ink-950 transition hover:bg-cyan-glow"
+          >
+            {personal.email}
+            <span className="transition group-hover:translate-x-1">→</span>
+          </a>
         </Reveal>
 
-        {/* Secondary links */}
         <Reveal delay={0.16}>
-          <ul className="mt-16 flex flex-col items-center gap-6 sm:flex-row sm:justify-center sm:gap-12">
+          <ul className="mt-16 flex flex-wrap gap-x-12 gap-y-6 border-t border-white/10 pt-8">
             {links.map((link) => (
-              <li key={link.href} className="text-center">
-                <div className="mb-1 font-mono text-[10px] uppercase tracking-[0.3em] text-slate-muted">
-                  {link.label}
-                </div>
+              <li key={link.label}>
+                <div className="mb-1 text-xs text-slate-muted">{link.label}</div>
                 <a
                   href={link.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="pointer-events-auto font-mono text-sm text-slate-text transition hover:text-cyan"
+                  className="pointer-events-auto text-slate-text transition hover:text-cyan"
                 >
                   {link.value}
                 </a>
@@ -65,14 +55,11 @@ export function Contact() {
             ))}
           </ul>
         </Reveal>
-
-        {/* Footer mark */}
-        <div className="mt-24 flex items-center justify-center gap-3 font-mono text-[10px] uppercase tracking-[0.3em] text-slate-muted">
-          <span className="h-px w-12 bg-white/10" />
-          <span>© {new Date().getFullYear()} Ishan Acharya-Gangopadhyay</span>
-          <span className="h-px w-12 bg-white/10" />
-        </div>
       </div>
+
+      <p className="mx-auto mt-24 w-full max-w-6xl text-xs text-slate-muted">
+        © {new Date().getFullYear()} {personal.fullName}
+      </p>
     </section>
   );
 }

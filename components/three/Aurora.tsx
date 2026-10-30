@@ -18,13 +18,12 @@ interface Props {
 }
 
 /**
- * B4-local volumetric depth color — a deep petrol base sheet (the blue+green
- * blend that IS the material, derived from the palette's ink-700 → ink-600
- * range). Kept here (not in the shared COLORS map, which must stay in sync
+ * B4-local volumetric depth color — a deep navy base sheet (derived from the
+ * palette's ink-700 → ink-600 range). Kept here (not in the shared COLORS map, which must stay in sync
  * with globals.css) because it is background-only atmosphere, not a UI
  * palette color.
  */
-const AURORA_PETROL = '#16404f';
+const AURORA_PETROL = '#141d44';
 
 const CAMERA_FOV = 45; // Scene Canvas camera fov
 const PLANE_Z = -0.4; // world Z of the background plane
