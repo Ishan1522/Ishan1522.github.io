@@ -1,67 +1,20 @@
 /**
- * Static fallback for `prefers-reduced-motion`.
+ * Static backdrop — shown for the instant before the WebGL aurora mounts, and
+ * permanently for `prefers-reduced-motion`.
  *
- * No animation, no WebGL. A calm gradient + subtle grid. The neuron is
- * suggested rather than shown — a faint radial glow + a single static
- * constellation of dots. Accessible and fast.
- *
- * Note: coordinates are pre-computed and rounded. Math.cos/sin produce
- * results that differ by ~1 ULP between Node (server render) and V8
- * (client), which triggers React hydration warnings. Rounding to 4
- * decimal places normalizes this without any visible change.
+ * No animation, no WebGL, no SVG: a navy base with a few soft blue / indigo
+ * washes positioned roughly where the aurora's ribbons sit, so the handoff to
+ * the live shader is a gentle fade-in of detail rather than a change of scene.
  */
-
-// Pre-compute dendrite endpoints at 4-decimal precision.
-const DENDRITES = Array.from({ length: 12 }).map((_, i) => {
-  const angle = (i / 12) * Math.PI * 2;
-  const round = (n: number) => Number(n.toFixed(4));
-  return {
-    x1: round(Math.cos(angle) * 1),
-    y1: round(Math.sin(angle) * 1),
-    x2: round(Math.cos(angle) * 7),
-    y2: round(Math.sin(angle) * 7),
-  };
-});
-
 export function StaticFallback() {
   return (
     <div
       aria-hidden
-      className="pointer-events-none fixed inset-0 z-0 bg-ink-900"
+      className="pointer-events-none fixed inset-0 z-0 overflow-hidden bg-ink-900"
     >
-      {/* Faint grid */}
-      <div className="absolute inset-0 bg-grid-faint bg-[size:64px_64px] opacity-50" />
-      {/* Central glow */}
-      <div className="absolute inset-0 bg-radial-glow" />
-      {/* Static "neuron" — a hint of the dynamic one */}
-      <svg
-        viewBox="-10 -10 20 20"
-        className="absolute left-1/2 top-1/2 h-[min(80vh,80vw)] w-[min(80vh,80vw)] -translate-x-1/2 -translate-y-1/2 opacity-60"
-      >
-        <defs>
-          {/* Monochrome blue neuron — calm material, no green tips. */}
-          <radialGradient id="soma" cx="0.5" cy="0.5" r="0.5">
-            <stop offset="0%" stopColor="#67b4f9" stopOpacity="0.9" />
-            <stop offset="60%" stopColor="#4c9be8" stopOpacity="0.4" />
-            <stop offset="100%" stopColor="#4c9be8" stopOpacity="0" />
-          </radialGradient>
-        </defs>
-        <circle cx="0" cy="0" r="3" fill="url(#soma)" />
-        {DENDRITES.map((d, i) => (
-          <g key={i}>
-            <line
-              x1={d.x1}
-              y1={d.y1}
-              x2={d.x2}
-              y2={d.y2}
-              stroke="#4c9be8"
-              strokeWidth="0.05"
-              opacity="0.5"
-            />
-            <circle cx={d.x2} cy={d.y2} r="0.12" fill="#4c9be8" opacity="0.8" />
-          </g>
-        ))}
-      </svg>
+      <div className="absolute -left-[10%] top-[8%] h-[55%] w-[75%] rounded-full bg-cyan/[0.07] blur-[120px]" />
+      <div className="absolute -right-[10%] top-[25%] h-[50%] w-[65%] rounded-full bg-mint/[0.08] blur-[130px]" />
+      <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-ink-950/80 to-transparent" />
     </div>
   );
 }

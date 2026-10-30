@@ -24,7 +24,7 @@ export const personal = {
   // component can animate each paragraph independently.
   about: [
     'I’m a sophomore studying electrical engineering at Michigan State. Since January 2026 I’ve been the lead backend and infrastructure engineer at Wensura, a platform for battery-materials researchers that launched in April 2026 and is now in beta. I built its AWS infrastructure in Terraform, its multi-tenant data isolation, and its LLM peer-review pipeline, and I found and fixed a critical remote-code-execution bug in its AI Copilot.',
-    'On campus I lead simulation for Spartan Autonomous Robotics, working on sim-to-real for a quadruped. Before college I was Director of Software for FRC Team 4829 and trained 10–15 students a year. I also write and review benchmark tasks for AI coding agents.',
+    'On campus I’m a co-founder of Spartan Autonomous Robotics, MSU’s first autonomous robotics team. I lead simulation and sim-to-real for the software sub-team and teach weekly sessions on controls and simulation (RL, MPC, LQR, PID, FOC). Before college I was Director of Software for FRC Team 4829 and trained 10–15 students a year. I also write and review benchmark tasks for AI coding agents.',
     'On the side I build small models of how brains learn, like the violin practice model below, and read about efficient ML.',
   ],
 

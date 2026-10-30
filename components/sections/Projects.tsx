@@ -36,7 +36,8 @@ export function Projects() {
             </Reveal>
           ))}
 
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+          {/* An odd last card spans both columns so the grid never ends in a hole. */}
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 md:[&>*:last-child:nth-child(odd)]:col-span-2">
             {rest.map((project, i) => (
               <Reveal key={project.slug} delay={(i % 2) * 0.08}>
                 <ProjectCard project={project} />

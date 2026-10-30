@@ -7,7 +7,7 @@
  *   3. The grid picks it up automatically.
  */
 
-export type ProjectStatus = 'production' | 'active' | 'shipped' | 'ongoing' | 'done';
+export type ProjectStatus = 'production' | 'active' | 'wip' | 'shipped' | 'ongoing' | 'done';
 export type Accent = 'cyan' | 'mint';
 
 export interface ProjectLink {
@@ -63,40 +63,42 @@ export const projects: Project[] = [
     year: '2026',
     status: 'active',
     accent: 'mint',
-    coverImage: '/images/projects/rosfilter/cover.png',
+    coverImage: '/images/projects/rosfilter/cover.svg',
     links: [
       { label: 'GitHub', href: 'https://github.com/Ishan1522/filters' },
     ],
   },
   {
     slug: 'sar',
-    name: 'SAR — Spartan Autonomous Robotics',
-    tagline: 'Sim-to-real pipeline, Simulation Lead',
+    name: 'Spartan Autonomous Robotics',
+    tagline: 'Sim-to-real pipeline for MSU’s first autonomous robotics team',
     description:
-      'I lead simulation for MSU’s autonomous robotics club. I built a sim-to-real pipeline that runs headless Gazebo and MuJoCo in CI and checks results against real-robot behavior: the mean gap is 4.2 cm against an 8 cm threshold, and all four CI checks pass. I also ported the quadruped gait firmware from Python to Rust.',
-    tech: ['Gazebo', 'MuJoCo', 'ROS 2', 'Rust', 'CI/CD'],
-    role: 'Simulation Lead',
+      'Co-founder of MSU’s first autonomous robotics team (24 active members in year one). I lead simulation and sim-to-real: one ROS 2 Jazzy codebase with robot configs shared between sim and hardware, and a 4-stage self-hosted CI pipeline (static analysis, MuJoCo fast loop, Gazebo Harmonic integration, reality-gap check) that gates changes before hardware trials. Six robots simulated so far, from a SpotMicro quadruped to the SO-101 arm, with gait-tuning, system-ID and CMA-ES tools, a scan-to-sim terrain pipeline, and a Reality Gap Report that measures where sim and hardware disagree.',
+    tech: ['ROS 2', 'MuJoCo', 'Gazebo', 'Rust', 'Python', 'CMA-ES', 'CI/CD'],
+    role: 'Co-founder & Simulation Lead',
     year: '2026',
     status: 'active',
     accent: 'cyan',
-    coverImage: null,
+    coverImage: '/images/projects/sar/cover.svg',
     links: [
       { label: 'GitHub', href: 'https://github.com/msu-sar-robotics' },
     ],
   },
   {
-    slug: 'homelab',
-    name: 'Homelab',
-    tagline: 'Two-node home server for CI and local AI',
+    slug: 'sushi-linux',
+    name: 'Sushi Linux',
+    tagline: 'A from-scratch Arch setup with a 3D ASCII boot animation',
     description:
-      'A two-node Proxmox setup running containerized workloads: self-hosted CI runners, GPU-enabled dev environments, and a personal multi-agent AI system. Tailscale handles secure access from other networks, and builds run in an isolated sandbox so they can’t touch the host.',
-    tech: ['Proxmox', 'Docker', 'Tailscale', 'GitHub Actions', 'Ollama'],
+      'A work-in-progress Arch-based Linux setup: an install script (GPT/EFI partitioning, pacstrap, GRUB) and three provisioning profiles, a base system, a Hyprland desktop, and a Docker + Tailscale server, with dotfiles managed through stow. It ships with a boot animation, a spinning ASCII maki roll drawn by a small software 3D renderer in C (rotation, perspective projection, z-buffer).',
+    tech: ['Arch Linux', 'Bash', 'C', 'Hyprland', 'stow'],
     role: 'Solo',
     year: '2026',
-    status: 'ongoing',
+    status: 'wip',
     accent: 'mint',
-    coverImage: null,
-    links: [],
+    coverImage: '/images/projects/sushi-linux/cover.gif',
+    links: [
+      { label: 'GitHub', href: 'https://github.com/Ishan1522/sushi-linux' },
+    ],
   },
   {
     slug: 'violin-practice-model',
@@ -112,6 +114,22 @@ export const projects: Project[] = [
     coverImage: '/images/projects/violin-practice-model/cover.svg',
     links: [
       { label: 'GitHub', href: 'https://github.com/Ishan1522/Violin-Practice-Model' },
+    ],
+  },
+  {
+    slug: 'homelab',
+    name: 'Homelab',
+    tagline: 'Infrastructure-as-code for a two-node home server',
+    description:
+      'A Proxmox box plus a MacBook data node running self-hosted CI runners, GPU-enabled dev containers, and a personal multi-agent AI system. Ansible manages host and container config, OpenTofu manages which containers exist, and sops/age holds the secrets. A snapshot script records the live state so drift shows up in git, and builds run in an isolated sandbox away from the host.',
+    tech: ['Proxmox', 'Ansible', 'OpenTofu', 'Docker', 'Tailscale', 'sops'],
+    role: 'Solo',
+    year: '2026',
+    status: 'ongoing',
+    accent: 'mint',
+    coverImage: null,
+    links: [
+      { label: 'GitHub', href: 'https://github.com/Ishan1522/homelab' },
     ],
   },
 ];
