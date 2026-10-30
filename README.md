@@ -62,8 +62,8 @@ components/
     Aurora.tsx          aurora shader plane
     Effects.tsx         Bloom + vignette
     StaticFallback.tsx  SVG-only fallback for reduced motion
-  sections/       Hero, About, Projects, Research, GitHub, Contact
-  ui/             Nav, SectionLabel, ScrollHint, ProjectCard, ResearchCard, Reveal
+  sections/       Hero, About, Projects, GitHub, Contact
+  ui/             Nav, SectionLabel, ScrollHint, ProjectCard, Reveal
 data/             personal, projects, research, sections (content layer)
 hooks/            useReducedMotion, useIsMobile
 lib/              cn, constants, section-store, aurora-shaders
