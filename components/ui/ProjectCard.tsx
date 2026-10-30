@@ -13,17 +13,19 @@ const STATUS_LABELS: Record<Project['status'], string> = {
   production: 'In production',
   active: 'Active',
   wip: 'Work in progress',
+  parked: 'Parked',
   shipped: 'Shipped',
   ongoing: 'Ongoing',
   done: 'Done',
 };
 
 // Green dot where something is live, amber while it's a work in progress,
-// slate once it's finished.
+// slate once it's finished or parked.
 const STATUS_DOT: Record<Project['status'], string> = {
   production: 'bg-emerald-400',
   active: 'bg-emerald-400',
   wip: 'bg-amber-400',
+  parked: 'bg-slate-muted',
   shipped: 'bg-slate-muted',
   ongoing: 'bg-emerald-400',
   done: 'bg-slate-muted',
@@ -62,7 +64,7 @@ export function ProjectCard({ project }: Props) {
             <img
               src={project.coverImage}
               alt={`${project.name} preview`}
-              className="max-h-full max-w-full rounded-lg object-contain transition-transform duration-700 group-hover:scale-105"
+              className="fade-edges max-h-full max-w-full object-contain transition-transform duration-700 group-hover:scale-105"
             />
           </div>
         </div>
