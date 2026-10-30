@@ -7,7 +7,7 @@
  *   3. The grid picks it up automatically.
  */
 
-export type ProjectStatus = 'production' | 'active' | 'wip' | 'shipped' | 'ongoing' | 'done';
+export type ProjectStatus = 'production' | 'active' | 'wip' | 'parked' | 'shipped' | 'ongoing' | 'done';
 export type Accent = 'cyan' | 'mint';
 
 export interface ProjectLink {
@@ -87,9 +87,9 @@ export const projects: Project[] = [
   {
     slug: 'sushi-linux',
     name: 'Sushi Linux',
-    tagline: 'A from-scratch Arch setup with a 3D ASCII boot animation',
+    tagline: 'A family of small Linux distros, starting with an Arch setup',
     description:
-      'A work-in-progress Arch-based Linux setup: an install script (GPT/EFI partitioning, pacstrap, GRUB) and three provisioning profiles, a base system, a Hyprland desktop, and a Docker + Tailscale server, with dotfiles managed through stow. It ships with a boot animation, a spinning ASCII maki roll drawn by a small software 3D renderer in C (rotation, perspective projection, z-buffer).',
+      'Part of a Food Linux family alongside Linux Mango and Aanti Linux, planned as editions that get progressively smaller. Today it is an Arch-based setup: an install script (GPT/EFI partitioning, pacstrap, GRUB) and three provisioning profiles, a base system, a Hyprland desktop, and a Docker + Tailscale server, with dotfiles managed through stow. It ships with a boot animation, a spinning ASCII maki roll drawn by a small software 3D renderer in C.',
     tech: ['Arch Linux', 'Bash', 'C', 'Hyprland', 'stow'],
     role: 'Solo',
     year: '2026',
@@ -109,7 +109,7 @@ export const projects: Project[] = [
     tech: ['Python', 'NumPy', 'FastAPI', 'Computational Neuroscience', 'Web'],
     role: 'Solo',
     year: '2026',
-    status: 'active',
+    status: 'parked',
     accent: 'mint',
     coverImage: '/images/projects/violin-practice-model/cover.svg',
     links: [
