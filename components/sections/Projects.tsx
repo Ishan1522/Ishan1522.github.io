@@ -6,7 +6,7 @@ import { Reveal } from '@/components/ui/Reveal';
 /**
  * Projects showcase. 3-column tile grid (2 on tablet, 1 on mobile).
  * Hover expands the description and lifts the tile slightly.
- * Firing waves peek through below the grid and between tiles.
+ * The aurora shows through between tiles.
  */
 export function Projects() {
   return (
@@ -21,12 +21,12 @@ export function Projects() {
             <div className="md:col-span-7">
               <SectionLabel index="02" label="Projects" className="mb-6" />
               <h2 className="font-display text-display-lg font-semibold tracking-tight text-slate-bright">
-                Things I&apos;ve built, shipped, and <span className="text-mint">still think about</span>.
+                Selected <span className="text-mint">projects</span>.
               </h2>
             </div>
             <div className="md:col-span-4 md:col-start-9 md:self-end">
               <p className="text-sm leading-relaxed text-slate-soft">
-                A selection — production SaaS, Rust DSP tooling, and embedded CI. Hover a tile to read more; click any link to jump out.
+                Production SaaS, robotics simulation, signal-processing tools, and a few side projects. Hover a card to read more.
               </p>
             </div>
           </div>

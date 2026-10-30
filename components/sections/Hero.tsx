@@ -60,7 +60,7 @@ export function Hero() {
         className="relative flex flex-col items-center gap-8 text-center"
         style={reduced ? undefined : { y, opacity }}
       >
-        {/* Depth scrim — darkens behind text so neuron feels like it punches through */}
+        {/* Depth scrim — darkens behind text so it stays legible over the aurora */}
         <div className="pointer-events-none absolute inset-[-4rem] -z-10 bg-radial-glow opacity-40" />
 
         {reduced || !mounted ? (
@@ -98,6 +98,13 @@ export function Hero() {
               <span className="h-px w-8 bg-cyan/50" />
             </motion.div>
 
+            <motion.p
+              variants={item}
+              className="max-w-xl text-base leading-relaxed text-slate-text"
+            >
+              {personal.short}
+            </motion.p>
+
             <motion.div variants={item} className="pt-12">
               <ScrollHint />
             </motion.div>
@@ -130,6 +137,8 @@ function StaticHeroContent() {
         <span>{personal.institution}</span>
         <span className="h-px w-8 bg-cyan/50" />
       </div>
+
+      <p className="max-w-xl text-base leading-relaxed text-slate-text">{personal.short}</p>
 
       <div className="pt-12">
         <ScrollHint />

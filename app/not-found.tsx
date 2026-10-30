@@ -55,10 +55,10 @@ export default function NotFound() {
         <div>
           <h1 className="font-display text-display-md font-semibold tracking-tight text-slate-bright">
             {/* Single accent — the missing signal verb, in live green. */}
-            This neuron didn&apos;t <span className="text-mint">fire</span>.
+            Page <span className="text-mint">not found</span>.
           </h1>
           <p className="mx-auto mt-4 max-w-md text-base leading-relaxed text-slate-soft">
-            The page you asked for isn&apos;t in the graph. It may have been moved, renamed, or never existed.
+            That page doesn&apos;t exist. It may have been moved or renamed.
           </p>
         </div>
 

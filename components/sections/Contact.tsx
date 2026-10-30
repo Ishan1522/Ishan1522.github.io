@@ -3,8 +3,7 @@ import { SectionLabel } from '@/components/ui/SectionLabel';
 import { Reveal } from '@/components/ui/Reveal';
 
 /**
- * Contact section. Kept minimal — a direct email, a few social links,
- * and the neuron blazing behind everything at its peak firing rate.
+ * Contact section. Kept minimal — a direct email and a few social links.
  */
 export function Contact() {
   const links = [
@@ -23,12 +22,11 @@ export function Contact() {
           <SectionLabel index="05" label="Contact" className="mx-auto mb-10 w-fit" />
 
           <h2 className="font-display text-display-lg font-semibold tracking-tight text-slate-bright">
-            Let&apos;s <span className="text-cyan">build</span> something.
+            Looking for <span className="text-cyan">summer 2027</span> internships.
           </h2>
 
           <p className="mx-auto mt-6 max-w-lg text-base leading-relaxed text-slate-soft">
-            Interested in collaborations, research, internships, or just a conversation about
-            neurons and silicon. I reply to everything.
+            Backend, infrastructure, robotics, or ML systems. Email is the fastest way to reach me.
           </p>
         </Reveal>
 
@@ -71,7 +69,7 @@ export function Contact() {
         {/* Footer mark */}
         <div className="mt-24 flex items-center justify-center gap-3 font-mono text-[10px] uppercase tracking-[0.3em] text-slate-muted">
           <span className="h-px w-12 bg-white/10" />
-          <span>EOF · {new Date().getFullYear()}</span>
+          <span>© {new Date().getFullYear()} Ishan Acharya-Gangopadhyay</span>
           <span className="h-px w-12 bg-white/10" />
         </div>
       </div>
