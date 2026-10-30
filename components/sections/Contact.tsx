@@ -19,7 +19,7 @@ export function Contact() {
     >
       <div className="mx-auto w-full max-w-3xl text-center">
         <Reveal>
-          <SectionLabel index="05" label="Contact" className="mx-auto mb-10 w-fit" />
+          <SectionLabel index="04" label="Contact" className="mx-auto mb-10 w-fit" />
 
           <h2 className="font-display text-display-lg font-semibold tracking-tight text-slate-bright">
             Looking for <span className="text-cyan">summer 2027</span> internships.

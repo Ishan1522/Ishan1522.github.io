@@ -150,10 +150,10 @@ export function GitHub() {
       <div className="mx-auto w-full max-w-7xl">
         <Reveal>
           <div className="mb-12 text-center">
-            <SectionLabel index="04" label="Activity" className="mx-auto mb-6 w-fit" />
+            <SectionLabel index="03" label="Activity" className="mx-auto mb-6 w-fit" />
             <h2 className="font-display text-display-lg font-semibold tracking-tight text-slate-bright">
               {/* Live data section → green accent (the numbers are the signal). */}
-              Firing pattern, <span className="text-mint">by the numbers</span>.
+              GitHub, <span className="text-mint">by the numbers</span>.
             </h2>
             <p className="mt-4 font-mono text-xs uppercase tracking-wider text-slate-soft">
               @{username}
@@ -218,7 +218,7 @@ export function GitHub() {
 }
 
 /* --------------------------------------------------------------------------
- * Panel chrome — matches ProjectCard / ResearchCard treatment
+ * Panel chrome — matches ProjectCard treatment
  * ------------------------------------------------------------------------ */
 function Panel({ title, children }: { title: string; children: React.ReactNode }) {
   return (

@@ -44,7 +44,7 @@ Lenis (smooth scroll)
 |------|--------------|----------------|
 | `app/` | layout, page, globals.css | Rare |
 | `components/three/` | R3F: Scene, Aurora, Effects, StaticFallback | Medium |
-| `components/sections/` | Hero, About, Projects, Research, GitHub, Contact | Medium |
+| `components/sections/` | Hero, About, Projects, GitHub, Contact | Medium |
 | `components/ui/` | Nav, SectionLabel, Cards, ScrollHint, Reveal | Medium |
 | `components/providers/` | SmoothScrollProvider, MotionProvider | Rare |
 | `data/` | Content layer: projects.ts, research.ts, sections.ts, personal.ts | **High** |

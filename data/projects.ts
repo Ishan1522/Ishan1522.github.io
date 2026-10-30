@@ -82,18 +82,17 @@ export const projects: Project[] = [
     ],
   },
   {
-    slug: 'solar-racing-ci',
-    name: 'Lysander Dashboard CI',
-    tagline: 'Headless LVGL rendering in GitHub Actions',
+    slug: 'homelab',
+    name: 'Homelab',
+    tagline: 'Two-node home server for CI and local AI',
     description:
-      'CI for the MSU Solar Racing car’s embedded dashboard. It renders the LVGL UI headlessly in GitHub Actions with Xvfb and SDL, saves screenshots and GIFs as artifacts, and fails the build on blank frames, so UI changes can be checked without the car’s hardware.',
-    tech: ['LVGL', 'C/C++', 'SDL', 'GitHub Actions', 'Xvfb', 'Bash'],
-    role: 'Electrical subteam',
+      'A two-node Proxmox setup running containerized workloads: self-hosted CI runners, GPU-enabled dev environments, and a personal multi-agent AI system. Tailscale handles secure access from other networks, and builds run in an isolated sandbox so they can’t touch the host.',
+    tech: ['Proxmox', 'Docker', 'Tailscale', 'GitHub Actions', 'Ollama'],
+    role: 'Solo',
     year: '2026',
-    status: 'done',
-    accent: 'cyan',
-    coverImage: '/images/projects/solar-racing-ci/cover.png',
-    // Repo is not linked: the old link only pointed at the GitHub profile root.
+    status: 'ongoing',
+    accent: 'mint',
+    coverImage: null,
     links: [],
   },
   {

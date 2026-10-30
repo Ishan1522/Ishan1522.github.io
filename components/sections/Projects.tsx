@@ -26,7 +26,7 @@ export function Projects() {
             </div>
             <div className="md:col-span-4 md:col-start-9 md:self-end">
               <p className="text-sm leading-relaxed text-slate-soft">
-                Production SaaS, robotics simulation, signal-processing tools, and a few side projects. Hover a card to read more.
+                Production SaaS, robotics simulation, signal-processing tools, and infrastructure I run myself. Hover a card to read more.
               </p>
             </div>
           </div>
