@@ -7,7 +7,7 @@
  *   3. The grid picks it up automatically.
  */
 
-export type ProjectStatus = 'production' | 'active' | 'shipped' | 'ongoing' | 'done';
+export type ProjectStatus = 'production' | 'active' | 'wip' | 'shipped' | 'ongoing' | 'done';
 export type Accent = 'cyan' | 'mint';
 
 export interface ProjectLink {
@@ -63,7 +63,7 @@ export const projects: Project[] = [
     year: '2026',
     status: 'active',
     accent: 'mint',
-    coverImage: '/images/projects/rosfilter/cover.png',
+    coverImage: '/images/projects/rosfilter/cover.svg',
     links: [
       { label: 'GitHub', href: 'https://github.com/Ishan1522/filters' },
     ],
@@ -85,18 +85,20 @@ export const projects: Project[] = [
     ],
   },
   {
-    slug: 'homelab',
-    name: 'Homelab',
-    tagline: 'Two-node home server for CI and local AI',
+    slug: 'sushi-linux',
+    name: 'Sushi Linux',
+    tagline: 'A from-scratch Arch setup with a 3D ASCII boot animation',
     description:
-      'A two-node Proxmox setup running containerized workloads: self-hosted CI runners, GPU-enabled dev environments, and a personal multi-agent AI system. Tailscale handles secure access from other networks, and builds run in an isolated sandbox so they can’t touch the host.',
-    tech: ['Proxmox', 'Docker', 'Tailscale', 'GitHub Actions', 'Ollama'],
+      'A work-in-progress Arch-based Linux setup: an install script (GPT/EFI partitioning, pacstrap, GRUB) and three provisioning profiles, a base system, a Hyprland desktop, and a Docker + Tailscale server, with dotfiles managed through stow. It ships with a boot animation, a spinning ASCII maki roll drawn by a small software 3D renderer in C (rotation, perspective projection, z-buffer).',
+    tech: ['Arch Linux', 'Bash', 'C', 'Hyprland', 'stow'],
     role: 'Solo',
     year: '2026',
-    status: 'ongoing',
+    status: 'wip',
     accent: 'mint',
-    coverImage: null,
-    links: [],
+    coverImage: '/images/projects/sushi-linux/cover.gif',
+    links: [
+      { label: 'GitHub', href: 'https://github.com/Ishan1522/sushi-linux' },
+    ],
   },
   {
     slug: 'violin-practice-model',
@@ -112,6 +114,22 @@ export const projects: Project[] = [
     coverImage: '/images/projects/violin-practice-model/cover.svg',
     links: [
       { label: 'GitHub', href: 'https://github.com/Ishan1522/Violin-Practice-Model' },
+    ],
+  },
+  {
+    slug: 'homelab',
+    name: 'Homelab',
+    tagline: 'Infrastructure-as-code for a two-node home server',
+    description:
+      'A Proxmox box plus a MacBook data node running self-hosted CI runners, GPU-enabled dev containers, and a personal multi-agent AI system. Ansible manages host and container config, OpenTofu manages which containers exist, and sops/age holds the secrets. A snapshot script records the live state so drift shows up in git, and builds run in an isolated sandbox away from the host.',
+    tech: ['Proxmox', 'Ansible', 'OpenTofu', 'Docker', 'Tailscale', 'sops'],
+    role: 'Solo',
+    year: '2026',
+    status: 'ongoing',
+    accent: 'mint',
+    coverImage: null,
+    links: [
+      { label: 'GitHub', href: 'https://github.com/Ishan1522/homelab' },
     ],
   },
 ];
