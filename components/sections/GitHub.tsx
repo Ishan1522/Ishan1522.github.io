@@ -147,15 +147,15 @@ export function GitHub() {
       id="github"
       className="relative min-h-[100svh] px-6 py-24"
     >
-      <div className="mx-auto w-full max-w-7xl">
+      <div className="mx-auto w-full max-w-6xl">
         <Reveal>
-          <div className="mb-12 text-center">
-            <SectionLabel index="04" label="Activity" className="mx-auto mb-6 w-fit" />
-            <h2 className="font-display text-display-lg font-semibold tracking-tight text-slate-bright">
+          <div className="mb-12">
+            <SectionLabel label="Activity" className="mb-4" />
+            <h2 className="font-display text-display-lg text-slate-bright">
               {/* Live data section → green accent (the numbers are the signal). */}
-              Firing pattern, <span className="text-mint">by the numbers</span>.
+              GitHub, <em className="text-cyan">by the numbers</em>.
             </h2>
-            <p className="mt-4 font-mono text-xs uppercase tracking-wider text-slate-soft">
+            <p className="mt-4 font-mono text-xs text-slate-soft">
               @{username}
             </p>
           </div>
@@ -205,7 +205,7 @@ export function GitHub() {
               href={personal.githubUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="pointer-events-auto group inline-flex items-center gap-2 rounded-sm border border-cyan/40 bg-cyan/5 px-5 py-2.5 font-mono text-xs uppercase tracking-wider text-cyan transition hover:border-cyan hover:bg-cyan/10"
+              className="pointer-events-auto group inline-flex items-center gap-2 rounded-lg border border-cyan/40 bg-cyan/5 px-5 py-2.5 font-mono text-xs text-cyan transition hover:border-cyan hover:bg-cyan/10"
             >
               View all repositories
               <span className="transition group-hover:translate-x-0.5">↗</span>
@@ -218,12 +218,12 @@ export function GitHub() {
 }
 
 /* --------------------------------------------------------------------------
- * Panel chrome — matches ProjectCard / ResearchCard treatment
+ * Panel chrome — matches ProjectCard treatment
  * ------------------------------------------------------------------------ */
 function Panel({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <div className="h-full rounded-sm border border-white/5 bg-ink-900/70 p-5 backdrop-blur-sm">
-      <div className="mb-4 flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.25em] text-cyan">
+    <div className="h-full rounded-lg border border-white/5 bg-ink-900/70 p-5 backdrop-blur-sm">
+      <div className="mb-4 flex items-center gap-2 font-mono text-xs text-cyan">
         <span className="h-px w-3 bg-cyan/40" />
         {title}
       </div>
@@ -257,10 +257,10 @@ function StatsGrid({ stats }: { stats: GitHubStats }) {
               {stats.languages.map((lang) => (
                 <li key={lang.name}>
                   <div className="mb-1 flex items-baseline justify-between gap-2">
-                    <span className="font-mono text-[10px] uppercase tracking-wider text-slate-soft">
+                    <span className="font-mono text-xs text-slate-soft">
                       {lang.name}
                     </span>
-                    <span className="font-mono text-[10px] text-slate-muted">{lang.count} repos</span>
+                    <span className="font-mono text-xs text-slate-muted">{lang.count} repos</span>
                   </div>
                   {/* Motion-animated bar — springs width from 0 to pct on reveal */}
                   <AnimatedBar pct={lang.pct} accent={barAccent} />
@@ -268,7 +268,7 @@ function StatsGrid({ stats }: { stats: GitHubStats }) {
               ))}
             </ul>
           ) : (
-            <p className="font-mono text-xs uppercase tracking-wider text-slate-muted">no language data</p>
+            <p className="font-mono text-xs text-slate-muted">no language data</p>
           )}
         </Panel>
       </Reveal>
@@ -287,16 +287,16 @@ function StatsGrid({ stats }: { stats: GitHubStats }) {
                   className="flex items-center gap-3 border-b border-white/5 py-2.5 last:border-b-0"
                 >
                   <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-mint" />
-                  <span className="font-mono text-[10px] uppercase tracking-wider text-slate-muted">
+                  <span className="font-mono text-xs text-slate-muted">
                     {event.label}
                   </span>
                   <span className="truncate font-mono text-xs text-slate-text">{event.repo}</span>
-                  <span className="ml-auto shrink-0 font-mono text-[10px] text-slate-muted">{event.when}</span>
+                  <span className="ml-auto shrink-0 font-mono text-xs text-slate-muted">{event.when}</span>
                 </motion.li>
               ))}
             </ul>
           ) : (
-            <p className="font-mono text-xs uppercase tracking-wider text-slate-muted">no recent public activity</p>
+            <p className="font-mono text-xs text-slate-muted">no recent public activity</p>
           )}
         </Panel>
       </Reveal>
@@ -328,7 +328,7 @@ function Stat({ value, label }: { value: number; label: string }) {
   return (
     <div ref={ref}>
       <motion.div className="font-mono text-2xl font-semibold text-slate-bright">{rounded}</motion.div>
-      <div className="mt-1 font-mono text-[10px] uppercase tracking-wider text-slate-muted">{label}</div>
+      <div className="mt-1 font-mono text-xs text-slate-muted">{label}</div>
     </div>
   );
 }
@@ -353,12 +353,12 @@ function StatsSkeleton() {
     <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
       {[0, 1, 2].map((i) => (
         <Reveal key={i} delay={i * 0.06} className={i === 2 ? 'md:col-span-2' : ''}>
-          <div className="h-full animate-pulse rounded-sm border border-white/5 bg-ink-900/70 p-5 backdrop-blur-sm">
-            <div className="mb-4 h-3 w-24 rounded-sm bg-white/10" />
+          <div className="h-full animate-pulse rounded-lg border border-white/5 bg-ink-900/70 p-5 backdrop-blur-sm">
+            <div className="mb-4 h-3 w-24 rounded-lg bg-white/10" />
             <div className="space-y-3">
-              <div className="h-3 w-full rounded-sm bg-white/5" />
-              <div className="h-3 w-2/3 rounded-sm bg-white/5" />
-              <div className="h-3 w-5/6 rounded-sm bg-white/5" />
+              <div className="h-3 w-full rounded-lg bg-white/5" />
+              <div className="h-3 w-2/3 rounded-lg bg-white/5" />
+              <div className="h-3 w-5/6 rounded-lg bg-white/5" />
             </div>
           </div>
         </Reveal>
@@ -370,18 +370,18 @@ function StatsSkeleton() {
 function StatsFallback() {
   return (
     <div className="mx-auto max-w-xl">
-      <div className="rounded-sm border border-white/5 bg-ink-900/70 p-6 text-center backdrop-blur-sm">
-        <div className="font-mono text-[10px] uppercase tracking-[0.3em] text-slate-muted">
+      <div className="rounded-lg border border-white/5 bg-ink-900/70 p-6 text-center backdrop-blur-sm">
+        <div className="font-mono text-xs text-slate-muted">
           {'// api unreachable'}
         </div>
-        <p className="mt-3 font-mono text-xs uppercase tracking-wider text-slate-soft">
+        <p className="mt-3 font-mono text-xs text-slate-soft">
           couldn&apos;t load live stats
         </p>
         <a
           href={personal.githubUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="pointer-events-auto mt-5 inline-flex items-center gap-2 rounded-sm border border-cyan/40 bg-cyan/5 px-4 py-2 font-mono text-xs uppercase tracking-wider text-cyan transition hover:border-cyan hover:bg-cyan/10"
+          className="pointer-events-auto mt-5 inline-flex items-center gap-2 rounded-lg border border-cyan/40 bg-cyan/5 px-4 py-2 font-mono text-xs text-cyan transition hover:border-cyan hover:bg-cyan/10"
         >
           See the repos directly
           <span>↗</span>

@@ -9,9 +9,8 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // Petrol-drenched signal field. Deep petrol backgrounds (blue+green
-        // blend — the owner's two favourite colours), blue = INTERACTION,
-        // green = LIVE DATA. Values defined once as CSS custom properties in
+        // Navy surfaces, blue accent (`cyan`), indigo secondary (`mint`).
+        // Values defined once as CSS custom properties in
         // app/globals.css (`:root`). Referenced here as
         // `rgb(var(--color-*) / <alpha-value>)` so every opacity modifier
         // keeps working.
@@ -23,13 +22,13 @@ const config: Config = {
           600: 'rgb(var(--color-ink-600) / <alpha-value>)',
         },
         cyan: {
-          // Interaction blue — links, focus, active nav, section chrome
+          // Blue — links, buttons, focus, active nav
           DEFAULT: 'rgb(var(--color-cyan) / <alpha-value>)',
           glow: 'rgb(var(--color-cyan-glow) / <alpha-value>)',
           deep: 'rgb(var(--color-cyan-deep) / <alpha-value>)',
         },
         mint: {
-          // Live green — status, firing traces, live data marks only
+          // Indigo — secondary accent, aurora drift colour
           DEFAULT: 'rgb(var(--color-mint) / <alpha-value>)',
           glow: 'rgb(var(--color-mint-glow) / <alpha-value>)',
           deep: 'rgb(var(--color-mint-deep) / <alpha-value>)',
@@ -48,13 +47,13 @@ const config: Config = {
         'spring': 'cubic-bezier(0.175, 0.885, 0.32, 1.275)',
       },
       fontFamily: {
-        display: ['var(--font-display)', 'sans-serif'],
-        sans: ['var(--font-display)', 'sans-serif'],  // Space Grotesk works as body too, ditch plex-sans
+        display: ['var(--font-serif)', 'Georgia', 'serif'],
+        sans: ['var(--font-sans)', 'sans-serif'],
         mono: ['var(--font-jetbrains)', 'monospace'],
       },
       fontSize: {
-        'display-xl': ['clamp(3.5rem, 10vw, 8rem)', { lineHeight: '0.95', letterSpacing: '-0.03em' }],
-        'display-lg': ['clamp(2.5rem, 6vw, 5rem)', { lineHeight: '1', letterSpacing: '-0.02em' }],
+        'display-xl': ['clamp(3.5rem, 10vw, 8rem)', { lineHeight: '0.95', letterSpacing: '-0.02em' }],
+        'display-lg': ['clamp(2.5rem, 6vw, 5rem)', { lineHeight: '1.02', letterSpacing: '-0.015em' }],
         'display-md': ['clamp(1.75rem, 3vw, 2.5rem)', { lineHeight: '1.1', letterSpacing: '-0.01em' }],
       },
       animation: {

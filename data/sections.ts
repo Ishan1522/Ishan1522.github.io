@@ -43,11 +43,6 @@ export const sections: SectionDef[] = [
     phase: { dendriteGrowth: 1.0, spikeActive: 1, stdpIntensity: 0.35, firingRate: 0.25, cameraZ: 4.6, rotation: -0.18 },
   },
   {
-    id: 'research',
-    label: 'Research',
-    phase: { dendriteGrowth: 1.0, spikeActive: 1, stdpIntensity: 0.8, firingRate: 0.4, cameraZ: 4.2, rotation: 0.22 },
-  },
-  {
     id: 'github',
     label: 'Activity',
     phase: { dendriteGrowth: 1.0, spikeActive: 1, stdpIntensity: 0.6, firingRate: 0.55, cameraZ: 5.0, rotation: -0.1 },

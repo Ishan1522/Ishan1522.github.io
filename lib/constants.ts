@@ -11,26 +11,26 @@
  *
  *   bg        → --color-ink-900
  *   bgDeep    → --color-ink-950
- *   cyan      → --color-cyan      (interaction blue)
+ *   cyan      → --color-cyan      (blue)
  *   cyanGlow  → --color-cyan-glow
  *   cyanDeep  → --color-cyan-deep
- *   mint      → --color-mint      (live green)
+ *   mint      → --color-mint      (indigo)
  *   mintGlow  → --color-mint-glow
  *   mintDeep  → --color-mint-deep
  *   text      → --color-slate-bright
  *   textSoft  → --color-slate-soft
  */
 export const COLORS = {
-  bg: '#091e26',      // ink-900 — deep petrol
-  bgDeep: '#071118',  // ink-950 — very deep petrol-black
-  cyan: '#4c9be8',    // interaction blue
-  cyanGlow: '#67b4f9',
-  cyanDeep: '#0871b2',
-  mint: '#34d399',    // live green
-  mintGlow: '#6ee7b7',
-  mintDeep: '#059669',
-  text: '#f1f6f8',    // slate-bright
-  textSoft: '#93a8b2',// slate-soft
+  bg: '#090c16',      // ink-900 — near-black navy
+  bgDeep: '#060810',  // ink-950
+  cyan: '#5a94ff',    // blue
+  cyanGlow: '#85b2ff',
+  cyanDeep: '#2563eb',
+  mint: '#5b6cff',    // indigo-blue (token name kept — see globals.css)
+  mintGlow: '#8f9bff',
+  mintDeep: '#3b46e0',
+  text: '#f4f6fc',    // slate-bright
+  textSoft: '#9aa4bb',// slate-soft
 } as const;
 
 /** Convert a #rrggbb hex to a 0-1 THREE.Color-compatible tuple. */

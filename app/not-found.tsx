@@ -43,7 +43,7 @@ export default function NotFound() {
 
         {/* 404 lockup */}
         <div className="relative">
-          <span className="font-display font-semibold text-slate-bright/25" style={{ fontSize: 'clamp(6rem, 18vw, 14rem)', lineHeight: 0.9, letterSpacing: '-0.04em' }}>
+          <span className="font-display text-slate-bright/25" style={{ fontSize: 'clamp(6rem, 18vw, 14rem)', lineHeight: 0.9, letterSpacing: '-0.04em' }}>
             404
           </span>
           <span className="animate-flicker absolute inset-0 flex items-center justify-center font-mono text-xs uppercase tracking-[0.4em] text-cyan">
@@ -53,12 +53,12 @@ export default function NotFound() {
 
         {/* Heading */}
         <div>
-          <h1 className="font-display text-display-md font-semibold tracking-tight text-slate-bright">
+          <h1 className="font-display text-display-md tracking-tight text-slate-bright">
             {/* Single accent — the missing signal verb, in live green. */}
-            This neuron didn&apos;t <span className="text-mint">fire</span>.
+            Page <span className="text-mint">not found</span>.
           </h1>
           <p className="mx-auto mt-4 max-w-md text-base leading-relaxed text-slate-soft">
-            The page you asked for isn&apos;t in the graph. It may have been moved, renamed, or never existed.
+            That page doesn&apos;t exist. It may have been moved or renamed.
           </p>
         </div>
 

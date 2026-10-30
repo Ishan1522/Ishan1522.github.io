@@ -62,14 +62,14 @@ components/
     Aurora.tsx          aurora shader plane
     Effects.tsx         Bloom + vignette
     StaticFallback.tsx  SVG-only fallback for reduced motion
-  sections/       Hero, About, Projects, Research, GitHub, Contact
-  ui/             Nav, SectionLabel, ScrollHint, ProjectCard, ResearchCard, Reveal
+  sections/       Hero, About, Projects, GitHub, Contact
+  ui/             Nav, SectionLabel, ScrollHint, ProjectCard, Reveal
 data/             personal, projects, research, sections (content layer)
 hooks/            useReducedMotion, useIsMobile
 lib/              cn, constants, section-store, aurora-shaders
 public/
   favicon.svg
-  resume.pdf
+  Ishan_Acharya-Gangopadhyay_Resume.pdf
   images/projects/<slug>/  project cover images
 ```
 
@@ -135,7 +135,7 @@ Nav, active-section tracking, and background state update automatically.
 
 ## Placeholders
 
-- `public/resume.pdf` — replace with your actual resume
+- `public/Ishan_Acharya-Gangopadhyay_Resume.pdf` — replace with your actual resume
 - `public/images/projects/*/` — project screenshots; set `coverImage` in `data/projects.ts`
 - GitHub stats section uses third-party SVG services; replace with self-hosted if desired
 - Wensura live URL is `https://wensura.com` — update if it changes

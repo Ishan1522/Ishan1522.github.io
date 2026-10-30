@@ -16,12 +16,12 @@ const container: Variants = {
   hidden: { opacity: 0 },
   show: {
     opacity: 1,
-    transition: { staggerChildren: 0.12, delayChildren: 0.15 },
+    transition: { staggerChildren: 0.1, delayChildren: 0.15 },
   },
 };
 
 const item: Variants = {
-  hidden: { opacity: 0, y: 24 },
+  hidden: { opacity: 0, y: 20 },
   show: {
     opacity: 1,
     y: 0,
@@ -50,90 +50,65 @@ export function Hero() {
     setMounted(true);
   }, []);
 
+  const animated = mounted && !reduced;
+
   return (
     <section
       ref={sectionRef}
       id="hero"
-      className="relative flex min-h-[100svh] items-center justify-center px-6"
+      className="relative flex min-h-[100svh] items-center px-6"
     >
       <motion.div
-        className="relative flex flex-col items-center gap-8 text-center"
+        className="mx-auto w-full max-w-6xl"
         style={reduced ? undefined : { y, opacity }}
       >
-        {/* Depth scrim — darkens behind text so neuron feels like it punches through */}
-        <div className="pointer-events-none absolute inset-[-4rem] -z-10 bg-radial-glow opacity-40" />
-
-        {reduced || !mounted ? (
-          <StaticHeroContent />
-        ) : (
-          <motion.div
-            variants={container}
-            initial="hidden"
-            animate="show"
-            className="flex flex-col items-center gap-8"
-          >
-            <motion.p
-              variants={item}
-              className="font-mono text-[10px] uppercase tracking-[0.4em] text-slate-muted"
-            >
-              Based in {personal.location}
-            </motion.p>
-
-            <motion.h1
-              variants={item}
-              className="font-display text-display-xl font-semibold text-slate-bright/75"
-              style={{ textShadow: '0 0 80px rgb(var(--color-cyan) / 0.15), 0 0 20px rgb(var(--color-cyan) / 0.08)' }}
-            >
-              {personal.name}
-            </motion.h1>
-
-            <motion.div
-              variants={item}
-              className="flex items-center gap-4 font-mono text-xs uppercase tracking-[0.25em] text-slate-soft"
-            >
-              <span className="h-px w-8 bg-cyan/50" />
-              <span>{personal.role}</span>
-              <span className="text-slate-muted">·</span>
-              <span>{personal.institution}</span>
-              <span className="h-px w-8 bg-cyan/50" />
-            </motion.div>
-
-            <motion.div variants={item} className="pt-12">
-              <ScrollHint />
-            </motion.div>
-          </motion.div>
-        )}
+        {/* Remounts when the animation switches on so `initial` is re-read. */}
+        <HeroContent key={animated ? 'animated' : 'static'} animated={animated} />
       </motion.div>
+      <div className="absolute bottom-10 left-6 md:left-[max(1.5rem,calc((100vw-72rem)/2))]">
+        <ScrollHint />
+      </div>
     </section>
   );
 }
 
-/** Static hero for prefers-reduced-motion — identical content, no motion. */
-function StaticHeroContent() {
+function HeroContent({ animated }: { animated: boolean }) {
   return (
-    <div className="flex flex-col items-center gap-8">
-      <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-slate-muted">
-        Based in {personal.location}
-      </p>
+    <motion.div
+      variants={container}
+      initial={animated ? 'hidden' : false}
+      animate="show"
+      className="flex flex-col items-start gap-8"
+    >
+      <motion.p variants={item} className="text-sm text-slate-soft">
+        {personal.fullName} · {personal.role}, {personal.institution}
+      </motion.p>
 
-      <h1
-        className="font-display text-display-xl font-semibold text-slate-bright/75"
-        style={{ textShadow: '0 0 80px rgb(var(--color-cyan) / 0.15), 0 0 20px rgb(var(--color-cyan) / 0.08)' }}
+      <motion.h1
+        variants={item}
+        className="max-w-4xl font-display text-display-lg text-slate-bright"
       >
-        {personal.name}
-      </h1>
+        {personal.headline.before}
+        <em className="text-cyan">{personal.headline.em}</em>
+        {personal.headline.after}
+      </motion.h1>
 
-      <div className="flex items-center gap-4 font-mono text-xs uppercase tracking-[0.25em] text-slate-soft">
-        <span className="h-px w-8 bg-cyan/50" />
-        <span>{personal.role}</span>
-        <span className="text-slate-muted">·</span>
-        <span>{personal.institution}</span>
-        <span className="h-px w-8 bg-cyan/50" />
-      </div>
-
-      <div className="pt-12">
-        <ScrollHint />
-      </div>
-    </div>
+      <motion.div variants={item} className="flex flex-wrap items-center gap-3 pt-2">
+        <a
+          href="#projects"
+          className="rounded-full bg-cyan px-6 py-2.5 text-sm font-medium text-ink-950 transition hover:bg-cyan-glow"
+        >
+          See projects
+        </a>
+        <a
+          href={personal.resumeUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="rounded-full border border-white/15 px-6 py-2.5 text-sm font-medium text-slate-bright transition hover:border-cyan/60 hover:text-cyan"
+        >
+          Résumé ↗
+        </a>
+      </motion.div>
+    </motion.div>
   );
 }

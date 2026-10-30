@@ -5,20 +5,29 @@
 
 export const personal = {
   name: 'Ishan',
+  fullName: 'Ishan Acharya-Gangopadhyay',
   role: 'Electrical Engineering',
   institution: 'Michigan State University',
   location: 'East Lansing, MI',
 
-  // Short one-liner (fallback — the hero intentionally stays sparse)
-  short: 'EE @ MSU. I build at the edge of electricity and thought.',
+  // Hero headline; `em` is the italic accent phrase.
+  headline: {
+    before: 'I build ',
+    em: 'backend infrastructure',
+    after: ', robot simulation, and signal-processing tools.',
+  },
+
+  // One-line summary — used for meta descriptions.
+  short: 'EE student at MSU. I build backend infrastructure, robot simulation, and signal-processing tools.',
 
   // About-section prose. Written as an array of paragraphs so the section
   // component can animate each paragraph independently.
   about: [
-    'Freshman electrical engineering student at Michigan State University. I co-built a production B2B SaaS platform for battery materials research, write Rust DSP tools for FRC robotics, and run the electrical subteam’s dashboard CI pipeline.',
-    'My research interests live in the space between hardware, efficient machine learning, and computational neuroscience — I keep an elaborate second-brain system to track all of it.',
-    'When I’m not shipping code, I’m usually thinking about how the brain pulls off general intelligence on 20 watts, and whether our models can learn anything from it.',
+    'I’m a sophomore studying electrical engineering at Michigan State. Since January 2026 I’ve been the lead backend and infrastructure engineer at Wensura, a platform for battery-materials researchers that launched in April 2026 and is now in beta. I built its AWS infrastructure in Terraform, its multi-tenant data isolation, and its LLM peer-review pipeline, and I found and fixed a critical remote-code-execution bug in its AI Copilot.',
+    'On campus I lead simulation for Spartan Autonomous Robotics, working on sim-to-real for a quadruped. Before college I was Director of Software for FRC Team 4829 and trained 10–15 students a year. I also write and review benchmark tasks for AI coding agents.',
+    'On the side I build small models of how brains learn, like the violin practice model below, and read about efficient ML.',
   ],
+
 
   // Contact + socials
   email: 'achary27@msu.edu',
@@ -27,7 +36,7 @@ export const personal = {
   linkedin:
     'https://www.linkedin.com/in/ishan-acharya-gangopadhyay-3966a8213/',
 
-  resumeUrl: '/resume_real.pdf',
+  resumeUrl: '/Ishan_Acharya-Gangopadhyay_Resume.pdf',
 } as const;
 
 export type Personal = typeof personal;
