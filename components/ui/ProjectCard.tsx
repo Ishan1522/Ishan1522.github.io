@@ -50,16 +50,18 @@ export function ProjectCard({ project }: Props) {
       {project.coverImage && (
         <div
           className={cn(
-            'relative flex shrink-0 items-center justify-center bg-ink-950/70 p-8',
-            featured ? 'md:w-2/5' : 'aspect-[16/10] w-full'
+            'relative shrink-0 bg-ink-950/70',
+            featured ? 'min-h-64 md:w-2/5' : 'aspect-[16/10] w-full'
           )}
         >
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={project.coverImage}
-            alt={`${project.name} preview`}
-            className="max-h-full max-w-full object-contain transition-transform duration-700 group-hover:scale-105"
-          />
+          <div className="absolute inset-6 flex items-center justify-center">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={project.coverImage}
+              alt={`${project.name} preview`}
+              className="max-h-full max-w-full rounded-xl object-contain transition-transform duration-700 group-hover:scale-105"
+            />
+          </div>
         </div>
       )}
 

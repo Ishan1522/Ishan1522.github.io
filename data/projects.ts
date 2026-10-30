@@ -70,16 +70,16 @@ export const projects: Project[] = [
   },
   {
     slug: 'sar',
-    name: 'SAR — Spartan Autonomous Robotics',
-    tagline: 'Sim-to-real pipeline, Simulation Lead',
+    name: 'Spartan Autonomous Robotics',
+    tagline: 'Sim-to-real pipeline for MSU’s first autonomous robotics team',
     description:
-      'I lead simulation for MSU’s autonomous robotics club. I built a sim-to-real pipeline that runs headless Gazebo and MuJoCo in CI and checks results against real-robot behavior: the mean gap is 4.2 cm against an 8 cm threshold, and all four CI checks pass. I also ported the quadruped gait firmware from Python to Rust.',
-    tech: ['Gazebo', 'MuJoCo', 'ROS 2', 'Rust', 'CI/CD'],
-    role: 'Simulation Lead',
+      'Co-founder of MSU’s first autonomous robotics team (24 active members in year one). I lead simulation and sim-to-real: one ROS 2 Jazzy codebase with robot configs shared between sim and hardware, and a 4-stage self-hosted CI pipeline (static analysis, MuJoCo fast loop, Gazebo Harmonic integration, reality-gap check) that gates changes before hardware trials. Six robots simulated so far, from a SpotMicro quadruped to the SO-101 arm, with gait-tuning, system-ID and CMA-ES tools, a scan-to-sim terrain pipeline, and a Reality Gap Report that measures where sim and hardware disagree.',
+    tech: ['ROS 2', 'MuJoCo', 'Gazebo', 'Rust', 'Python', 'CMA-ES', 'CI/CD'],
+    role: 'Co-founder & Simulation Lead',
     year: '2026',
     status: 'active',
     accent: 'cyan',
-    coverImage: null,
+    coverImage: '/images/projects/sar/logo.jpg',
     links: [
       { label: 'GitHub', href: 'https://github.com/msu-sar-robotics' },
     ],
