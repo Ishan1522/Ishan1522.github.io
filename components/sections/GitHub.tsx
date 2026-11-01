@@ -120,10 +120,14 @@ async function fetchGitHubStats(): Promise<GitHubStats | null> {
 }
 
 export function GitHub() {
+  const sectionRef = useRef<HTMLElement>(null);
+  // Don't spend three API round-trips on first load; fetch when it's close.
+  const nearViewport = useInView(sectionRef, { once: true, margin: '600px 0px' });
   const [stats, setStats] = useState<GitHubStats | null>(null);
   const [status, setStatus] = useState<'loading' | 'ready' | 'error'>('loading');
 
   useEffect(() => {
+    if (!nearViewport) return;
     if (!statsCache) statsCache = fetchGitHubStats();
     let active = true;
     statsCache
@@ -138,12 +142,13 @@ export function GitHub() {
     return () => {
       active = false;
     };
-  }, []);
+  }, [nearViewport]);
 
   const username = personal.github;
 
   return (
     <section
+      ref={sectionRef}
       id="github"
       className="relative min-h-[100svh] px-6 py-24"
     >
@@ -222,7 +227,7 @@ export function GitHub() {
  * ------------------------------------------------------------------------ */
 function Panel({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <div className="h-full rounded-lg border border-white/5 bg-ink-900/70 p-5 backdrop-blur-sm">
+    <div className="h-full rounded-lg border border-white/5 bg-ink-900/80 p-5 md:bg-ink-900/70 md:backdrop-blur-sm">
       <div className="mb-4 flex items-center gap-2 font-mono text-xs text-cyan">
         <span className="h-px w-3 bg-cyan/40" />
         {title}
@@ -353,7 +358,7 @@ function StatsSkeleton() {
     <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
       {[0, 1, 2].map((i) => (
         <Reveal key={i} delay={i * 0.06} className={i === 2 ? 'md:col-span-2' : ''}>
-          <div className="h-full animate-pulse rounded-lg border border-white/5 bg-ink-900/70 p-5 backdrop-blur-sm">
+          <div className="h-full animate-pulse rounded-lg border border-white/5 bg-ink-900/80 p-5 md:bg-ink-900/70 md:backdrop-blur-sm">
             <div className="mb-4 h-3 w-24 rounded-lg bg-white/10" />
             <div className="space-y-3">
               <div className="h-3 w-full rounded-lg bg-white/5" />
@@ -370,7 +375,7 @@ function StatsSkeleton() {
 function StatsFallback() {
   return (
     <div className="mx-auto max-w-xl">
-      <div className="rounded-lg border border-white/5 bg-ink-900/70 p-6 text-center backdrop-blur-sm">
+      <div className="rounded-lg border border-white/5 bg-ink-900/80 p-6 text-center md:bg-ink-900/70 md:backdrop-blur-sm">
         <div className="font-mono text-xs text-slate-muted">
           {'// api unreachable'}
         </div>

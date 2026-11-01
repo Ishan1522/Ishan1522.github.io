@@ -25,9 +25,13 @@ export interface Project {
   year: string;
   status: ProjectStatus;
   accent: Accent;
-  // Drop a hero image at /public/images/projects/<slug>/cover.{jpg,png,webp}
-  // and reference it here. Leave `null` to show the gradient placeholder.
+  // Cover at /public/images/projects/<slug>/cover.{svg,webp,png,mp4}. Prefer
+  // .mp4 (+ coverPoster) over .gif for anything animated — it is ~20x smaller.
+  // Leave `null` for a compact card with no media.
   coverImage: string | null;
+  // For .mp4 covers: a still shown until the video loads (and on browsers
+  // that won't autoplay). Optional for images.
+  coverPoster?: string;
   links: ProjectLink[];
   /** Rendered as a full-width card above the grid. */
   featured?: boolean;
@@ -46,7 +50,8 @@ export const projects: Project[] = [
     year: '2026',
     status: 'production',
     accent: 'cyan',
-    coverImage: '/images/projects/wensura/Wensura_logo.gif',
+    coverImage: '/images/projects/wensura/cover.mp4',
+    coverPoster: '/images/projects/wensura/cover-poster.webp',
     links: [
       { label: 'Live', href: 'https://wensura.com' },
       // Private repo — omitted intentionally.
@@ -95,7 +100,8 @@ export const projects: Project[] = [
     year: '2026',
     status: 'wip',
     accent: 'mint',
-    coverImage: '/images/projects/sushi-linux/cover.gif',
+    coverImage: '/images/projects/sushi-linux/cover.mp4',
+    coverPoster: '/images/projects/sushi-linux/cover-poster.webp',
     links: [
       { label: 'GitHub', href: 'https://github.com/Ishan1522/sushi-linux' },
     ],

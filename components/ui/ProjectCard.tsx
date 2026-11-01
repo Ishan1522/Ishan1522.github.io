@@ -1,6 +1,6 @@
 'use client';
 
-import type { MouseEvent } from 'react';
+import { useEffect, useRef, type MouseEvent } from 'react';
 
 import type { Project } from '@/data/projects';
 import { cn } from '@/lib/cn';
@@ -45,7 +45,7 @@ export function ProjectCard({ project }: Props) {
     <article
       onMouseMove={trackPointer}
       className={cn(
-        'pointer-events-auto group relative flex h-full overflow-hidden rounded-2xl border border-white/10 bg-ink-900/60 backdrop-blur-sm transition-colors duration-300 hover:border-cyan/40',
+        'pointer-events-auto group relative flex h-full overflow-hidden rounded-2xl border border-white/10 bg-ink-900/80 transition-colors md:bg-ink-900/60 md:backdrop-blur-sm duration-300 hover:border-cyan/40',
         featured ? 'flex-col md:flex-row' : 'flex-col'
       )}
     >
@@ -60,12 +60,7 @@ export function ProjectCard({ project }: Props) {
           )}
         >
           <div className="absolute inset-6 flex items-center justify-center">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={project.coverImage}
-              alt={`${project.name} preview`}
-              className="fade-edges max-h-full max-w-full object-contain transition-transform duration-700 group-hover:scale-105"
-            />
+            <CoverMedia project={project} />
           </div>
         </div>
       )}
@@ -122,5 +117,62 @@ export function ProjectCard({ project }: Props) {
         </div>
       </div>
     </article>
+  );
+}
+
+const COVER_CLASS =
+  'fade-edges max-h-full max-w-full object-contain transition-transform duration-700 group-hover:scale-105';
+
+/**
+ * Cover media. Images are lazy-decoded; videos (the GIF replacement) don't
+ * fetch anything until near the viewport, then play only while visible so an
+ * off-screen loop never burns battery or bandwidth on a phone.
+ */
+function CoverMedia({ project }: { project: Project }) {
+  const src = project.coverImage;
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const isVideo = src?.endsWith('.mp4') ?? false;
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) void video.play().catch(() => {});
+        else video.pause();
+      },
+      { rootMargin: '200px' }
+    );
+    io.observe(video);
+    return () => io.disconnect();
+  }, []);
+
+  if (!src) return null;
+
+  if (isVideo) {
+    return (
+      <video
+        ref={videoRef}
+        src={src}
+        poster={project.coverPoster}
+        aria-label={`${project.name} preview`}
+        className={COVER_CLASS}
+        muted
+        loop
+        playsInline
+        preload="none"
+      />
+    );
+  }
+
+  return (
+    // eslint-disable-next-line @next/next/no-img-element
+    <img
+      src={src}
+      alt={`${project.name} preview`}
+      className={COVER_CLASS}
+      loading="lazy"
+      decoding="async"
+    />
   );
 }

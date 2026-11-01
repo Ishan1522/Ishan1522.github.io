@@ -60,8 +60,13 @@ const config: Config = {
         'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
         'flicker': 'flicker 3s linear infinite',
         'scan': 'scan 8s linear infinite',
+        'fade-in': 'fade-in 1.4s ease-out both',
       },
       keyframes: {
+        'fade-in': {
+          '0%': { opacity: '0' },
+          '100%': { opacity: '1' },
+        },
         flicker: {
           '0%, 18%, 22%, 25%, 53%, 57%, 100%': { opacity: '1' },
           '20%, 24%, 55%': { opacity: '0.65' },
