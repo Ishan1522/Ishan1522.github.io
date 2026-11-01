@@ -17,7 +17,7 @@ export function Nav() {
   const activeIndex = useSectionStore((s) => s.section);
 
   return (
-    <header className="fixed inset-x-0 top-0 z-50 bg-ink-950/60 backdrop-blur-md">
+    <header className="fixed inset-x-0 top-0 z-50 bg-ink-950/80 md:bg-ink-950/60 md:backdrop-blur-md">
       <nav className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
         <a
           href="#hero"

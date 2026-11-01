@@ -1,14 +1,17 @@
 'use client';
 
-import { Suspense, useRef } from 'react';
+import { Suspense, lazy, useRef } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 
 import { Aurora } from './Aurora';
-import { Effects } from './Effects';
 import { useIsMobile } from '@/hooks/useIsMobile';
 import { useSectionStore, previewUi, SPEED_MAX } from '@/lib/section-store';
 import { COLORS, clamp, damp } from '@/lib/constants';
+
+// Post-processing (and its dependency) is desktop-only, so phones never
+// download it.
+const Effects = lazy(() => import('./Effects').then((m) => ({ default: m.Effects })));
 
 /**
  * The WebGL canvas. Positioned fixed behind the rest of the page via CSS.
@@ -26,8 +29,10 @@ export function Scene() {
 
   return (
     <Canvas
-      dpr={mobile ? [1, 1.5] : [1, 2]}
-      gl={{ antialias: true, powerPreference: 'high-performance', alpha: false }}
+      // The field is a soft, dithered gradient: phones render it at 0.75x
+      // and let the browser upscale — roughly half the fragment work.
+      dpr={mobile ? 0.75 : [1, 2]}
+      gl={{ antialias: false, powerPreference: mobile ? 'default' : 'high-performance', alpha: false }}
       camera={{ position: [0, 0, 5.5], fov: 45, near: 0.1, far: 100 }}
       onCreated={({ gl, scene }) => {
         gl.setClearColor(COLORS.bg, 1);
@@ -39,7 +44,11 @@ export function Scene() {
       <Suspense fallback={null}>
         <Aurora mobile={mobile} />
       </Suspense>
-      <Effects mobile={mobile} />
+      {!mobile && (
+        <Suspense fallback={null}>
+          <Effects />
+        </Suspense>
+      )}
     </Canvas>
   );
 }
